@@ -30,7 +30,8 @@ export function generateMetadata({ params }: Props): Metadata {
       openGraph: { title, description: post.meta.excerpt },
       twitter: { title, description: post.meta.excerpt },
     };
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return {
       title: "Not Found",
     };
@@ -41,7 +42,8 @@ export default function BlogPostPage({ params }: Props) {
   let post;
   try {
     post = getPostBySlug(params.slug);
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     notFound();
   }
 
@@ -91,6 +93,7 @@ export default function BlogPostPage({ params }: Props) {
             </header>
 
             <div className="prose prose-invert max-w-[65ch]">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               <MDXRemote source={post.content} options={mdxOptions as any} />
             </div>
             

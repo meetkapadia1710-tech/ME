@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Calendar } from "lucide-react";
+import { Check } from "lucide-react";
 
 type Slot = {
   time: string;
@@ -19,6 +19,7 @@ const INITIAL_SLOTS: Slot[] = [
   { time: "01:00 PM", status: "available" },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function PlayHubDemo({ config }: { config?: any }) {
   const [selectedSlots, setSelectedSlots] = useState<Set<string>>(new Set());
   const [isSuccess, setIsSuccess] = useState(false);
@@ -70,7 +71,7 @@ export default function PlayHubDemo({ config }: { config?: any }) {
               <div>
                 <h3 className="font-display text-2xl font-medium text-foreground">Booking Confirmed!</h3>
                 <p className="mt-2 text-sm text-foreground/60">
-                  Your slots have been successfully booked. You'll receive a confirmation email shortly.
+                  Your slots have been successfully booked. You&apos;ll receive a confirmation email shortly.
                 </p>
               </div>
               <button

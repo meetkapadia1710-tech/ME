@@ -20,6 +20,7 @@ const LocateMeDemo = dynamic(() => import("./LocateMeDemo"), {
 type PlaygroundProps = {
   type: "none" | "iframe" | "interactive" | "video";
   url?: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config?: any;
   projectSlug: string;
 };
@@ -64,6 +65,7 @@ export default function PlaygroundRenderer({ type, url, config, projectSlug }: P
     <div ref={containerRef} className="opacity-0">
       {!hasIntersected ? (
         <div className="flex h-[400px] w-full items-center justify-center rounded-sm bg-foreground/5 text-foreground/50">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           Loading playground...
         </div>
       ) : (

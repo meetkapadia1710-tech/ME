@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
-import { EASE_ENTRANCE, DUR_STANDARD, DUR_FAST, REVEAL_Y_PCT } from "@/lib/motion";
+import { EASE_ENTRANCE, REVEAL_Y_PCT, DUR_STANDARD } from "@/lib/motion";
 import type { Post } from "@/lib/mdx";
 
 export default function BlogList({ posts }: { posts: Post[] }) {

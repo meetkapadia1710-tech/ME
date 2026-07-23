@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
-import { EASE_ENTRANCE, DUR_STANDARD, DUR_FAST, REVEAL_Y_PCT } from "@/lib/motion";
+import { DUR_STANDARD, REVEAL_Y_PCT, EASE_ENTRANCE } from "@/lib/motion";
 
 const PROFILES = [
   {

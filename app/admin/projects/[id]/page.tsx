@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-export default function ProjectEditPage({ params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function ProjectEditPage({ params: _params }: { params: { id: string } }) {
   // TODO: Fetch project from DB using params.id
 
   return (
@@ -30,7 +31,7 @@ export default function ProjectEditPage({ params }: { params: { id: string } }) 
           <div className="space-y-2">
             <label className="text-sm font-medium">Live URL (Archive External Demo)</label>
             <input type="text" className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/20" placeholder="https://example.com" />
-            <p className="text-xs text-foreground/50">For Tier 2 Archive projects. Rendered as a plain "Live Demo →" link.</p>
+            <p className="text-xs text-foreground/50">For Tier 2 Archive projects. Rendered as a plain &quot;Live Demo →&quot; link.</p>
           </div>
 
           <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
