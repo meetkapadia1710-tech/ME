@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import SmoothScroll from "@/components/SmoothScroll";
 import CursorDot from "@/components/CursorDot";
 import "./globals.css";
@@ -67,6 +68,7 @@ export default function RootLayout({
       <body className="bg-black text-foreground antialiased">
         <CursorDot />
         <SmoothScroll>{children}</SmoothScroll>
+        <Analytics />
       </body>
     </html>
   );
