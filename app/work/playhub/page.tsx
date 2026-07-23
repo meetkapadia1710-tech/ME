@@ -10,9 +10,9 @@ const data: CaseStudyData = {
   year: "2025",
   stack: ["React 19", "Capacitor", "Firebase", "Razorpay"],
   overview:
-    "Cross-platform turf booking app for cricket and pickleball courts, covering three venues with full role-based access.",
+    "A mobile-first court booking app for Pickleball and Box Cricket, running as a native Android APK and a Progressive Web App. Built with real-time Firebase syncing, it handles end-to-end venue management.",
   approach:
-    "Role-based navigation across customers, court owners, and admins — a booking flow for players, owner dashboards for managing courts and availability, admin panels for oversight, real-money payments, and digital wallet passes for confirmed bookings.",
+    "Players use a live slot grid powered by Firestore onSnapshot for instant availability, checking out securely via Razorpay server-side verification. Confirmed bookings generate signed Google Wallet passes and update a competitive player leaderboard. Admins manage venues, courts, and bookings through a restricted dashboard.",
   techStack: [
     {
       name: "React 19",
@@ -44,15 +44,15 @@ const data: CaseStudyData = {
     },
   ],
   features: [
-    "Real-time court booking across three venues",
-    "Razorpay payment integration for real-money transactions",
-    "Google Wallet passes for confirmed bookings",
-    "Push notifications for confirmations and reminders",
-    "Role-based dashboards for three user types — players, owners, and admins",
+    "Live slot grid with real-time Firestore onSnapshot updates",
+    "Razorpay server-side payment verification via Cloud Functions",
+    "Google Wallet passes signed via RS256 JWT for confirmed bookings",
+    "Player leaderboard ranked by confirmed booking count",
+    "Interactive Leaflet maps for venue navigation",
+    "Role-based admin dashboard for venue and booking management",
   ],
   images: {
     hero: "/work/playhub/hero.jpg",
-    screenshots: ["/work/playhub/screenshot-1.jpg", "/work/playhub/screenshot-2.jpg"],
   },
 };
 

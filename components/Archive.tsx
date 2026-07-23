@@ -4,38 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
-
-type Project = {
-  name: string;
-  repo: string;
-  type: string;
-  desc: string;
-};
-
-const PROJECTS: Project[] = [
-  { name: "Hindsight", repo: "meetkapadia1710-tech/hindsight", type: "Hackathon", desc: "On-device 'photographic memory' for your PC — captures activity locally and answers questions about your past, built for the Supermemory hackathon." },
-  { name: "BD Buildcon", repo: "meetkapadia1710-tech/BD_Buildcon", type: "Client", desc: "Production Next.js marketing site for an industrial EPC contractor — project galleries, machinery inventory, and animated content sections." },
-  { name: "J.A.R.V.I.S", repo: "meetkapadia1710-tech/J.A.R.V.I.S", type: "Personal", desc: "Offline, voice-controlled AI assistant for Windows — wake-word activation, 20+ tools, semantic memory, and a live dashboard." },
-  { name: "Saloon-Management", repo: "meetkapadia1710-tech/Saloon-Management", type: "Personal", desc: "Description coming soon." },
-  { name: "Attendance-Manager", repo: "meetkapadia1710-tech/Attendance-Manager", type: "Client", desc: "Real-time staff attendance and payroll tracker for a beauty salon — Firestore sync, CSV export, admin-gated access." },
-  { name: "MeetOS", repo: "meetkapadia1710-tech/Meet-Portfoilio", type: "Personal", desc: "Pixel-accurate macOS Sequoia desktop, rebuilt as a portfolio — windowed apps, a Gemini AI assistant, multi-language support." },
-  { name: "LearnFlex", repo: "DhirGoplani/Learn_Flex", type: "Team", desc: "Online exam-prep quiz platform, DBMS course project." },
-  { name: "WealthNest", repo: "Mrugen123/wealthnest", type: "Team", desc: "Django personal finance app — dashboard, budgets, goals, PDF reports." },
-  { name: "Money-Mint", repo: "HITMAN5050/Money-mint", type: "Personal", desc: "Personal finance tracker." },
-  { name: "Resume Portfolio", repo: "meetkapadia1710-tech/miniResume", type: "Personal", desc: "Bento-grid resume site with a live GitHub contribution heatmap and streak tracking." },
-  { name: "Engram", repo: "meetkapadia1710-tech/Engram", type: "Personal", desc: "Self-hostable memory platform for AI agents — semantic search, knowledge graphs, and multi-agent orchestration built on Supermemory." },
-  { name: "Air_BnB", repo: "meetkapadia1710-tech/Air_BnB", type: "Personal", desc: "Description coming soon." },
-  { name: "AI_Detector", repo: "meetkapadia1710-tech/AI_Detector", type: "Personal", desc: "Fine-tuned DeBERTa-v3 model detecting AI-generated text at 99.77% accuracy, open-sourced with transparent benchmarks." },
-  { name: "ReFractor.ai", repo: "meetkapadia1710-tech/ReFractor.ai", type: "Personal", desc: "Description coming soon." },
-  { name: "ChaT", repo: "meetkapadia1710-tech/ChaT", type: "Personal", desc: "Description coming soon." },
-  { name: "PayMatrix", repo: "Marshmellow31/PayMatrix", type: "Team", desc: "Description coming soon." },
-  { name: "Nexus", repo: "Marshmellow31/Nexus", type: "Team", desc: "Description coming soon." },
-  { name: "DBMS_Project", repo: "mayanksoni78/DBMS_Project", type: "Team", desc: "Description coming soon." },
-  { name: "transitops", repo: "krishnayadav9793/transitops", type: "Team", desc: "Description coming soon." },
-  { name: "ai-triage-ambulance-hackathon", repo: "Deep084-bot/ai-triage-ambulance-hackathon", type: "Hackathon", desc: "Description coming soon." },
-  { name: "HackoutDAIICT", repo: "meetkapadia1710-tech/HackoutDAIICT", type: "Hackathon", desc: "Description coming soon." },
-  { name: "DealAI Agent", repo: "meetkapadia1710-tech/deal-intelligence-agent", type: "Hackathon", desc: "AI sales assistant that remembers every call — synthesizes meetings and surfaces context-grounded next steps, built for HackBaroda." },
-];
+import { ARCHIVE_STUDIES } from "@/lib/archiveData";
 
 export default function Archive() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -143,19 +112,17 @@ export default function Archive() {
 
       {/* Flat List */}
       <ul className="group/list mt-12 md:mt-16">
-        {PROJECTS.map((p, i) => (
-          <li key={p.repo} data-reveal-row>
-            <a
-              href={`https://github.com/${p.repo}`}
-              target="_blank"
-              rel="noopener noreferrer"
+        {ARCHIVE_STUDIES.map((p, i) => (
+          <li key={p.slug} data-reveal-row>
+            <Link
+              href={`/archive/${p.slug}`}
               onMouseEnter={() => showPreview(i)}
               onMouseLeave={hidePreview}
               className="group flex flex-col gap-3 border-b border-foreground/10 py-6 opacity-100 transition-opacity duration-300 first:border-t hover:!opacity-100 group-hover/list:opacity-40 md:flex-row md:items-start md:gap-8 md:py-8"
             >
               <div className="md:w-1/4">
                 <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/50">
-                  {p.type}
+                  {p.role}
                 </span>
                 <h3 className="mt-1 font-display text-2xl tracking-tight text-foreground transition-transform duration-300 group-hover:translate-x-2">
                   {p.name}
@@ -164,20 +131,20 @@ export default function Archive() {
 
               <div className="flex flex-col items-start justify-between gap-4 md:w-3/4 md:flex-row md:items-center">
                 <p className="font-mono text-sm leading-relaxed text-foreground/60 transition-colors group-hover:text-foreground/80 md:max-w-xl">
-                  {p.desc}
+                  {p.overview}
                 </p>
 
                 <span className="inline-flex shrink-0 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/40 transition-colors group-hover:text-foreground">
-                  GitHub{" "}
+                  View{" "}
                   <span
                     aria-hidden
                     className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                   >
-                    ↗
+                    →
                   </span>
                 </span>
               </div>
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
@@ -199,15 +166,19 @@ export default function Archive() {
           }}
         ></div>
 
-        {PROJECTS.map((p, i) => (
+        {ARCHIVE_STUDIES.map((p, i) => (
           <div
-            key={p.repo}
+            key={p.slug}
             ref={(el) => { cardsRef.current[i] = el; }}
             className="absolute inset-0 z-10 flex flex-col items-center justify-center opacity-0"
           >
-            <span className="px-6 text-center font-display text-2xl tracking-tight text-foreground/90">
-              {p.name}
-            </span>
+            {p.images?.hero ? (
+              <img src={p.images.hero} alt={p.name} className="absolute inset-0 w-full h-full object-cover object-center bg-[#0a0a0a]" />
+            ) : (
+              <span className="px-6 text-center font-display text-2xl tracking-tight text-foreground/90">
+                {p.name}
+              </span>
+            )}
           </div>
         ))}
       </div>

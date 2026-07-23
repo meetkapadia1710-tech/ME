@@ -1,0 +1,172 @@
+import type { CaseStudyData } from "./caseStudies";
+
+export const ARCHIVE_STUDIES: CaseStudyData[] = [
+  {
+    slug: "hindsight",
+    name: "Hindsight",
+    tagline: "On-device 'photographic memory' for your PC.",
+    role: "Hackathon",
+    year: "2024",
+    stack: ["Supermemory", "Electron", "AI"],
+    overview: "Captures activity locally and answers questions about your past, built for the Supermemory hackathon.",
+  },
+  {
+    slug: "bd-buildcon",
+    name: "BD Buildcon",
+    tagline: "Production Next.js marketing site for an industrial EPC contractor.",
+    role: "Client",
+    year: "2024",
+    stack: ["Next.js", "Tailwind", "GSAP"],
+    overview: "Project galleries, machinery inventory, and animated content sections.",
+    images: { hero: "/archive/bd_buildcon.jpg", screenshots: [] }
+  },
+  {
+    slug: "jarvis",
+    name: "J.A.R.V.I.S",
+    tagline: "Offline, voice-controlled AI assistant for Windows.",
+    role: "Personal",
+    year: "2023",
+    stack: ["Python", "Local LLMs", "Speech Recognition"],
+    overview: "Wake-word activation, 20+ tools, semantic memory, and a live dashboard.",
+  },
+  {
+    slug: "saloon-management",
+    name: "Saloon-Management",
+    tagline: "Management system for local saloons.",
+    role: "Personal",
+    year: "2023",
+    stack: ["React", "Node.js", "MongoDB"],
+    overview: "Description coming soon.",
+  },
+  {
+    slug: "attendance-manager",
+    name: "Attendance-Manager",
+    tagline: "Real-time staff attendance and payroll tracker.",
+    role: "Client",
+    year: "2024",
+    stack: ["React", "Firebase", "Firestore"],
+    overview: "Real-time staff attendance and payroll tracker for a beauty salon — Firestore sync, CSV export, admin-gated access.",
+    images: { hero: "/archive/attendance.jpg", screenshots: [] }
+  },
+  {
+    slug: "meetos",
+    name: "MeetOS",
+    tagline: "Pixel-accurate macOS Sequoia desktop.",
+    role: "Personal",
+    year: "2024",
+    stack: ["React", "Framer Motion", "Gemini"],
+    overview: "Pixel-accurate macOS Sequoia desktop, rebuilt as a portfolio — windowed apps, a Gemini AI assistant, multi-language support.",
+    images: { hero: "/archive/meetos.jpg", screenshots: [] }
+  },
+  {
+    slug: "learnflex",
+    name: "LearnFlex",
+    tagline: "Online exam-prep quiz platform.",
+    role: "Team",
+    year: "2023",
+    stack: ["React", "SQL", "Express"],
+    overview: "Online exam-prep quiz platform, DBMS course project.",
+  },
+  {
+    slug: "wealthnest",
+    name: "WealthNest",
+    tagline: "Django personal finance app.",
+    role: "Team",
+    year: "2023",
+    stack: ["Django", "Python", "SQLite"],
+    overview: "Dashboard, budgets, goals, PDF reports.",
+  },
+  {
+    slug: "money-mint",
+    name: "Money-Mint",
+    tagline: "Personal finance tracker.",
+    role: "Personal",
+    year: "2023",
+    stack: ["MERN", "Tailwind"],
+    overview: "Personal finance tracker.",
+  },
+  {
+    slug: "resume-portfolio",
+    name: "Resume Portfolio",
+    tagline: "Bento-grid resume site.",
+    role: "Personal",
+    year: "2024",
+    stack: ["Next.js", "Tailwind", "GitHub API"],
+    overview: "Bento-grid resume site with a live GitHub contribution heatmap and streak tracking.",
+    images: { hero: "/archive/resume.jpg", screenshots: [] }
+  },
+  {
+    slug: "engram",
+    name: "Engram",
+    tagline: "Self-hostable memory platform for AI agents.",
+    role: "Personal",
+    year: "2024",
+    stack: ["Next.js", "LangChain", "Vector DB"],
+    overview: "Semantic search, knowledge graphs, and multi-agent orchestration built on Supermemory.",
+  },
+  {
+    slug: "air-bnb",
+    name: "Air_BnB",
+    tagline: "AirBnB clone.",
+    role: "Personal",
+    year: "2023",
+    stack: ["Next.js", "Prisma", "MongoDB"],
+    overview: "Description coming soon.",
+  },
+  {
+    slug: "ai-detector",
+    name: "AI_Detector",
+    tagline: "Fine-tuned DeBERTa-v3 model.",
+    role: "Personal",
+    year: "2024",
+    stack: ["Python", "PyTorch", "Transformers"],
+    overview: "Fine-tuned DeBERTa-v3 model detecting AI-generated text at 99.77% accuracy, open-sourced with transparent benchmarks.",
+  },
+  {
+    slug: "ai-triage",
+    name: "ai-triage-ambulance-hackathon",
+    tagline: "AI Triage Ambulance",
+    role: "Hackathon",
+    year: "2024",
+    stack: ["React", "Python", "AI"],
+    overview: "Description coming soon.",
+  },
+  {
+    slug: "hackout-daiict",
+    name: "HackoutDAIICT",
+    tagline: "Hackout DAIICT project",
+    role: "Hackathon",
+    year: "2024",
+    stack: ["React", "Tailwind", "Node.js"],
+    overview: "Description coming soon.",
+  },
+  {
+    slug: "dealai",
+    name: "DealAI Agent",
+    tagline: "AI sales assistant that remembers every call.",
+    role: "Hackathon",
+    year: "2024",
+    stack: ["Next.js", "Whisper", "LangChain"],
+    overview: "Synthesizes meetings and surfaces context-grounded next steps, built for HackBaroda.",
+  },
+  {
+    slug: "bhumi-developers",
+    name: "Bhumi Developers",
+    tagline: "Production Next.js real estate portal.",
+    role: "Client",
+    year: "2024",
+    stack: ["Next.js", "Tailwind", "Firebase"],
+    overview: "Property listings, dynamic filters, and contact integration.",
+    images: { hero: "/archive/bhumi.jpg", screenshots: [] }
+  }
+];
+
+export function getAdjacentArchive(slug: string) {
+  const i = ARCHIVE_STUDIES.findIndex((w) => w.slug === slug);
+  const len = ARCHIVE_STUDIES.length;
+  const safe = i === -1 ? 0 : i;
+  return {
+    prev: { slug: ARCHIVE_STUDIES[(safe - 1 + len) % len].slug, name: ARCHIVE_STUDIES[(safe - 1 + len) % len].name },
+    next: { slug: ARCHIVE_STUDIES[(safe + 1) % len].slug, name: ARCHIVE_STUDIES[(safe + 1) % len].name },
+  };
+}

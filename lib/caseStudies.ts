@@ -4,7 +4,7 @@ export type CaseStudyImages = {
   /** Full-width banner shown below the meta row. */
   hero: string;
   /** Side-by-side / stacked gallery screenshots. */
-  screenshots: [string, string];
+  screenshots?: string[];
 };
 
 export type CaseStudyData = {
@@ -16,16 +16,15 @@ export type CaseStudyData = {
   /** Short tags for the meta row. */
   stack: string[];
   overview: string;
-  approach: string;
-  techStack: TechChoice[];
-  features: string[];
+  approach?: string;
+  techStack?: TechChoice[];
+  features?: string[];
   /** Visual assets — optional so existing pages compile without changes. */
   images?: CaseStudyImages;
 };
 
 /** Canonical ordering — drives prev/next wrap-around and matches Selected Works. */
 export const CASE_STUDY_ORDER = [
-  { slug: "aure", name: "Auré" },
   { slug: "playhub", name: "PlayHub" },
   { slug: "locateme-family", name: "LocateMe Family" },
   { slug: "repograde", name: "RepoGrade" },

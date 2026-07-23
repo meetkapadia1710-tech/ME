@@ -64,7 +64,7 @@ const data: CaseStudyData = {
   ],
   images: {
     hero: "/work/repograde/hero.jpg",
-    screenshots: ["/work/repograde/screenshot-1.jpg", "/work/repograde/screenshot-2.jpg"],
+    screenshots: ["/work/repograde/screenshot-1.jpg"],
   },
 };
 

@@ -20,15 +20,6 @@ type Work = {
 const WORKS: Work[] = [
   {
     num: "01",
-    slug: "aure",
-    name: "Auré",
-    brief: "Luxury salon management app with an integrated loyalty engine.",
-    year: "2025",
-    tags: ["Product Design", "Frontend"],
-    thumbnail: "/work/aure/thumbnail.jpg",
-  },
-  {
-    num: "02",
     slug: "playhub",
     name: "PlayHub",
     brief:
@@ -38,7 +29,7 @@ const WORKS: Work[] = [
     thumbnail: "/work/playhub/thumbnail.jpg",
   },
   {
-    num: "03",
+    num: "02",
     slug: "locateme-family",
     name: "LocateMe Family",
     brief:
@@ -48,7 +39,7 @@ const WORKS: Work[] = [
     thumbnail: "/work/locateme-family/thumbnail.jpg",
   },
   {
-    num: "04",
+    num: "03",
     slug: "repograde",
     name: "RepoGrade",
     brief:
@@ -205,7 +196,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
               <div className="flex items-start justify-between gap-6">
                 <div className="flex items-baseline gap-4 md:gap-6">
                   <span className="font-mono text-xs tabular-nums text-foreground/40">
-                    {work.num} / 04
+                    {work.num} / 03
                   </span>
                   <h3 className="font-display text-4xl leading-none tracking-tight text-foreground transition-transform duration-300 group-hover:translate-x-2 md:text-7xl">
                     {work.name}
