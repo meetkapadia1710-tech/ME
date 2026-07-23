@@ -29,7 +29,7 @@ export type CaseStudyData = {
 
 /** Canonical ordering — drives prev/next wrap-around and matches Selected Works. */
 export const CASE_STUDY_ORDER = [
-  { slug: "aure", name: "Auré" },
+
   { slug: "playhub", name: "PlayHub" },
   { slug: "locateme-family", name: "LocateMe Family" },
   { slug: "repograde", name: "RepoGrade" },

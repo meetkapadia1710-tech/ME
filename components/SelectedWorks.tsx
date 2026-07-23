@@ -26,19 +26,9 @@ type Work = {
 
 // NOTE: `year` values are PLACEHOLDERS — confirm/replace with the real ship year.
 const WORKS: Work[] = [
+
   {
     num: "01",
-    slug: "aure",
-    name: "Auré",
-    brief:
-      "Premium loyalty engine and rewards platform for modern brands. Designed for rapid consumer engagement and retention.",
-    year: "2025",
-    tags: ["Full-Stack", "Web3"],
-    thumbnail: "/work/playhub/thumbnail.jpg", // TODO: replace with Aure thumbnail
-    playgroundType: "interactive",
-  },
-  {
-    num: "02",
     slug: "playhub",
     name: "PlayHub",
     brief:
@@ -49,7 +39,7 @@ const WORKS: Work[] = [
     playgroundType: "interactive",
   },
   {
-    num: "03",
+    num: "02",
     slug: "locateme-family",
     name: "LocateMe Family",
     brief:
@@ -60,7 +50,7 @@ const WORKS: Work[] = [
     playgroundType: "interactive",
   },
   {
-    num: "04",
+    num: "03",
     slug: "repograde",
     name: "RepoGrade",
     brief:
@@ -173,7 +163,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
               <div className="flex items-start justify-between gap-6">
                 <div className="flex items-baseline gap-4 md:gap-6">
                   <span className="font-mono text-xs tabular-nums text-foreground/40">
-                    {work.num} / 04
+                    {work.num} / 03
                   </span>
                   <h3 className="font-display text-4xl leading-none tracking-tight text-foreground transition-transform duration-300 group-hover:translate-x-2 md:text-7xl">
                     {work.name}

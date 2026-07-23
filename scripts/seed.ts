@@ -100,31 +100,7 @@ const FEATURED_PROJECTS = [
     playgroundConfig: null,
     liveUrl: "https://repograde.dev",
   },
-  {
-    slug: "aure",
-    name: "Auré",
-    tagline: "Premium loyalty engine and rewards platform for modern brands.",
-    year: "2025",
-    type: "Personal",
-    tags: ["Full-Stack", "Web3"],
-    featured: true,
-    thumbnailUrl: "/work/playhub/thumbnail.jpg",
-    heroImageUrl: "/work/playhub/hero.jpg",
-    overview: "A next-generation loyalty rewards platform that replaces punch cards with engaging digital interactions.",
-    approach: "End-users can scan physical QR codes or complete digital challenges to earn points, which can be redeemed for exclusive drops.",
-    techStack: [
-      { name: "Next.js", why: "React server components for the brand dashboard." },
-      { name: "Prisma", why: "Type-safe database ORM to manage complex point ledgers." }
-    ],
-    keyFeatures: [
-      "Scan-to-earn QR code engine",
-      "Dynamic reward tiers (Silver, Gold, Platinum)"
-    ],
-    playgroundType: "interactive",
-    playgroundUrl: null,
-    playgroundConfig: { userTier: "Silver", points: 1200 },
-    liveUrl: null,
-  }
+
 ];
 
 function mapRoleToType(role: string): string {

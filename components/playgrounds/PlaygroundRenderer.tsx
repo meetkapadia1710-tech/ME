@@ -9,9 +9,7 @@ import { DUR_STANDARD, EASE_ENTRANCE, REVEAL_Y } from "@/lib/motion";
 const PlayHubDemo = dynamic(() => import("./PlayHubDemo"), {
   loading: () => <div className="flex h-[400px] w-full items-center justify-center rounded-sm bg-foreground/5 text-foreground/50">Loading demo...</div>,
 });
-const AureDemo = dynamic(() => import("./AureDemo"), {
-  loading: () => <div className="flex h-[400px] w-full items-center justify-center rounded-sm bg-foreground/5 text-foreground/50">Loading demo...</div>,
-});
+
 const RepoGradeDemo = dynamic(() => import("./RepoGradeDemo"), {
   loading: () => <div className="flex h-[400px] w-full items-center justify-center rounded-sm bg-foreground/5 text-foreground/50">Loading demo...</div>,
 });
@@ -75,8 +73,7 @@ export default function PlaygroundRenderer({ type, url, config, projectSlug }: P
               switch (projectSlug) {
                 case "playhub":
                   return <PlayHubDemo config={config} />;
-                case "aure":
-                  return <AureDemo config={config} />;
+
                 case "repograde":
                   return <RepoGradeDemo />;
                 case "locateme-family":
