@@ -53,3 +53,78 @@ html.lenis body {
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
+
+/* --- Prose / MDX Styles --- */
+.prose {
+  --tw-prose-body: rgba(236, 233, 225, 0.8);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: rgba(236, 233, 225, 0.7);
+  --tw-prose-links: var(--foreground);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: rgba(236, 233, 225, 0.5);
+  --tw-prose-bullets: rgba(236, 233, 225, 0.3);
+  --tw-prose-hr: rgba(236, 233, 225, 0.1);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: rgba(236, 233, 225, 0.2);
+  --tw-prose-captions: rgba(236, 233, 225, 0.5);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: rgba(255, 255, 255, 0.03);
+  --tw-prose-th-borders: rgba(236, 233, 225, 0.2);
+  --tw-prose-td-borders: rgba(236, 233, 225, 0.1);
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.prose a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(236, 233, 225, 0.3);
+  transition: text-decoration-color 0.2s ease;
+}
+
+.prose a:hover {
+  text-decoration-color: var(--foreground);
+}
+
+.prose code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 400;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+}
+
+.prose code::before,
+.prose code::after {
+  display: none;
+}
+
+/* Rehype Pretty Code specific styles */
+.prose pre {
+  padding: 1rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.prose pre > code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  display: grid;
+}
+
+.prose pre > code .line {
+  padding: 0 1rem;
+  border-left: 2px solid transparent;
+}
+
+.prose pre > code .line.highlighted {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--foreground);
+}

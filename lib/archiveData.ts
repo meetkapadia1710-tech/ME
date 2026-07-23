@@ -158,7 +158,16 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     stack: ["Next.js", "Tailwind", "Firebase"],
     overview: "Property listings, dynamic filters, and contact integration.",
     images: { hero: "/archive/bhumi.jpg", screenshots: [] }
-  }
+  },
+  {
+    slug: "riscv-processor",
+    name: "RISC-V RV32I Processor",
+    tagline: "Custom RV32I processor implementation.",
+    role: "Systems",
+    year: "2025",
+    stack: ["Verilog", "Computer Architecture", "Digital Design"],
+    overview: "Custom RV32I processor implementation — full instruction decode, ALU, register file, and memory interface. Repo link TBD.",
+  },
 ];
 
 export function getAdjacentArchive(slug: string) {

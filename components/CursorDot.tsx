@@ -1,48 +1,38 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import { useEffect, useState } from "react";
+import { motion, useSpring } from "framer-motion";
 import { prefersReducedMotion } from "@/lib/reveal";
 
-/**
- * Signature custom cursor: a small dot that follows the pointer, inverts over
- * content (mix-blend-difference), and scales up over links / Selected Works
- * rows. Fine-pointer devices only — skipped entirely on touch and under
- * reduced motion, where the native cursor stays in charge.
- */
 export default function CursorDot() {
-  const dotRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const isReduced = prefersReducedMotion();
+
+  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
+  const cursorX = useSpring(-100, springConfig);
+  const cursorY = useSpring(-100, springConfig);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (isReduced) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
-    const dot = dotRef.current;
-    if (!dot) return;
-
     document.documentElement.classList.add("hide-cursor");
-    gsap.set(dot, { xPercent: -50, yPercent: -50, scale: 1, opacity: 0 });
 
-    const xTo = gsap.quickTo(dot, "x", { duration: 0.3, ease: "power3" });
-    const yTo = gsap.quickTo(dot, "y", { duration: 0.3, ease: "power3" });
-
-    let shown = false;
     const onMove = (e: MouseEvent) => {
-      if (!shown) {
-        shown = true;
-        gsap.to(dot, { opacity: 1, duration: 0.3 });
-      }
-      xTo(e.clientX);
-      yTo(e.clientY);
+      if (!isVisible) setIsVisible(true);
+      // Offset by half of cursor size (7px) to center it
+      cursorX.set(e.clientX - 7);
+      cursorY.set(e.clientY - 7);
     };
+
     const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
-      const interactive = target?.closest?.(
-        "a, button, [data-cursor-hover]",
-      );
-      gsap.to(dot, { scale: interactive ? 3 : 1, duration: 0.3, ease: "power3" });
+      const interactive = target?.closest?.("a, button, [data-cursor-hover]");
+      setIsHovering(!!interactive);
     };
-    const onLeaveWindow = () => gsap.to(dot, { opacity: 0, duration: 0.3 });
+
+    const onLeaveWindow = () => setIsVisible(false);
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseover", onOver);
@@ -54,14 +44,20 @@ export default function CursorDot() {
       document.removeEventListener("mouseleave", onLeaveWindow);
       document.documentElement.classList.remove("hide-cursor");
     };
-  }, []);
+  }, [isVisible, isReduced, cursorX, cursorY]);
+
+  if (isReduced) return null;
 
   return (
-    <div
-      ref={dotRef}
+    <motion.div
       aria-hidden
+      style={{
+        x: cursorX,
+        y: cursorY,
+        opacity: isVisible ? 1 : 0,
+        scale: isHovering ? 3 : 1,
+      }}
       className="pointer-events-none fixed left-0 top-0 z-[95] h-3.5 w-3.5 rounded-full bg-white mix-blend-difference"
-      style={{ willChange: "transform" }}
     />
   );
 }

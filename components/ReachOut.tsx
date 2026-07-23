@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
+import {
+  EASE_ENTRANCE,
+  DUR_SLOW, DUR_FAST,
+  STAGGER_LOOSE,
+  REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
+} from "@/lib/motion";
 
 const EMAIL = "meetkapadia1710@gmail.com";
 
@@ -21,11 +28,13 @@ export default function ReachOut({ ready }: { ready: boolean }) {
     return createRevealContext(rootRef, () => {
       const targets = gsap.utils.toArray<HTMLElement>("[data-reveal]");
       gsap.from(targets, {
-        yPercent: 110,
+        yPercent: REVEAL_Y_PCT,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        stagger: 0.12,
+        rotateX: REVEAL_ROTATE_X,
+        transformPerspective: REVEAL_PERSPECTIVE,
+        duration: DUR_SLOW,
+        ease: EASE_ENTRANCE,
+        stagger: STAGGER_LOOSE,
         scrollTrigger: {
           trigger: rootRef.current,
           start: "top 75%",
@@ -40,8 +49,8 @@ export default function ReachOut({ ready }: { ready: boolean }) {
     gsap.to(underlineRef.current, {
       scaleX: 1,
       transformOrigin: "left center",
-      duration: 0.45,
-      ease: "power3.out",
+      duration: DUR_FAST * 0.8,
+      ease: EASE_ENTRANCE,
     });
   };
 
@@ -50,8 +59,8 @@ export default function ReachOut({ ready }: { ready: boolean }) {
     gsap.to(underlineRef.current, {
       scaleX: 0,
       transformOrigin: "right center",
-      duration: 0.4,
-      ease: "power3.out",
+      duration: DUR_FAST * 0.7,
+      ease: "power2.in",
     });
   };
 
@@ -86,13 +95,15 @@ export default function ReachOut({ ready }: { ready: boolean }) {
 
           {/* Email */}
           <div className="mt-10 overflow-hidden">
-            <a
+            <motion.a
               data-reveal
               href={`mailto:${EMAIL}`}
               onMouseEnter={drawUnderline}
               onMouseLeave={retractUnderline}
               onFocus={drawUnderline}
               onBlur={retractUnderline}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.96, y: 2 }}
               className="group relative inline-block font-display text-2xl tracking-tight text-foreground/85 transition-colors duration-300 hover:text-foreground focus:text-foreground focus:outline-none sm:text-3xl md:text-5xl"
             >
               <span className="break-all">{EMAIL}</span>
@@ -101,7 +112,7 @@ export default function ReachOut({ ready }: { ready: boolean }) {
                 aria-hidden
                 className="absolute -bottom-1 left-0 block h-px w-full origin-left scale-x-0 bg-foreground md:-bottom-2"
               />
-            </a>
+            </motion.a>
           </div>
 
           {/* Meta */}

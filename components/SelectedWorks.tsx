@@ -1,10 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { gsap } from "gsap";
-import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
+import { createRevealContext } from "@/lib/reveal";
+import { useRowTilt } from "@/hooks/useRowTilt";
+import {
+  EASE_ENTRANCE,
+  DUR_STANDARD,
+  STAGGER_LOOSE,
+  REVEAL_Y, REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
+} from "@/lib/motion";
 
 type Work = {
   num: string;
@@ -51,13 +58,17 @@ const WORKS: Work[] = [
 ];
 
 export default function SelectedWorks({ ready }: { ready: boolean }) {
-  const rootRef = useRef<HTMLElement>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
-  // One ref slot per card so we can fade the active one in/out individually.
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const canHover = useRef(false);
-  const xTo = useRef<((v: number) => void) | null>(null);
-  const yTo = useRef<((v: number) => void) | null>(null);
+
+  const {
+    rootRef,
+    previewRef,
+    cardsRef,
+    rowEls,
+    handleMove,
+    showPreview,
+    hidePreview,
+    canHover,
+  } = useRowTilt({ ready });
 
   // Mobile: track which row is expanded to show its inline thumbnail.
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -65,28 +76,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
   useEffect(() => {
     if (!ready) return;
 
-    canHover.current =
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-      !prefersReducedMotion();
-
     return createRevealContext(rootRef, () => {
-      // Floating preview — starts hidden, follows cursor via quickTo lerp.
-      if (previewRef.current) {
-        gsap.set(previewRef.current, {
-          autoAlpha: 0,
-          scale: 0.85,
-          xPercent: -50,
-          yPercent: -50,
-        });
-        xTo.current = gsap.quickTo(previewRef.current, "x", {
-          duration: 0.55,
-          ease: "power3",
-        });
-        yTo.current = gsap.quickTo(previewRef.current, "y", {
-          duration: 0.55,
-          ease: "power3",
-        });
-      }
 
       // Scroll-in reveal — same timing as Intro / Core Tools.
       const heading = gsap.utils.toArray<HTMLElement>("[data-reveal-heading]");
@@ -99,59 +89,28 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
         },
       });
       tl.from(heading, {
-        yPercent: 110,
+        yPercent: REVEAL_Y_PCT,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
+        rotateX: REVEAL_ROTATE_X,
+        transformPerspective: REVEAL_PERSPECTIVE,
+        duration: DUR_STANDARD + 0.25,
+        ease: EASE_ENTRANCE,
       }).from(
         rows,
         {
-          y: 40,
+          y: REVEAL_Y,
           opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.12,
+          rotateX: -15,
+          transformPerspective: REVEAL_PERSPECTIVE,
+          duration: DUR_STANDARD,
+          ease: EASE_ENTRANCE,
+          stagger: STAGGER_LOOSE,
         },
         "-=0.5",
       );
-    });
-  }, [ready]);
 
-  const handleMove = useCallback((e: React.MouseEvent) => {
-    if (!canHover.current) return;
-    xTo.current?.(e.clientX);
-    yTo.current?.(e.clientY);
-  }, []);
-
-  const showPreview = useCallback((i: number) => {
-    if (!canHover.current || !previewRef.current) return;
-    // Fade the whole floating panel in, then cross-fade to the right card.
-    gsap.to(previewRef.current, {
-      autoAlpha: 1,
-      scale: 1,
-      duration: 0.4,
-      ease: "power3.out",
     });
-    cardsRef.current.forEach((card, idx) => {
-      if (card) {
-        gsap.to(card, {
-          opacity: idx === i ? 1 : 0,
-          duration: 0.25,
-          ease: "power2.out",
-        });
-      }
-    });
-  }, []);
-
-  const hidePreview = useCallback(() => {
-    if (!previewRef.current) return;
-    gsap.to(previewRef.current, {
-      autoAlpha: 0,
-      scale: 0.85,
-      duration: 0.3,
-      ease: "power3.out",
-    });
-  }, []);
+  }, [ready, rootRef]);
 
   // Mobile: first tap expands inline thumbnail; second tap lets Link navigate.
   const handleRowTap = useCallback(
@@ -161,7 +120,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       e.preventDefault();
       setExpandedIndex((prev) => (prev === i ? null : i));
     },
-    [expandedIndex],
+    [expandedIndex, canHover],
   );
 
   return (
@@ -186,11 +145,14 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
         {WORKS.map((work, i) => (
           <li key={work.slug} data-reveal-row>
             <Link
+              ref={(el) => { rowEls.current[i] = el; }}
               href={`/work/${work.slug}`}
               onClick={(e) => handleRowTap(e, i)}
               onMouseEnter={() => showPreview(i)}
-              onMouseLeave={hidePreview}
-              className="group block border-t border-foreground/10 py-8 opacity-100 transition-opacity duration-300 last:border-b last:border-foreground/10 hover:!opacity-100 group-hover/list:opacity-40 md:py-10"
+              onMouseLeave={() => hidePreview(i)}
+              onFocus={() => showPreview(i)}
+              onBlur={() => hidePreview(i)}
+              className="group flex flex-col gap-3 py-6 opacity-100 transition-opacity duration-300 hover:!opacity-100 group-hover/list:opacity-40 focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-center md:justify-between md:gap-8 md:py-8"
             >
               {/* Top line: number + name + CTA */}
               <div className="flex items-start justify-between gap-6">

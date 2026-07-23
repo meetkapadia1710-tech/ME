@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { getAllPosts } from "@/lib/mdx";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://meetkapadia.com"; // We will assume a custom domain or update later if needed
@@ -40,5 +41,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    ...getAllPosts().map((post) => ({
+      url: `${baseUrl}/blog/${post.meta.slug}`,
+      lastModified: new Date(post.meta.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
   ];
 }

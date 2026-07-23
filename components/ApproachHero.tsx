@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
+import { EASE_ENTRANCE } from "@/lib/motion";
+import WebGLTechSphere from "./WebGLTechSphere";
 
 /**
  * Approach page hero — back-link (mirrors CaseStudy's /#work pattern),
@@ -17,19 +19,22 @@ export default function ApproachHero() {
     return createRevealContext(rootRef, () => {
       const items = gsap.utils.toArray<HTMLElement>("[data-hero-reveal]");
       gsap.from(items, {
-        y: 40,
+        yPercent: 120,
         opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
+        rotateX: 25,
+        transformPerspective: 1000,
+        duration: 1,
+        ease: EASE_ENTRANCE,
         stagger: 0.1,
       });
     });
   }, []);
 
   return (
-    <div ref={rootRef}>
+    <div ref={rootRef} className="relative">
+      <WebGLTechSphere />
       {/* Back link — same pattern as CaseStudy's ← Index */}
-      <div data-hero-reveal>
+      <div data-hero-reveal className="relative z-10">
         <Link
           href="/"
           className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/60 transition-colors hover:text-foreground"
@@ -41,7 +46,7 @@ export default function ApproachHero() {
       {/* Title + opening statement */}
       <header
         data-hero-reveal
-        className="mt-12 border-b border-foreground/10 pb-12 md:mt-16 md:pb-16"
+        className="relative z-10 mt-12 border-b border-foreground/10 pb-12 md:mt-16 md:pb-16"
       >
         <p className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/50">
           Approach

@@ -1,24 +1,36 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
+import { useRowTilt } from "@/hooks/useRowTilt";
 import { ARCHIVE_STUDIES } from "@/lib/archiveData";
+import {
+  EASE_ENTRANCE, EASE_STANDARD,
+  DUR_STANDARD,
+  REVEAL_Y,
+} from "@/lib/motion";
+
+type FilterTag = "All" | "Personal" | "Team" | "Client" | "Hackathon" | "Systems";
+const FILTERS: FilterTag[] = ["All", "Personal", "Team", "Client", "Hackathon", "Systems"];
 
 export default function Archive() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const canHover = useRef(false);
-  const xTo = useRef<((v: number) => void) | null>(null);
-  const yTo = useRef<((v: number) => void) | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterTag>("All");
+  const listRef = useRef<HTMLUListElement>(null);
+
+  const {
+    rootRef,
+    previewRef,
+    cardsRef,
+    rowEls,
+    handleMove,
+    showPreview,
+    hidePreview,
+  } = useRowTilt<HTMLDivElement>({ ready: true });
 
   useEffect(() => {
-    canHover.current =
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-      !prefersReducedMotion();
-
     return createRevealContext(rootRef, () => {
       // Floating preview — starts hidden, follows cursor via quickTo lerp.
       if (previewRef.current) {
@@ -28,22 +40,14 @@ export default function Archive() {
           xPercent: -50,
           yPercent: -50,
         });
-        xTo.current = gsap.quickTo(previewRef.current, "x", {
-          duration: 0.55,
-          ease: "power3",
-        });
-        yTo.current = gsap.quickTo(previewRef.current, "y", {
-          duration: 0.55,
-          ease: "power3",
-        });
       }
 
       const items = gsap.utils.toArray<HTMLElement>("[data-reveal-row]");
       gsap.from(items, {
-        y: 40,
+        y: REVEAL_Y,
         opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
+        duration: DUR_STANDARD,
+        ease: EASE_ENTRANCE,
         stagger: 0.05,
         scrollTrigger: {
           trigger: rootRef.current,
@@ -52,40 +56,24 @@ export default function Archive() {
         },
       });
     });
-  }, []);
+  }, [rootRef, previewRef]);
 
-  const handleMove = useCallback((e: React.MouseEvent) => {
-    if (!canHover.current) return;
-    xTo.current?.(e.clientX);
-    yTo.current?.(e.clientY);
-  }, []);
+  // Animate filter change — fade items out, reflow, fade matching back in
+  const applyFilter = useCallback((tag: FilterTag) => {
+    setActiveFilter(tag);
+    if (prefersReducedMotion() || !listRef.current) return;
 
-  const showPreview = useCallback((i: number) => {
-    if (!canHover.current || !previewRef.current) return;
-    gsap.to(previewRef.current, {
-      autoAlpha: 1,
-      scale: 1,
-      duration: 0.4,
-      ease: "power3.out",
-    });
-    cardsRef.current.forEach((card, idx) => {
-      if (card) {
-        gsap.to(card, {
-          opacity: idx === i ? 1 : 0,
-          duration: 0.25,
-          ease: "power2.out",
-        });
-      }
-    });
-  }, []);
-
-  const hidePreview = useCallback(() => {
-    if (!previewRef.current) return;
-    gsap.to(previewRef.current, {
-      autoAlpha: 0,
-      scale: 0.85,
-      duration: 0.3,
-      ease: "power3.out",
+    const rows = listRef.current.querySelectorAll<HTMLElement>("[data-archive-row]");
+    rows.forEach((row) => {
+      const role = row.dataset.role ?? "";
+      const visible = tag === "All" || role === tag;
+      gsap.to(row, {
+        opacity: visible ? 1 : 0.08,
+        y: visible ? 0 : 6,
+        duration: 0.35,
+        ease: EASE_STANDARD,
+        pointerEvents: visible ? "auto" : "none",
+      });
     });
   }, []);
 
@@ -110,15 +98,36 @@ export default function Archive() {
         </p>
       </header>
 
+      {/* Filter Pills */}
+      <div data-reveal-row className="mt-10 flex flex-wrap gap-2 md:mt-12">
+        {FILTERS.map((tag) => (
+          <button
+            key={tag}
+            type="button"
+            onClick={() => applyFilter(tag)}
+            className={`rounded-full border px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-all duration-200 ${
+              activeFilter === tag
+                ? "border-foreground/60 bg-foreground/10 text-foreground"
+                : "border-foreground/15 text-foreground/40 hover:border-foreground/30 hover:text-foreground/70"
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+
       {/* Flat List */}
-      <ul className="group/list mt-12 md:mt-16">
+      <ul ref={listRef} className="group/list mt-6 md:mt-8">
         {ARCHIVE_STUDIES.map((p, i) => (
-          <li key={p.slug} data-reveal-row>
+          <li key={p.slug} data-reveal-row data-archive-row data-role={p.role}>
             <Link
+              ref={(el) => { rowEls.current[i] = el; }}
               href={`/archive/${p.slug}`}
               onMouseEnter={() => showPreview(i)}
-              onMouseLeave={hidePreview}
-              className="group flex flex-col gap-3 border-b border-foreground/10 py-6 opacity-100 transition-opacity duration-300 first:border-t hover:!opacity-100 group-hover/list:opacity-40 md:flex-row md:items-start md:gap-8 md:py-8"
+              onMouseLeave={() => hidePreview(i)}
+              onFocus={() => showPreview(i)}
+              onBlur={() => hidePreview(i)}
+              className="group flex flex-col gap-3 border-b border-foreground/10 py-6 opacity-100 transition-opacity duration-300 first:border-t hover:!opacity-100 group-hover/list:opacity-40 focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-start md:gap-8 md:py-8"
             >
               <div className="md:w-1/4">
                 <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/50">
@@ -156,11 +165,11 @@ export default function Archive() {
         className="pointer-events-none fixed left-0 top-0 z-40 hidden h-[320px] w-[260px] overflow-hidden rounded-xl bg-[#0a0a0a] md:block border border-foreground/10"
         style={{ willChange: "transform" }}
       >
-        {/* CSS Grid Overlay (replicates the AI-generated placeholder look) */}
-        <div 
-          className="absolute inset-0 z-0 opacity-[0.04]" 
-          style={{ 
-            backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)', 
+        {/* CSS Grid Overlay */}
+        <div
+          className="absolute inset-0 z-0 opacity-[0.04]"
+          style={{
+            backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)',
             backgroundSize: '2rem 2rem',
             backgroundPosition: 'center center'
           }}
@@ -173,7 +182,7 @@ export default function Archive() {
             className="absolute inset-0 z-10 flex flex-col items-center justify-center opacity-0"
           >
             {p.images?.hero ? (
-              <img src={p.images.hero} alt={p.name} className="absolute inset-0 w-full h-full object-cover object-center bg-[#0a0a0a]" />
+              <Image src={p.images.hero} alt={p.name} fill className="object-cover object-center bg-[#0a0a0a]" sizes="260px" />
             ) : (
               <span className="px-6 text-center font-display text-2xl tracking-tight text-foreground/90">
                 {p.name}

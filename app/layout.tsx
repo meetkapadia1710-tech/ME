@@ -3,6 +3,8 @@ import { Space_Grotesk, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import SmoothScroll from "@/components/SmoothScroll";
 import CursorDot from "@/components/CursorDot";
+import CommandPalette from "@/components/CommandPalette";
+import { getAllPosts } from "@/lib/mdx";
 import "./globals.css";
 
 // Free, self-hostable typefaces (Google Fonts, OFL) standing in for the
@@ -67,6 +69,7 @@ export default function RootLayout({
     <html lang="en" className={`${display.variable} ${mono.variable}`}>
       <body className="bg-black text-foreground antialiased">
         <CursorDot />
+        <CommandPalette blogPosts={getAllPosts().map(p => ({ title: p.meta.title, slug: p.meta.slug }))} />
         <SmoothScroll>{children}</SmoothScroll>
         <Analytics />
       </body>

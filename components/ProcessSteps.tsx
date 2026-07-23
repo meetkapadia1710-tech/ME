@@ -3,6 +3,12 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
+import {
+  EASE_ENTRANCE,
+  DUR_STANDARD, DUR_SLOW,
+  STAGGER_LOOSE,
+  REVEAL_Y, REVEAL_Y_PCT,
+} from "@/lib/motion";
 
 const STEPS = [
   {
@@ -48,18 +54,18 @@ export default function ProcessSteps() {
       });
 
       tl.from(heading, {
-        yPercent: 110,
+        yPercent: REVEAL_Y_PCT,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
+        duration: DUR_SLOW,
+        ease: EASE_ENTRANCE,
       }).from(
         rows,
         {
-          y: 40,
+          y: REVEAL_Y,
           opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.12,
+          duration: DUR_STANDARD,
+          ease: EASE_ENTRANCE,
+          stagger: STAGGER_LOOSE,
         },
         "-=0.5",
       );

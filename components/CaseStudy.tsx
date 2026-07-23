@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
+import { EASE_ENTRANCE, DUR_STANDARD, REVEAL_Y } from "@/lib/motion";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { getAdjacent, type CaseStudyData } from "@/lib/caseStudies";
@@ -57,10 +58,10 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
       const items = gsap.utils.toArray<HTMLElement>("[data-reveal]");
       items.forEach((el) => {
         gsap.from(el, {
-          y: 40,
+          y: REVEAL_Y,
           opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
+          duration: DUR_STANDARD,
+          ease: EASE_ENTRANCE,
           scrollTrigger: {
             trigger: el,
             start: "top 85%",
@@ -75,8 +76,8 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
         gsap.from(el, {
           opacity: 0,
           scale: 0.97,
-          duration: 0.9,
-          ease: "power3.out",
+          duration: DUR_STANDARD,
+          ease: EASE_ENTRANCE,
           scrollTrigger: {
             trigger: el,
             start: "top 85%",
