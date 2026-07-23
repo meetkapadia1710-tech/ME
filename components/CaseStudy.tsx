@@ -10,6 +10,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { getAdjacent, type CaseStudyData } from "@/lib/caseStudies";
 import { getAdjacentArchive } from "@/lib/archiveData";
+import PlaygroundRenderer from "@/components/playgrounds/PlaygroundRenderer";
 
 /** Left-label / right-content section, matching the homepage rhythm. */
 function Section({
@@ -241,6 +242,18 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
                 </div>
               ))}
             </div>
+          </Section>
+        )}
+
+        {/* Playground */}
+        {data.playgroundType && data.playgroundType !== "none" && (
+          <Section label="Playground">
+            <PlaygroundRenderer
+              type={data.playgroundType}
+              url={data.playgroundUrl}
+              config={data.playgroundConfig}
+              projectSlug={data.slug}
+            />
           </Section>
         )}
       </main>

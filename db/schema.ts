@@ -18,6 +18,10 @@ export const projects = pgTable("projects", {
   approach: text("approach"),
   techStack: jsonb("tech_stack").$type<TechChoice[]>(),
   keyFeatures: text("key_features").array(),
+  playgroundType: text("playground_type", { enum: ["none", "iframe", "interactive", "video"] }).default("none").notNull(),
+  playgroundUrl: text("playground_url"),
+  playgroundConfig: jsonb("playground_config"),
+  liveUrl: text("live_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

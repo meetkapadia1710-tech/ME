@@ -21,10 +21,15 @@ export type CaseStudyData = {
   features?: string[];
   /** Visual assets — optional so existing pages compile without changes. */
   images?: CaseStudyImages;
+  playgroundType?: "none" | "iframe" | "interactive" | "video";
+  playgroundUrl?: string;
+  playgroundConfig?: any;
+  liveUrl?: string;
 };
 
 /** Canonical ordering — drives prev/next wrap-around and matches Selected Works. */
 export const CASE_STUDY_ORDER = [
+  { slug: "aure", name: "Auré" },
   { slug: "playhub", name: "PlayHub" },
   { slug: "locateme-family", name: "LocateMe Family" },
   { slug: "repograde", name: "RepoGrade" },

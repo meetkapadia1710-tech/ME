@@ -33,6 +33,7 @@ const data: CaseStudyData = {
       "/work/locateme-family/screenshot-2.jpg",
     ],
   },
+  playgroundType: "interactive",
 };
 
 const pageTitle = `${data.name} — Case Study — Meet Kapadia`;

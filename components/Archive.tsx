@@ -143,15 +143,32 @@ export default function Archive() {
                   {p.overview}
                 </p>
 
-                <span className="inline-flex shrink-0 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/40 transition-colors group-hover:text-foreground">
-                  View{" "}
-                  <span
-                    aria-hidden
-                    className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                  >
-                    →
+                <div className="flex items-center gap-4">
+                  {p.liveUrl && (
+                    <object>
+                      <a
+                        href={p.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex shrink-0 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-blue-400 transition-colors hover:text-blue-300 relative z-10"
+                      >
+                        Live Demo
+                        <span aria-hidden className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                          →
+                        </span>
+                      </a>
+                    </object>
+                  )}
+                  <span className="inline-flex shrink-0 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/40 transition-colors group-hover:text-foreground">
+                    View{" "}
+                    <span
+                      aria-hidden
+                      className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    >
+                      →
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
             </Link>
           </li>

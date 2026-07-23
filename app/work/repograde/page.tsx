@@ -66,6 +66,7 @@ const data: CaseStudyData = {
     hero: "/work/repograde/hero.jpg",
     screenshots: ["/work/repograde/screenshot-1.jpg"],
   },
+  playgroundType: "interactive",
 };
 
 const pageTitle = `${data.name} — Case Study — Meet Kapadia`;

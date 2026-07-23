@@ -32,7 +32,13 @@ const FEATURED_PROJECTS = [
       "Player leaderboard ranked by confirmed booking count",
       "Interactive Leaflet maps for venue navigation",
       "Role-based admin dashboard for venue and booking management"
-    ]
+    ],
+    playgroundType: "interactive",
+    playgroundUrl: null,
+    playgroundConfig: {
+      courts: ["Court 1", "Court 2"],
+      pricePerSlot: 500,
+    }
   },
   {
     slug: "locateme-family",
@@ -52,7 +58,11 @@ const FEATURED_PROJECTS = [
     keyFeatures: [
       "Explicit, opt-in consent before any location is shared",
       "Access can be reviewed and revoked at any time"
-    ]
+    ],
+    playgroundType: "interactive",
+    playgroundUrl: null,
+    playgroundConfig: null,
+    liveUrl: null,
   },
   {
     slug: "repograde",
@@ -84,7 +94,36 @@ const FEATURED_PROJECTS = [
       "Chrome/Firefox extension for in-context analysis on GitHub",
       "GitHub Action for automated PR reviews",
       "Serverless background processing for large repositories"
-    ]
+    ],
+    playgroundType: "interactive",
+    playgroundUrl: null,
+    playgroundConfig: null,
+    liveUrl: "https://repograde.dev",
+  },
+  {
+    slug: "aure",
+    name: "Auré",
+    tagline: "Premium loyalty engine and rewards platform for modern brands.",
+    year: "2025",
+    type: "Personal",
+    tags: ["Full-Stack", "Web3"],
+    featured: true,
+    thumbnailUrl: "/work/playhub/thumbnail.jpg",
+    heroImageUrl: "/work/playhub/hero.jpg",
+    overview: "A next-generation loyalty rewards platform that replaces punch cards with engaging digital interactions.",
+    approach: "End-users can scan physical QR codes or complete digital challenges to earn points, which can be redeemed for exclusive drops.",
+    techStack: [
+      { name: "Next.js", why: "React server components for the brand dashboard." },
+      { name: "Prisma", why: "Type-safe database ORM to manage complex point ledgers." }
+    ],
+    keyFeatures: [
+      "Scan-to-earn QR code engine",
+      "Dynamic reward tiers (Silver, Gold, Platinum)"
+    ],
+    playgroundType: "interactive",
+    playgroundUrl: null,
+    playgroundConfig: { userTier: "Silver", points: 1200 },
+    liveUrl: null,
   }
 ];
 
@@ -112,6 +151,9 @@ async function main() {
       approach: p.approach,
       techStack: p.techStack,
       keyFeatures: p.keyFeatures,
+      playgroundType: p.playgroundType as any || "none",
+      playgroundUrl: p.playgroundUrl || null,
+      playgroundConfig: p.playgroundConfig || null,
     }).onConflictDoNothing();
     console.log(`Seeded Featured Project: ${p.name}`);
   }

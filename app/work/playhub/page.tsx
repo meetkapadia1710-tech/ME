@@ -54,6 +54,12 @@ const data: CaseStudyData = {
   images: {
     hero: "/work/playhub/hero.jpg",
   },
+  playgroundType: "interactive",
+  playgroundUrl: undefined,
+  playgroundConfig: {
+    courts: ["Court 1", "Court 2"],
+    pricePerSlot: 500,
+  }
 };
 
 const pageTitle = `${data.name} — Case Study — Meet Kapadia`;
