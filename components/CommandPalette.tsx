@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getLenis } from "@/lib/lenis";
 
@@ -52,9 +52,10 @@ export default function CommandPalette({
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const prevFocusRef = useRef<HTMLElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const allItems = [
+  const allItems = useMemo(() => [
     ...ITEMS,
     ...blogPosts.map((post) => ({
       label: `${post.title} — Post`,
@@ -62,9 +63,9 @@ export default function CommandPalette({
       action: "link" as const,
       href: `/blog/${post.slug}`,
     })),
-  ];
+  ], [blogPosts]);
 
-  const filtered = allItems.filter((item) => fuzzy(query, item.label));
+  const filtered = useMemo(() => allItems.filter((item) => fuzzy(query, item.label)), [allItems, query]);
 
   const close = useCallback(() => {
     setOpen(false);
@@ -80,14 +81,32 @@ export default function CommandPalette({
     (item: Item) => {
       close();
       if (item.action === "scroll") {
-        const el = document.getElementById(item.sectionId!);
-        if (el) {
-          const lenis = getLenis();
-          if (lenis) {
-            lenis.scrollTo(el);
-          } else {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
+        const doScroll = () => {
+          const el = document.getElementById(item.sectionId!);
+          if (el) {
+            const lenis = getLenis();
+            if (lenis) {
+              lenis.scrollTo(el);
+            } else {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
           }
+        };
+
+        if (window.location.pathname !== "/") {
+          router.push("/");
+          const maxTries = 20;
+          let tries = 0;
+          const check = setInterval(() => {
+            if (document.getElementById(item.sectionId!)) {
+              clearInterval(check);
+              doScroll();
+            } else if (++tries >= maxTries) {
+              clearInterval(check);
+            }
+          }, 50);
+        } else {
+          doScroll();
         }
       } else if (item.action === "link") {
         router.push(item.href!);
@@ -102,7 +121,7 @@ export default function CommandPalette({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       // Open: Cmd+K or Ctrl+K
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setOpen((v) => {
           if (!v) {
@@ -114,9 +133,23 @@ export default function CommandPalette({
       }
       if (!open) return;
       
-      // Focus trap: prevent tab navigation since arrow keys are used
+      // Focus trap
       if (e.key === "Tab") {
-        e.preventDefault();
+        if (!dialogRef.current) return;
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
         return;
       }
       if (e.key === "Escape") { close(); return; }
@@ -164,6 +197,7 @@ export default function CommandPalette({
 
       {/* Panel */}
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal
         aria-label="Command palette"
@@ -180,12 +214,13 @@ export default function CommandPalette({
             placeholder="Jump to..."
             className="flex-1 bg-transparent font-mono text-sm text-fg-primary placeholder:text-fg-muted/60 focus:outline-none"
           />
-          <kbd
+          <button
+            type="button"
             onClick={close}
             className="cursor-pointer rounded border border-fg-primary/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-fg-muted hover:text-fg-primary/70 transition-colors"
           >
             Esc
-          </kbd>
+          </button>
         </div>
 
         {/* Results */}
