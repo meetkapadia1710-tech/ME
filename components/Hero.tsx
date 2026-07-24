@@ -17,12 +17,12 @@ export default function Hero({ loaded }: { loaded: boolean }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
-  const setActiveScene = useWebGLStore((s) => s.setActiveScene);
+  const setIntensity = useWebGLStore((s) => s.setIntensity);
 
   useEffect(() => {
-    setActiveScene("hero");
-    return () => setActiveScene("none");
-  }, [setActiveScene]);
+    setIntensity(1.0);
+    return () => setIntensity(0);
+  }, [setIntensity]);
 
   // Infinite marquee
   useEffect(() => {

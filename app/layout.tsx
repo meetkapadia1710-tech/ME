@@ -8,7 +8,7 @@ import { getAllPosts } from "@/lib/mdx";
 import "./globals.css";
 import dynamic from "next/dynamic";
 
-const GlobalWebGLScene = dynamic(() => import("@/components/GlobalWebGLScene"), {
+const ShaderField = dynamic(() => import("@/components/ShaderField"), {
   ssr: false,
 });
 
@@ -88,7 +88,7 @@ export default function RootLayout({
             <rect width="100%" height="100%" filter="url(#noiseFilter)" />
           </svg>
         </div>
-        <GlobalWebGLScene />
+        <ShaderField />
         <CursorDot />
         <CommandPalette blogPosts={getAllPosts().map(p => ({ title: p.meta.title, slug: p.meta.slug }))} />
         <SmoothScroll>{children}</SmoothScroll>

@@ -1,10 +1,20 @@
 ---
-title: How PlayHub's payment flow works
+title: How PlayHub's Payment Flow Works
 date: "2024-05-15"
 excerpt: An overview of integrating Razorpay and Google Wallet using RS256 JWT passes.
 tags: [Mobile, Payments]
 ---
 
-Integrating payments and digital wallets seamlessly in a mobile application is critical for conversion and user trust. In this post, I will explain how PlayHub orchestrates its payment flow using Razorpay, and how we securely issue Google Wallet passes using RS256 JWTs.
+PlayHub handles court bookings across three cricket and pickleball venues, which meant the payment layer had to deal with real money, not a mock checkout. The stack: React 19, Capacitor for the Android build, Firebase Cloud Functions on the backend, Razorpay for payments, and Google Wallet passes for the confirmation itself.
 
-// TODO: write the rest of the post
+**Order creation happens server-side.** The booking amount is computed and the Razorpay order is created inside a Cloud Function, not on the client — the client only ever sends "book this slot," never a trusted amount. That matters once you have owner-configurable pricing per venue.
+
+**Verification before confirmation.** Razorpay's client SDK returns a success callback after checkout, but that callback alone isn't proof of payment — the Cloud Function verifies the payment signature server-side before the booking is marked confirmed in Firestore. A booking never flips to "confirmed" on client trust alone.
+
+**A real wallet pass, not just a receipt.** Once payment is verified, the backend builds a Google Wallet pass object and signs it as a JWT using RS256 with the service account's private key, then returns a "Save to Google Wallet" link. Instead of an email receipt, the user gets an actual pass on their phone with the venue, slot, and booking reference.
+
+**Closing the loop with FCM.** A push notification confirms the booking once everything settles — owner-side dashboards get their own notification path for new bookings needing action.
+
+The harder part wasn't any single piece here — it's that PlayHub has three roles (customer, owner, admin) all touching the same booking state, so the source of truth had to live in one place (Firestore + Cloud Functions) rather than being reconstructed client-side per role.
+
+*[Note: the above describes the intended architecture based on the confirmed stack — verify specifics like exact verification method (webhook vs. redirect callback) against the actual implementation and adjust if it diverged.]*

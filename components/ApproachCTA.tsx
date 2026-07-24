@@ -21,12 +21,12 @@ import { useWebGLStore } from "@/lib/store";
  */
 export default function ApproachCTA() {
   const rootRef = useRef<HTMLElement>(null);
-  const setActiveScene = useWebGLStore((s) => s.setActiveScene);
+  const setIntensity = useWebGLStore((s) => s.setIntensity);
 
   useEffect(() => {
-    setActiveScene("approach-cta");
-    return () => setActiveScene("none");
-  }, [setActiveScene]);
+    setIntensity(0.7);
+    return () => setIntensity(0);
+  }, [setIntensity]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);

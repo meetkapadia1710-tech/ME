@@ -123,6 +123,7 @@ export default function Archive({ projectsList }: { projectsList: typeof project
             <Link
               ref={(el) => { rowEls.current[i] = el; }}
               href={`/archive/${p.slug}`}
+              data-shader-hover
               onMouseEnter={() => showPreview(i)}
               onMouseLeave={() => hidePreview(i)}
               onBlur={() => hidePreview(i)}

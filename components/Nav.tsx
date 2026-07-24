@@ -17,6 +17,7 @@ function useUnderline() {
       transformOrigin: "left center",
       duration: DUR_FAST * 0.8,
       ease: EASE_ENTRANCE,
+      overwrite: true,
     });
   };
 
@@ -24,9 +25,10 @@ function useUnderline() {
     if (!lineRef.current) return;
     gsap.to(lineRef.current, {
       scaleX: 0,
-      transformOrigin: "right center",
+      transformOrigin: "left center",
       duration: DUR_FAST * 0.7,
       ease: "power2.in",
+      overwrite: true,
     });
   };
 
@@ -61,6 +63,7 @@ function NavLink({
       <a
         href={href}
         {...(download ? { download: true } : { target: "_blank", rel: "noopener noreferrer" })}
+        data-shader-hover
         onMouseEnter={draw}
         onMouseLeave={retract}
         onFocus={draw}
@@ -75,6 +78,7 @@ function NavLink({
   return (
     <Link
       href={href}
+      data-shader-hover
       onMouseEnter={draw}
       onMouseLeave={retract}
       onFocus={draw}

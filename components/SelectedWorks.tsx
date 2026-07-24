@@ -152,6 +152,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
             <Link
               ref={(el) => { rowEls.current[i] = el; }}
               href={`/work/${work.slug}`}
+              data-shader-hover
               onClick={(e) => handleRowTap(e, i)}
               onMouseEnter={() => showPreview(i)}
               onMouseLeave={() => hidePreview(i)}
@@ -237,6 +238,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       <div data-reveal-row className="mt-12 flex justify-start md:mt-16">
         <Link
           href="/archive"
+          data-shader-hover
           className="group inline-flex items-center gap-3 font-mono text-body-sm uppercase tracking-[0.15em] text-fg-muted transition-colors hover:text-fg-primary"
         >
           View all projects

@@ -36,7 +36,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (href) {
       return (
-        <Link href={href} className={classNames}>
+        <Link href={href} className={classNames} data-shader-hover>
           {children as React.ReactNode}
         </Link>
       );
@@ -46,6 +46,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         className={classNames}
+        data-shader-hover
         whileHover={variant !== 'link' ? { scale: 1.02 } : undefined}
         whileTap={variant !== 'link' ? { scale: 0.98 } : undefined}
         {...props}

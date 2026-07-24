@@ -1,10 +1,20 @@
 ---
-title: Building RepoGrade's scoring engine
+title: Building RepoGrade's Scoring & README Engine
 date: "2024-03-20"
 excerpt: An inside look at the architecture of our repo-rating approach in a monorepo setup.
-tags: [Full-Stack, AI]
+tags: [Full-Stack, AI, Developer Tools]
 ---
 
-Developing a fair and accurate scoring engine for GitHub repositories requires parsing a variety of signals—from code complexity to documentation quality. Here is a deep dive into the monorepo architecture we chose for RepoGrade and how the scoring engine evaluates repositories.
+RepoGrade does two things as equal hero features: scores a GitHub repo, and auto-generates a README grounded in the actual code — built to work for repo owners, evaluators, recruiters, and orgs alike. It's a Turborepo monorepo shipping the same core logic across three surfaces: a Next.js web app, a GitHub Action, and a Plasmo browser extension.
 
-// TODO: write the rest of the post
+**Fetching without hammering the API.** Repo metadata comes in through Octokit's GraphQL client rather than the REST API — one request can pull files, commit history, and structure data that would otherwise take several round trips. That data feeds Inngest background jobs, so a scoring request doesn't block on GitHub's response time.
+
+**Redis as a rate-limit shield.** GitHub's API has real rate limits, and repeated requests for the same repo (a recruiter checking the same candidate's repo twice, say) shouldn't cost a second full fetch. Upstash Redis caches the expensive parts of that pipeline.
+
+**README generation, grounded not generic.** The README half uses Gemini's free tier rather than the Anthropic API — a deliberate cost call for a tool meant to run at volume. The generation is grounded in the actual repo structure and code rather than producing a templated "Installation / Usage / License" skeleton disconnected from what's really there.
+
+**One codebase, three surfaces.** The Turborepo setup is what makes shipping this as a web app, a GitHub Action, and a browser extension from one codebase realistic instead of maintaining three separate scoring implementations that drift apart.
+
+Postgres (via Drizzle) and Auth.js round out the stack for persistence and the web app's auth layer.
+
+*[Note: scoring criteria/weighting specifics aren't detailed here — fill in the actual scoring signals and how they're weighted if you want that level of depth.]*

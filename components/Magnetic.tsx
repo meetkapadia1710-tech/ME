@@ -35,14 +35,15 @@ export default function Magnetic({ children, className = "", intensity = 0.4 }: 
   };
 
   return (
-    <motion.div
+    <div
       ref={ref}
       className={className}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ x, y }}
     >
-      {children}
-    </motion.div>
+      <motion.div style={{ x, y }}>
+        {children}
+      </motion.div>
+    </div>
   );
 }

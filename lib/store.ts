@@ -1,13 +1,15 @@
 import { create } from "zustand";
 
-export type WebGLSceneType = "none" | "hero" | "approach-cta";
-
 interface WebGLState {
-  activeScene: WebGLSceneType;
-  setActiveScene: (scene: WebGLSceneType) => void;
+  intensity: number;
+  setIntensity: (intensity: number) => void;
+  hoverTarget: number;
+  setHoverTarget: (hoverTarget: number) => void;
 }
 
 export const useWebGLStore = create<WebGLState>((set) => ({
-  activeScene: "none",
-  setActiveScene: (scene) => set({ activeScene: scene }),
+  intensity: 0,
+  setIntensity: (intensity) => set({ intensity }),
+  hoverTarget: 0,
+  setHoverTarget: (hoverTarget) => set({ hoverTarget }),
 }));
