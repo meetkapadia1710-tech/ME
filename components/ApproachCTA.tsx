@@ -12,6 +12,7 @@ import {
   DUR_STANDARD,
   STAGGER_LOOSE,
 } from "@/lib/motion";
+import { useWebGLStore } from "@/lib/store";
 
 /**
  * Closing CTA for /approach — full-height-ish section with a scoped WebGL
@@ -20,12 +21,15 @@ import {
  */
 export default function ApproachCTA() {
   const rootRef = useRef<HTMLElement>(null);
+  const setActiveScene = useWebGLStore((s) => s.setActiveScene);
+
+  useEffect(() => {
+    setActiveScene("approach-cta");
+    return () => setActiveScene("none");
+  }, [setActiveScene]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-
-
-
     const cleanup = createRevealContext(rootRef, () => {
       // Word-level reveal on the headline
       const words = rootRef.current?.querySelectorAll("[data-cta-word]");

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
 import { useRowTilt } from "@/hooks/useRowTilt";
-import { ARCHIVE_STUDIES } from "@/lib/archiveData";
+import { projects } from "@/db/schema";
 import {
   EASE_ENTRANCE, EASE_STANDARD,
   DUR_STANDARD,
@@ -16,7 +16,7 @@ import {
 type FilterTag = "All" | "Personal" | "Team" | "Client" | "Hackathon" | "Systems";
 const FILTERS: FilterTag[] = ["All", "Personal", "Team", "Client", "Hackathon", "Systems"];
 
-export default function Archive() {
+export default function Archive({ projectsList }: { projectsList: typeof projects.$inferSelect[] }) {
   const [activeFilter, setActiveFilter] = useState<FilterTag>("All");
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -118,8 +118,8 @@ export default function Archive() {
 
       {/* Flat List */}
       <ul ref={listRef} className="group/list mt-6 md:mt-8 [perspective:1000px]">
-        {ARCHIVE_STUDIES.map((p, i) => (
-          <li key={p.slug} data-reveal-row data-archive-row data-role={p.role} className="transition-all duration-500 ease-out group-has-[a:hover]/list:scale-[0.98] group-has-[a:hover]/list:opacity-40 group-has-[a:hover]/list:blur-[1px]">
+        {projectsList.map((p, i) => (
+          <li key={p.slug} data-reveal-row data-archive-row data-role={p.type} className="transition-all duration-500 ease-out group-has-[a:hover]/list:scale-[0.98] group-has-[a:hover]/list:opacity-40 group-has-[a:hover]/list:blur-[1px]">
             <Link
               ref={(el) => { rowEls.current[i] = el; }}
               href={`/archive/${p.slug}`}
@@ -130,7 +130,7 @@ export default function Archive() {
             >
               <div className="md:w-1/4">
                 <span className="font-mono text-meta text-fg-muted">
-                  {p.role}
+                  {p.type}
                 </span>
                 <h3 className="mt-1 font-display text-heading-md tracking-tight text-fg-primary transition-transform duration-300 group-hover:translate-x-2">
                   {p.name}
@@ -191,14 +191,14 @@ export default function Archive() {
           }}
         ></div>
 
-        {ARCHIVE_STUDIES.map((p, i) => (
+        {projectsList.map((p, i) => (
           <div
             key={p.slug}
             ref={(el) => { cardsRef.current[i] = el; }}
             className="absolute inset-0 z-10 flex flex-col items-center justify-center opacity-0"
           >
-            {p.images?.hero ? (
-              <Image src={p.images.hero} alt={p.name} fill className="object-cover object-center bg-[#0a0a0a]" sizes="260px" />
+            {p.heroImageUrl ? (
+              <Image src={p.heroImageUrl} alt={p.name} fill className="object-cover object-center bg-[#0a0a0a]" sizes="260px" />
             ) : (
               <span className="px-6 text-center font-display text-heading-md tracking-tight text-fg-primary/90">
                 {p.name}

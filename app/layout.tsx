@@ -6,6 +6,11 @@ import CursorDot from "@/components/CursorDot";
 import CommandPalette from "@/components/CommandPalette";
 import { getAllPosts } from "@/lib/mdx";
 import "./globals.css";
+import dynamic from "next/dynamic";
+
+const GlobalWebGLScene = dynamic(() => import("@/components/GlobalWebGLScene"), {
+  ssr: false,
+});
 
 // Free, self-hostable typefaces (Google Fonts, OFL) standing in for the
 // reference site's licensed TT Hoves. Swap here if a face is licensed later.
@@ -83,6 +88,7 @@ export default function RootLayout({
             <rect width="100%" height="100%" filter="url(#noiseFilter)" />
           </svg>
         </div>
+        <GlobalWebGLScene />
         <CursorDot />
         <CommandPalette blogPosts={getAllPosts().map(p => ({ title: p.meta.title, slug: p.meta.slug }))} />
         <SmoothScroll>{children}</SmoothScroll>

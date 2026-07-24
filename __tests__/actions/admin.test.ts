@@ -15,8 +15,12 @@ vi.mock('@/db', () => ({
 
 describe('Admin Panel CRUD Actions', () => {
   it('creates a project', async () => {
-    const data = { name: 'Test Project', slug: 'test-project', type: 'Personal', year: '2024', tags: [], tagline: 'Test', overview: 'Test' };
-    const result = await createProjectAction(data);
+    const projectData = {
+      name: "Test Project",
+      slug: "test-project",
+      type: "Personal" as "Personal",
+      year: "2024", tags: [], tagline: 'Test', overview: 'Test' };
+    const result = await createProjectAction(projectData);
     expect(result.success).toBe(true);
     expect(result.project).toBeDefined();
   });

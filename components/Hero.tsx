@@ -9,9 +9,7 @@ import {
   EASE_ENTRANCE, DUR_SLOW, STAGGER_LOOSE,
   REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
 } from "@/lib/motion";
-
-// Lazy-load the Three.js canvas — keeps the initial bundle lean
-const HeroCanvas = dynamic(() => import("./HeroCanvas"), { ssr: false });
+import { useWebGLStore } from "@/lib/store";
 
 const MARQUEE_PHRASE = "Full-Stack Developer — SDE — ";
 
@@ -19,6 +17,12 @@ export default function Hero({ loaded }: { loaded: boolean }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const setActiveScene = useWebGLStore((s) => s.setActiveScene);
+
+  useEffect(() => {
+    setActiveScene("hero");
+    return () => setActiveScene("none");
+  }, [setActiveScene]);
 
   // Infinite marquee
   useEffect(() => {
@@ -78,9 +82,6 @@ export default function Hero({ loaded }: { loaded: boolean }) {
 
   return (
     <section className="relative flex min-h-svh flex-col justify-between overflow-hidden pt-28 md:pt-32">
-      {/* Stars + 3D mesh — contained within Hero only */}
-      <HeroCanvas />
-
       {/* Marquee */}
       <div
         className="relative z-10 flex select-none py-10 cursor-default [perspective:1000px]"

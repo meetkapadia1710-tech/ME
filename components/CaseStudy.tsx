@@ -9,7 +9,6 @@ import { EASE_ENTRANCE, DUR_STANDARD, REVEAL_Y } from "@/lib/motion";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { getAdjacent, type CaseStudyData } from "@/lib/caseStudies";
-import { getAdjacentArchive } from "@/lib/archiveData";
 import PlaygroundRenderer from "@/components/playgrounds/PlaygroundRenderer";
 
 /** Left-label / right-content section, matching the homepage rhythm. */
@@ -46,9 +45,19 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData; type?: "work" | "archive" }) {
+export default function CaseStudy({ data, type = "work", prevProject, nextProject }: { data: CaseStudyData; type?: "work" | "archive", prevProject?: any, nextProject?: any }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const { prev, next } = type === "work" ? getAdjacent(data.slug) : getAdjacentArchive(data.slug);
+  
+  let prev, next;
+  if (type === "work") {
+    const adjacent = getAdjacent(data.slug);
+    prev = adjacent.prev;
+    next = adjacent.next;
+  } else {
+    prev = prevProject || { slug: "", name: "" };
+    next = nextProject || { slug: "", name: "" };
+  }
+
   const backLink = type === "work" ? "/#work" : "/archive";
 
   // Reuse the site's reveal system: each [data-reveal] block fades up as it
