@@ -23,6 +23,7 @@ export default function NewProjectPage() {
       slug: formData.get("slug") as string,
       tagline: formData.get("tagline") as string || "Default tagline",
       year: formData.get("year") as string || new Date().getFullYear().toString(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       type: (formData.get("type") as any) || "Personal",
       tags: (formData.get("tags") as string)?.split(",").map(t => t.trim()).filter(Boolean) || [],
       overview: formData.get("overview") as string || "Default overview",

@@ -24,7 +24,8 @@ export async function submitContactForm(formData: FormData) {
     return { success: true };
   } catch (error) {
     console.error("Contact form error:", error);
-    Sentry.captureException(error, {
+    // Sanitize error before sending to Sentry so we don't leak PII (form data)
+    Sentry.captureException(new Error("Contact form submission failed (sanitized)"), {
       tags: { context: "contact-form" },
     });
     return { success: false, error: "Failed to send message" };

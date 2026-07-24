@@ -13,9 +13,12 @@ import {
 } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
-import { WORKS, type Work } from "@/lib/worksData";
+import type { projects } from "@/db/schema";
+import { InferSelectModel } from "drizzle-orm";
 
-export default function SelectedWorks({ ready }: { ready: boolean }) {
+type Project = InferSelectModel<typeof projects>;
+
+export default function SelectedWorks({ ready, dbProjects = [] }: { ready: boolean, dbProjects?: Project[] }) {
 
   const {
     rootRef,
@@ -100,7 +103,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
 
       {/* Numbered list */}
       <ul className="group/list [perspective:1000px]">
-        {WORKS.map((work, i) => (
+        {dbProjects.filter(p => p.featured).map((work, i, arr) => (
           <li key={work.slug} data-reveal-row className="group-has-[a:hover]/list:[&:not(:hover)]:opacity-40 group-has-[a:hover]/list:[&:not(:hover)]:scale-[0.97] transition-[opacity,transform] duration-500 ease-out">
             <Link
               ref={(el) => { rowEls.current[i] = el; }}
@@ -116,7 +119,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
               <div className="flex items-start justify-between gap-6">
                 <div className="flex items-baseline gap-4 md:gap-6">
                   <span className="font-mono text-meta tabular-nums text-fg-muted">
-                    {work.num} / 03
+                    {String(i + 1).padStart(2, '0')} / {String(arr.length).padStart(2, '0')}
                   </span>
                   <h3 className="font-display text-heading-md leading-none tracking-tight text-fg-primary transition-transform duration-300 group-hover:translate-x-2 md:text-heading-lg">
                     {work.name}
@@ -136,10 +139,10 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
               </div>
 
               {/* Mobile inline thumbnail — shown on first tap */}
-              {expandedIndex === i && (
+              {expandedIndex === i && work.thumbnailUrl && (
                 <div className="mt-5 overflow-hidden rounded-sm md:hidden">
                   <Image
-                    src={work.thumbnail}
+                    src={work.thumbnailUrl}
                     alt={`${work.name} preview`}
                     width={640}
                     height={853}
@@ -152,7 +155,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
               {/* Bottom line: brief + meta */}
               <div className="mt-4 flex flex-col gap-3 md:mt-5 md:flex-row md:items-end md:justify-between md:gap-8">
                 <p className="max-w-xl font-mono text-body-sm leading-relaxed text-fg-muted">
-                  {work.brief}
+                  {work.tagline}
                 </p>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
                   <span className="tabular-nums">
@@ -213,20 +216,22 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
         className="pointer-events-none fixed left-0 top-0 z-40 hidden h-[320px] w-[260px] overflow-hidden rounded-xl md:block"
         style={{ willChange: "transform" }}
       >
-        {WORKS.map((work, i) => (
+        {dbProjects.filter(p => p.featured).map((work, i) => (
           <div
             key={work.slug}
             ref={(el) => { cardsRef.current[i] = el; }}
             className="absolute inset-0 opacity-0"
           >
-            <Image
-              src={work.thumbnail}
-              alt=""
-              fill
-              sizes="260px"
-              className="object-cover grayscale-[50%] hover:grayscale-0 transition-all duration-700"
-              loading="lazy"
-            />
+            {work.thumbnailUrl && (
+              <Image
+                src={work.thumbnailUrl}
+                alt=""
+                fill
+                sizes="260px"
+                className="object-cover grayscale-[50%] hover:grayscale-0 transition-all duration-700"
+                loading="lazy"
+              />
+            )}
           </div>
         ))}
       </div>

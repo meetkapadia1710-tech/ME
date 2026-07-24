@@ -10,12 +10,14 @@ import SkillsRadar from "@/components/SkillsRadar";
 import SelectedWorks from "@/components/SelectedWorks";
 import LatestPost from "@/components/LatestPost";
 import ReachOut from "@/components/ReachOut";
-import { WORKS } from "@/lib/worksData";
-import { ARCHIVE_STUDIES } from "@/lib/archiveData";
 import Footer from "@/components/Footer";
 import type { Post } from "@/lib/mdx";
+import type { projects } from "@/db/schema";
+import { InferSelectModel } from "drizzle-orm";
 
-export default function HomeClient({ latestPost }: { latestPost: Post | null }) {
+type Project = InferSelectModel<typeof projects>;
+
+export default function HomeClient({ latestPost, dbProjects = [] }: { latestPost: Post | null, dbProjects?: Project[] }) {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -27,12 +29,14 @@ export default function HomeClient({ latestPost }: { latestPost: Post | null }) 
         <CinematicScrub />
         <Intro ready={loaded} />
         <SkillsRadar 
-          projects={[
-            ...WORKS.map(w => ({ slug: w.slug, name: w.name, isArchive: false, skillCategories: w.skillCategories || [] })),
-            ...ARCHIVE_STUDIES.map(a => ({ slug: a.slug, name: a.name, isArchive: true, skillCategories: a.skillCategories || [] }))
-          ]} 
+          projects={dbProjects.map(p => ({
+            slug: p.slug,
+            name: p.name,
+            isArchive: p.type !== "Personal" && p.type !== "Client" && p.type !== "Team",
+            skillCategories: p.skillCategories || []
+          }))} 
         />
-        <SelectedWorks ready={loaded} />
+        <SelectedWorks ready={loaded} dbProjects={dbProjects} />
         <LatestPost post={latestPost} ready={loaded} />
         <ReachOut ready={loaded} />
       </main>

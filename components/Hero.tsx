@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
+
 import { gsap } from "gsap";
 import { prefersReducedMotion } from "@/lib/reveal";
 import { CURRENTLY_BUILDING } from "@/lib/currentBuild";

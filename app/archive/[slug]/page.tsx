@@ -36,16 +36,16 @@ export default async function ArchiveCaseStudy({ params }: { params: { slug: str
     stack: dbData.tags,
     overview: dbData.overview,
     approach: dbData.approach || undefined,
-    techStack: dbData.techStack as any || undefined,
+    techStack: dbData.techStack as string[] | undefined,
     features: dbData.keyFeatures || undefined,
     images: dbData.heroImageUrl ? {
       hero: dbData.heroImageUrl,
       screenshots: undefined,
       videos: undefined
     } : undefined,
-    playgroundType: dbData.playgroundType as any || undefined,
+    playgroundType: dbData.playgroundType as "none" | "iframe" | "interactive" | "video" | undefined,
     playgroundUrl: dbData.playgroundUrl || undefined,
-    playgroundConfig: dbData.playgroundConfig as any || undefined,
+    playgroundConfig: dbData.playgroundConfig as string | undefined,
   };
 
   return <CaseStudy data={mappedData} type="archive" prevProject={prev} nextProject={next} />;

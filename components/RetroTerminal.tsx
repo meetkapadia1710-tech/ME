@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { TOOLS } from "@/lib/coreToolsData";
-import { WORKS } from "./SelectedWorks";
+import { WORKS } from "@/lib/worksData";
 import { prefersReducedMotion } from "@/lib/reveal";
 
 type OutputLine = {
@@ -188,7 +188,7 @@ export default function RetroTerminal() {
       case "projects":
         addOutput("result", (
           <ul className="list-decimal list-inside space-y-1">
-            {WORKS.map((w, i) => (
+            {WORKS.map((w) => (
               <li key={w.slug}>
                 <button 
                   onClick={() => {

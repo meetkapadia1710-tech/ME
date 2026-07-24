@@ -6,8 +6,9 @@ import JourneyTimeline from "@/components/JourneyTimeline";
 import ProcessSteps from "@/components/ProcessSteps";
 import ApproachCTA from "@/components/ApproachCTA";
 import SkillsRadar from "@/components/SkillsRadar";
-import { WORKS } from "@/lib/worksData";
-import { ARCHIVE_STUDIES } from "@/lib/archiveData";
+import { db } from "@/db";
+import { projects } from "@/db/schema";
+import { desc } from "drizzle-orm";
 
 const PAGE_TITLE = "Approach — Meet Kapadia";
 const PAGE_DESCRIPTION =
@@ -20,7 +21,12 @@ export const metadata: Metadata = {
   twitter: { title: PAGE_TITLE, description: PAGE_DESCRIPTION },
 };
 
-export default function ApproachPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ApproachPage() {
+  const dbProjects = await db.query.projects.findMany({
+    orderBy: [desc(projects.createdAt)]
+  });
   return (
     <>
       <Nav />
@@ -30,10 +36,12 @@ export default function ApproachPage() {
         <ProcessSteps />
         {/* Interactive Skills Radar (Replaces flat proof strip) */}
         <SkillsRadar 
-          projects={[
-            ...WORKS.map(w => ({ slug: w.slug, name: w.name, isArchive: false, skillCategories: w.skillCategories || [] })),
-            ...ARCHIVE_STUDIES.map(a => ({ slug: a.slug, name: a.name, isArchive: true, skillCategories: (a as any).skillCategories || [] }))
-          ]} 
+          projects={dbProjects.map(p => ({
+            slug: p.slug,
+            name: p.name,
+            isArchive: p.type !== "Personal" && p.type !== "Client" && p.type !== "Team",
+            skillCategories: p.skillCategories || []
+          }))} 
         />
         <ApproachCTA />
       </main>

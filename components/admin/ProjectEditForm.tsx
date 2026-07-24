@@ -23,6 +23,7 @@ export default function ProjectEditForm({ project }: { project: typeof projects.
       slug: formData.get("slug") as string,
       tagline: formData.get("tagline") as string,
       year: formData.get("year") as string,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       type: (formData.get("type") as any),
       tags: (formData.get("tags") as string)?.split(",").map(t => t.trim()).filter(Boolean) || [],
       overview: formData.get("overview") as string,

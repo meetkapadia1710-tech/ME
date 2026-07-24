@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect, useMemo, KeyboardEvent } from "react";
 import { gsap } from "gsap";
 import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
-import { DUR_STANDARD, EASE_ENTRANCE, STAGGER_LOOSE } from "@/lib/motion";
+import { DUR_STANDARD, EASE_ENTRANCE } from "@/lib/motion";
 import { TOOLS } from "@/lib/coreToolsData";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -226,7 +226,6 @@ export default function SkillsRadar({ projects }: SkillsRadarProps) {
 
           {/* Interactive Points & Labels */}
           {radarData.map((d, i) => {
-            const pt = getPoint(i, CATEGORIES.length, d.normalizedValue);
             const labelPt = getPoint(i, CATEGORIES.length, 1.25); // Push labels out
             const isActive = activeCategory === d.category;
             

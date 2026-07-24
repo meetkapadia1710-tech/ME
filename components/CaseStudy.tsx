@@ -45,7 +45,7 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function CaseStudy({ data, type = "work", prevProject, nextProject }: { data: CaseStudyData; type?: "work" | "archive", prevProject?: any, nextProject?: any }) {
+export default function CaseStudy({ data, type = "work", prevProject, nextProject }: { data: CaseStudyData; type?: "work" | "archive", prevProject?: { slug: string; name: string; }, nextProject?: { slug: string; name: string; } }) {
   const rootRef = useRef<HTMLDivElement>(null);
   
   let prev, next;

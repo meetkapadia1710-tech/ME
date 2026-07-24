@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/reveal";
@@ -22,6 +22,7 @@ export default function CinematicScrub() {
   const imagesRef = useRef<(HTMLImageElement | null)[]>(new Array(TOTAL_FRAMES).fill(null));
   
   // Track loaded frames so we don't draw blanks if user scrolls too fast
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loadedCount, setLoadedCount] = useState(0);
 
   // Initialize GSAP and Reduced Motion check
@@ -96,6 +97,7 @@ export default function CinematicScrub() {
     }
 
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReduced]);
 
   // Canvas drawing logic
@@ -166,12 +168,11 @@ export default function CinematicScrub() {
     window.addEventListener("resize", handleResize);
 
     // Initial draw loop to catch the image once it loads, until user scrolls
-    let initialDrawTimer: NodeJS.Timeout;
     const attemptInitialDraw = () => {
       if (imagesRef.current[0]) {
         drawFrame(0);
       } else {
-        initialDrawTimer = setTimeout(attemptInitialDraw, 50);
+        setTimeout(attemptInitialDraw, 50);
       }
     };
     attemptInitialDraw();
@@ -214,6 +215,7 @@ export default function CinematicScrub() {
       tl.kill();
       st.kill();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReduced]); 
 
   return (

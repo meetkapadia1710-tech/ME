@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { useFormState } from "react-dom";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
 import {
   EASE_ENTRANCE,
-  DUR_SLOW, DUR_FAST,
+  DUR_SLOW,
   STAGGER_LOOSE,
   REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
 } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { submitContactForm } from "@/app/actions/contact";
 
-const EMAIL = "meetkapadia1710@gmail.com";
+
 
 /**
  * Reach Out — contact / CTA.
@@ -22,7 +23,18 @@ const EMAIL = "meetkapadia1710@gmail.com";
  */
 export default function ReachOut({ ready }: { ready: boolean }) {
   const rootRef = useRef<HTMLElement>(null);
-  const underlineRef = useRef<HTMLSpanElement>(null);
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [state, formAction] = useFormState(submitContactForm, null);
+
+  useEffect(() => {
+    if (state?.success) {
+      setStatus("success");
+    } else if (state?.error) {
+      setStatus("error");
+      setErrorMessage(state.error);
+    }
+  }, [state]);
 
   useEffect(() => {
     if (!ready) return;
@@ -45,26 +57,6 @@ export default function ReachOut({ ready }: { ready: boolean }) {
     });
   }, [ready]);
 
-  const drawUnderline = () => {
-    if (!underlineRef.current) return;
-    gsap.to(underlineRef.current, {
-      scaleX: 1,
-      transformOrigin: "left center",
-      duration: DUR_FAST * 0.8,
-      ease: EASE_ENTRANCE,
-    });
-  };
-
-  const retractUnderline = () => {
-    if (!underlineRef.current) return;
-    gsap.to(underlineRef.current, {
-      scaleX: 0,
-      transformOrigin: "right center",
-      duration: DUR_FAST * 0.7,
-      ease: "power2.in",
-    });
-  };
-
   return (
     <section
       id="reach-out"
@@ -86,26 +78,63 @@ export default function ReachOut({ ready }: { ready: boolean }) {
             </p>
           </div>
 
-          {/* Email */}
-          <div className="mt-10 overflow-hidden">
-            <motion.a
-              data-reveal
-              href={`mailto:${EMAIL}`}
-              onMouseEnter={drawUnderline}
-              onMouseLeave={retractUnderline}
-              onFocus={drawUnderline}
-              onBlur={retractUnderline}
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.96, y: 2 }}
-              className="group relative inline-block font-display text-heading-md tracking-tight text-fg-primary/85 transition-colors duration-300 hover:text-fg-primary focus:text-fg-primary focus:outline-none sm:text-heading-lg"
-            >
-              <span className="break-all">{EMAIL}</span>
-              <span
-                ref={underlineRef}
-                aria-hidden
-                className="absolute -bottom-1 left-0 block h-px w-full origin-left scale-x-0 bg-fg-primary md:-bottom-2"
-              />
-            </motion.a>
+          {/* Form */}
+          <div className="mt-10 max-w-2xl overflow-hidden" data-reveal>
+            {status === "success" ? (
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-6 text-emerald-400">
+                <p className="font-mono text-body-sm">Message sent successfully! I&apos;ll get back to you soon.</p>
+              </div>
+            ) : (
+              <form action={formAction} className="flex flex-col gap-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="name" className="font-mono text-meta-sm uppercase tracking-widest text-fg-muted">Name</label>
+                    <input 
+                      type="text" 
+                      id="name" 
+                      name="name" 
+                      required 
+                      className="rounded-none border-b border-fg-primary/20 bg-transparent py-2 font-display text-body-md text-fg-primary transition-colors focus:border-fg-primary focus:outline-none disabled:opacity-50"
+                      placeholder="Jane Doe"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="email" className="font-mono text-meta-sm uppercase tracking-widest text-fg-muted">Email</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      name="email" 
+                      required 
+                      className="rounded-none border-b border-fg-primary/20 bg-transparent py-2 font-display text-body-md text-fg-primary transition-colors focus:border-fg-primary focus:outline-none disabled:opacity-50"
+                      placeholder="jane@example.com"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="message" className="font-mono text-meta-sm uppercase tracking-widest text-fg-muted">Message</label>
+                  <textarea 
+                    id="message" 
+                    name="message" 
+                    rows={4} 
+                    required 
+                    className="resize-none rounded-none border-b border-fg-primary/20 bg-transparent py-2 font-display text-body-md text-fg-primary transition-colors focus:border-fg-primary focus:outline-none disabled:opacity-50"
+                    placeholder="Hello! I'd like to talk about..."
+                  />
+                </div>
+                {status === "error" && (
+                  <p className="font-mono text-body-sm text-red-400">{errorMessage}</p>
+                )}
+                <div className="mt-2 flex">
+                  <button 
+                    type="submit" 
+                    className="group relative inline-flex items-center gap-4 font-mono text-meta uppercase tracking-[0.15em] text-fg-primary transition-colors hover:text-emerald-400 disabled:opacity-50"
+                  >
+                    Send Message
+                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
 
           {/* Meta */}

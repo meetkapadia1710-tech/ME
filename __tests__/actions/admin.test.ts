@@ -18,7 +18,7 @@ describe('Admin Panel CRUD Actions', () => {
     const projectData = {
       name: "Test Project",
       slug: "test-project",
-      type: "Personal" as "Personal",
+      type: "Personal" as const,
       year: "2024", tags: [], tagline: 'Test', overview: 'Test' };
     const result = await createProjectAction(projectData);
     expect(result.success).toBe(true);
