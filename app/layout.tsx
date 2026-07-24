@@ -5,6 +5,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import CursorDot from "@/components/CursorDot";
 import CommandPalette from "@/components/CommandPalette";
 import { getAllPosts } from "@/lib/mdx";
+import RetroTerminal from "@/components/RetroTerminal";
 import "./globals.css";
 import dynamic from "next/dynamic";
 
@@ -91,6 +92,8 @@ export default function RootLayout({
         <ShaderField />
         <CursorDot />
         <CommandPalette blogPosts={getAllPosts().map(p => ({ title: p.meta.title, slug: p.meta.slug }))} />
+        <div style={{ display: "none" }} dangerouslySetInnerHTML={{ __html: '<!-- try typing sudo -->' }} />
+        <RetroTerminal />
         <SmoothScroll>{children}</SmoothScroll>
         <Analytics />
       </body>

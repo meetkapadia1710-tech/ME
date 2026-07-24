@@ -16,6 +16,7 @@ export const projects = pgTable("projects", {
   heroImageUrl: text("hero_image_url"),
   overview: text("overview").notNull(),
   approach: text("approach"),
+  skillCategories: text("skill_categories").array(),
   techStack: jsonb("tech_stack").$type<TechChoice[]>(),
   keyFeatures: text("key_features").array(),
   playgroundType: text("playground_type", { enum: ["none", "iframe", "interactive", "video"] }).default("none").notNull(),

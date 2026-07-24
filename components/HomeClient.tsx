@@ -4,6 +4,7 @@ import { useState } from "react";
 import Preloader from "@/components/Preloader";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import CinematicScrub from "@/components/CinematicScrub";
 import Intro from "@/components/Intro";
 import CoreTools from "@/components/CoreTools";
 import CodingProfiles from "@/components/CodingProfiles";
@@ -23,6 +24,7 @@ export default function HomeClient({ latestPost }: { latestPost: Post | null }) 
       <Nav />
       <main>
         <Hero loaded={loaded} />
+        <CinematicScrub />
         <Intro ready={loaded} />
         <CoreTools ready={loaded} />
         <CodingProfiles ready={loaded} />

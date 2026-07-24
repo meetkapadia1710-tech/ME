@@ -8,6 +8,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Hackathon",
     year: "2024",
     stack: ["Supermemory", "Electron", "AI"],
+    skillCategories: ["Systems", "AI/Tooling"],
     overview: "Captures activity locally and answers questions about your past, built for the Supermemory hackathon.",
   },
   {
@@ -17,6 +18,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Client",
     year: "2024",
     stack: ["Next.js", "Tailwind", "GSAP"],
+    skillCategories: ["Frontend"],
     overview: "Project galleries, machinery inventory, and animated content sections.",
     images: { hero: "/archive/bd_buildcon.jpg", screenshots: [] }
   },
@@ -27,6 +29,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Personal",
     year: "2023",
     stack: ["Python", "Local LLMs", "Speech Recognition"],
+    skillCategories: ["AI/Tooling", "Systems", "Backend"],
     overview: "Wake-word activation, 20+ tools, semantic memory, and a live dashboard.",
   },
   {
@@ -45,6 +48,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Client",
     year: "2024",
     stack: ["React", "Firebase", "Firestore"],
+    skillCategories: ["Frontend", "Backend"],
     overview: "Real-time staff attendance and payroll tracker for a beauty salon — Firestore sync, CSV export, admin-gated access.",
     images: { hero: "/archive/attendance.jpg", screenshots: [] }
   },
@@ -55,6 +59,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Personal",
     year: "2024",
     stack: ["React", "Framer Motion", "Gemini"],
+    skillCategories: ["Frontend", "Systems", "AI/Tooling"],
     overview: "Pixel-accurate macOS Sequoia desktop, rebuilt as a portfolio — windowed apps, a Gemini AI assistant, multi-language support.",
     images: { hero: "/archive/meetos.jpg", screenshots: [] }
   },
@@ -65,6 +70,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Team",
     year: "2023",
     stack: ["React", "SQL", "Express"],
+    skillCategories: ["Frontend", "Backend"],
     overview: "Online exam-prep quiz platform, DBMS course project.",
   },
   {
@@ -74,6 +80,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Team",
     year: "2023",
     stack: ["Django", "Python", "SQLite"],
+    skillCategories: ["Backend"],
     overview: "Dashboard, budgets, goals, PDF reports.",
   },
   {
@@ -83,6 +90,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Personal",
     year: "2023",
     stack: ["MERN", "Tailwind"],
+    skillCategories: ["Frontend", "Backend"],
     overview: "Personal finance tracker.",
   },
   {
@@ -92,6 +100,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Personal",
     year: "2024",
     stack: ["Next.js", "Tailwind", "GitHub API"],
+    skillCategories: ["Frontend"],
     overview: "Bento-grid resume site with a live GitHub contribution heatmap and streak tracking.",
     images: { hero: "/archive/resume.jpg", screenshots: [] }
   },
@@ -102,6 +111,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Personal",
     year: "2024",
     stack: ["Next.js", "LangChain", "Vector DB"],
+    skillCategories: ["Backend", "Systems", "AI/Tooling"],
     overview: "Semantic search, knowledge graphs, and multi-agent orchestration built on Supermemory.",
   },
   {
@@ -120,6 +130,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Personal",
     year: "2024",
     stack: ["Python", "PyTorch", "Transformers"],
+    skillCategories: ["AI/Tooling", "Backend"],
     overview: "Fine-tuned DeBERTa-v3 model detecting AI-generated text at 99.77% accuracy, open-sourced with transparent benchmarks.",
   },
   {
@@ -147,6 +158,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Hackathon",
     year: "2024",
     stack: ["Next.js", "Whisper", "LangChain"],
+    skillCategories: ["AI/Tooling", "Backend", "Frontend"],
     overview: "Synthesizes meetings and surfaces context-grounded next steps, built for HackBaroda.",
   },
   {
@@ -156,6 +168,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Client",
     year: "2024",
     stack: ["Next.js", "Tailwind", "Firebase"],
+    skillCategories: ["Frontend", "Backend"],
     overview: "Property listings, dynamic filters, and contact integration.",
     images: { hero: "/archive/bhumi.jpg", screenshots: [] }
   },
@@ -166,6 +179,7 @@ export const ARCHIVE_STUDIES: CaseStudyData[] = [
     role: "Systems",
     year: "2025",
     stack: ["Verilog", "Computer Architecture", "Digital Design"],
+    skillCategories: ["Systems"],
     overview: "Custom RV32I processor implementation — full instruction decode, ALU, register file, and memory interface. Repo link TBD.",
   },
 ];

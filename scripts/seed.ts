@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+
 import { db } from "../db";
 import { projects, posts } from "../db/schema";
 import { ARCHIVE_STUDIES } from "../lib/archiveData";
@@ -11,6 +14,7 @@ const FEATURED_PROJECTS = [
     year: "2025",
     type: "Personal",
     tags: ["React 19", "Capacitor", "Firebase", "Razorpay"],
+    skillCategories: ["Frontend", "Mobile", "Backend"],
     featured: true,
     thumbnailUrl: "/work/playhub/thumbnail.jpg",
     heroImageUrl: "/work/playhub/hero.jpg",
@@ -47,6 +51,7 @@ const FEATURED_PROJECTS = [
     year: "2025",
     type: "Personal",
     tags: ["Android", "Kotlin"],
+    skillCategories: ["Mobile", "Systems"],
     featured: true,
     thumbnailUrl: "/work/locateme-family/thumbnail.jpg",
     heroImageUrl: "/work/locateme-family/hero.jpg",
@@ -71,6 +76,7 @@ const FEATURED_PROJECTS = [
     year: "2025",
     type: "Personal",
     tags: ["Turborepo", "Next.js", "Gemini", "Postgres"],
+    skillCategories: ["Frontend", "Backend", "Systems", "AI/Tooling"],
     featured: true,
     thumbnailUrl: "/work/repograde/thumbnail.jpg",
     heroImageUrl: "/work/repograde/hero.jpg",
@@ -125,6 +131,7 @@ async function main() {
       heroImageUrl: p.heroImageUrl,
       overview: p.overview,
       approach: p.approach,
+      skillCategories: (p as any).skillCategories || null,
       techStack: p.techStack,
       keyFeatures: p.keyFeatures,
       playgroundType: p.playgroundType as any || "none",
@@ -146,6 +153,7 @@ async function main() {
       heroImageUrl: a.images?.hero || null,
       overview: a.overview,
       approach: a.approach || null,
+      skillCategories: (a as any).skillCategories || null,
       techStack: a.techStack || null,
       keyFeatures: a.features || null,
     }).onConflictDoNothing();

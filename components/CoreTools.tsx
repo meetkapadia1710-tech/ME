@@ -11,7 +11,7 @@ import {
 } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
-const TOOLS = [
+export const TOOLS = [
   {
     name: "TypeScript / Next.js",
     description:

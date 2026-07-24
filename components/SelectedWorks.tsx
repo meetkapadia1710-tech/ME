@@ -22,10 +22,11 @@ type Work = {
   tags: string[];
   thumbnail: string;
   playgroundType?: "none" | "iframe" | "interactive" | "video";
+  skillCategories?: string[];
 };
 
 // NOTE: `year` values are PLACEHOLDERS — confirm/replace with the real ship year.
-const WORKS: Work[] = [
+export const WORKS: Work[] = [
 
   {
     num: "01",
@@ -37,6 +38,7 @@ const WORKS: Work[] = [
     tags: ["Mobile Development", "Full-Stack"],
     thumbnail: "/work/playhub/thumbnail.jpg",
     playgroundType: "interactive",
+    skillCategories: ["Frontend", "Mobile", "Backend"],
   },
   {
     num: "02",
@@ -48,6 +50,7 @@ const WORKS: Work[] = [
     tags: ["Mobile Development", "Android"],
     thumbnail: "/work/locateme-family/thumbnail.jpg",
     playgroundType: "interactive",
+    skillCategories: ["Mobile", "Systems"],
   },
   {
     num: "03",
@@ -59,6 +62,7 @@ const WORKS: Work[] = [
     tags: ["Developer Tools", "Full-Stack", "AI"],
     thumbnail: "/work/repograde/thumbnail.jpg",
     playgroundType: "interactive",
+    skillCategories: ["Frontend", "Backend", "Systems", "AI/Tooling"],
   },
 ];
 

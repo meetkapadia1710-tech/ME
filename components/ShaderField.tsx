@@ -134,11 +134,11 @@ void main() {
   vec2 warp = uMouseVelocity * 2.0;
   vec2 warpedP = p - warp;
 
-  // Domain warping
-  vec3 pos = vec3(warpedP * 1.5, uTime * 0.1);
+  // Domain warping (slowed down)
+  vec3 pos = vec3(warpedP * 1.5, uTime * 0.03);
   pos.xy += uMouse * 0.5;
 
-  float n = fbm(pos + fbm(pos + vec3(0.0, 0.0, uTime * 0.05)));
+  float n = fbm(pos + fbm(pos + vec3(0.0, 0.0, uTime * 0.015)));
   
   // Palette: Emerald fading to black
   vec3 color1 = vec3(0.02, 0.59, 0.41); // #059669
@@ -233,7 +233,7 @@ function ShaderPlane() {
     if (!materialRef.current) return;
 
     if (!isReduced) {
-      uniforms.uTime.value += delta;
+      uniforms.uTime.value += delta * 0.5; // Overall time slowed down
     }
     
     // Smoothly transition base intensity
@@ -260,7 +260,7 @@ function ShaderPlane() {
       mouseVelocity.current.y = targetMouse.current.y - currentMouse.current.y;
       uniforms.uMouseVelocity.value.copy(mouseVelocity.current);
 
-      uniforms.uSparkleSeed.value += delta * 0.15;
+      uniforms.uSparkleSeed.value += delta * 0.05; // Slower sparkles
     } else {
       uniforms.uMouseVelocity.value.set(0, 0);
     }

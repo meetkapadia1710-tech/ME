@@ -4,9 +4,10 @@ import Footer from "@/components/Footer";
 import ApproachHero from "@/components/ApproachHero";
 import JourneyTimeline from "@/components/JourneyTimeline";
 import ProcessSteps from "@/components/ProcessSteps";
-import CodingProfiles from "@/components/CodingProfiles";
-import Certifications from "@/components/Certifications";
 import ApproachCTA from "@/components/ApproachCTA";
+import SkillsRadar from "@/components/SkillsRadar";
+import { WORKS } from "@/components/SelectedWorks";
+import { ARCHIVE_STUDIES } from "@/lib/archiveData";
 
 const PAGE_TITLE = "Approach — Meet Kapadia";
 const PAGE_DESCRIPTION =
@@ -27,9 +28,13 @@ export default function ApproachPage() {
         <ApproachHero />
         <JourneyTimeline />
         <ProcessSteps />
-        {/* Proof strip — reusing Phase 11 components, ready={true} bypasses preloader gate */}
-        <CodingProfiles ready={true} />
-        <Certifications ready={true} />
+        {/* Interactive Skills Radar (Replaces flat proof strip) */}
+        <SkillsRadar 
+          projects={[
+            ...WORKS.map(w => ({ slug: w.slug, name: w.name, isArchive: false, skillCategories: w.skillCategories || [] })),
+            ...ARCHIVE_STUDIES.map(a => ({ slug: a.slug, name: a.name, isArchive: true, skillCategories: (a as any).skillCategories || [] }))
+          ]} 
+        />
         <ApproachCTA />
       </main>
       <Footer />
