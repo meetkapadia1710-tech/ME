@@ -9,6 +9,7 @@ import {
   STAGGER_TIGHT, STAGGER_LOOSE,
   REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
 } from "@/lib/motion";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 /**
  * Intro / short bio.
@@ -23,7 +24,7 @@ export default function Intro({ ready }: { ready: boolean }) {
   useEffect(() => {
     if (!ready) return;
     return createRevealContext(rootRef, () => {
-      const targets = gsap.utils.toArray<HTMLElement>("[data-reveal]");
+      const targets = gsap.utils.toArray<HTMLElement>("[data-reveal-heading]");
       gsap.from(targets, {
         yPercent: REVEAL_Y_PCT,
         opacity: 0,
@@ -64,37 +65,25 @@ export default function Intro({ ready }: { ready: boolean }) {
   return (
     <section
       ref={rootRef}
-      className="border-t border-foreground/10 px-6 py-24 md:px-10 md:py-32"
+      className="divider-top bg-background px-6 py-32 md:px-10 md:py-48"
     >
-      <div className="grid gap-8 md:grid-cols-12">
-        <div className="md:col-span-3">
-          <div className="overflow-hidden">
-            <span
-              data-reveal
-              className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
-            >
-              Intro
-            </span>
-          </div>
-        </div>
-
-        <div className="md:col-span-9">
-          <div className="max-w-3xl overflow-hidden">
-            <p
-              ref={textRef}
-              className="font-display text-2xl leading-[1.2] tracking-tight text-foreground md:text-4xl flex flex-wrap"
-            >
-              {"Currently pursuing a B.Tech in Computer Science at IIIT Vadodara (2024–2028), building full-stack products end to end — from interface to backend to deployment. I care as much about how something feels to use as how it's built underneath."
-                .split(" ")
-                .map((word, i) => (
-                  <span key={i} className="inline-block overflow-hidden mr-[0.3em] pb-1">
-                    <span className="word-reveal inline-block origin-bottom">{word}</span>
-                  </span>
-                ))}
-            </p>
-          </div>
-        </div>
-      </div>
+      <SectionHeading
+        label="Intro"
+        title={
+          <p
+            ref={textRef}
+            className="font-display text-heading-md leading-[1.2] tracking-tight text-fg-primary md:text-heading-lg flex flex-wrap"
+          >
+            {"Currently pursuing a B.Tech in Computer Science at IIIT Vadodara (2024–2028), building full-stack products end to end — from interface to backend to deployment. I care as much about how something feels to use as how it's built underneath."
+              .split(" ")
+              .map((word, i) => (
+                <span key={i} className="inline-block overflow-hidden mr-[0.3em] pb-1">
+                  <span className="word-reveal inline-block origin-bottom">{word}</span>
+                </span>
+              ))}
+          </p>
+        }
+      />
     </section>
   );
 }

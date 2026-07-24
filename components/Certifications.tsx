@@ -61,14 +61,14 @@ export default function Certifications({ ready }: { ready: boolean }) {
   return (
     <section
       ref={rootRef}
-      className="border-t border-foreground/10 px-6 py-12 md:px-10 md:py-16"
+      className="border-t border-fg-primary/10 px-6 py-12 md:px-10 md:py-16"
     >
       <div className="grid gap-6 md:grid-cols-12 md:items-start">
         <div className="md:col-span-3">
           <div className="overflow-hidden">
             <span
               data-cert-heading
-              className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
+              className="inline-block font-mono text-meta uppercase tracking-[0.15em] text-fg-muted"
             >
               Certifications
             </span>
@@ -80,14 +80,14 @@ export default function Certifications({ ready }: { ready: boolean }) {
             <li
               key={cert.name}
               data-cert-item
-              className="flex flex-col gap-0.5 border-b border-foreground/[0.07] pb-4 last:border-none last:pb-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+              className="flex flex-col gap-0.5 border-b border-fg-primary/[0.07] pb-4 last:border-none last:pb-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
             >
-              <span className="font-mono text-sm text-foreground/80">
+              <span className="font-mono text-body-sm text-fg-primary">
                 {cert.name}
               </span>
-              <span className="flex shrink-0 items-center gap-3 font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/40">
+              <span className="flex shrink-0 items-center gap-3 font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
                 <span>{cert.issuer}</span>
-                <span aria-hidden className="text-foreground/20">
+                <span aria-hidden className="opacity-50">
                   /
                 </span>
                 <span>{cert.year}</span>

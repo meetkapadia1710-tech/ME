@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { projects, posts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function createProjectAction(data: any) {
+export async function createProjectAction(data: typeof projects.$inferInsert) {
   try {
     const [result] = await db.insert(projects).values(data).returning();
     return { success: true, project: result };
@@ -15,7 +15,7 @@ export async function createProjectAction(data: any) {
   }
 }
 
-export async function editProjectAction(id: number, data: any) {
+export async function editProjectAction(id: number, data: Partial<typeof projects.$inferInsert>) {
   try {
     const [result] = await db.update(projects).set(data).where(eq(projects.id, id)).returning();
     return { success: true, project: result };

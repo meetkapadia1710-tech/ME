@@ -59,14 +59,14 @@ export default function CodingProfiles({ ready }: { ready: boolean }) {
   return (
     <section
       ref={rootRef}
-      className="border-t border-foreground/10 px-6 py-12 md:px-10 md:py-16"
+      className="border-t border-fg-primary/10 px-6 py-12 md:px-10 md:py-16"
     >
       <div className="grid gap-6 md:grid-cols-12 md:items-center">
         <div className="md:col-span-3">
           <div className="overflow-hidden">
             <span
               data-cp-heading
-              className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
+              className="inline-block font-mono text-meta uppercase tracking-[0.15em] text-fg-muted"
             >
               Competitive Programming
             </span>
@@ -81,15 +81,15 @@ export default function CodingProfiles({ ready }: { ready: boolean }) {
               href={p.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-2.5 rounded-full border border-white/20 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] text-white/60 transition-all duration-200 hover:border-white/40 hover:bg-white/10 hover:text-white"
+              className="group flex items-center gap-2.5 rounded-full border border-fg-primary/20 bg-fg-primary/5 px-4 py-2 font-mono text-meta tracking-wider text-fg-muted transition-all duration-200 hover:border-fg-primary/40 hover:bg-fg-primary/10 hover:text-fg-primary"
             >
-              <span aria-hidden className="text-white/40 group-hover:text-white/70 transition-colors">
+              <span aria-hidden className="text-fg-primary/40 group-hover:text-fg-primary/70 transition-colors">
                 {p.icon}
               </span>
-              <span className="text-white/80 group-hover:text-white transition-colors">
+              <span className="text-fg-primary/80 group-hover:text-fg-primary transition-colors">
                 {p.platform}
               </span>
-              <span className="text-white/40 group-hover:text-white/60 transition-colors">
+              <span className="text-fg-primary/40 group-hover:text-fg-primary/60 transition-colors">
                 — {p.stat}
               </span>
               <span

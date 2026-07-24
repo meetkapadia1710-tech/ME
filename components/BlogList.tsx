@@ -41,33 +41,33 @@ export default function BlogList({ posts }: { posts: Post[] }) {
         <div className="overflow-hidden">
           <h1
             data-blog-heading
-            className="font-display text-4xl font-medium tracking-tight md:text-5xl"
+            className="font-display text-heading-md font-medium tracking-tight md:text-heading-lg"
           >
             Writing
           </h1>
         </div>
       </div>
 
-      <div className="flex flex-col border-t border-foreground/10">
+      <div className="flex flex-col border-t border-fg-primary/10">
         {posts.map((post) => (
           <div key={post.meta.slug} className="overflow-hidden">
             <Link
               href={`/blog/${post.meta.slug}`}
               data-blog-row
-              className="group flex flex-col justify-between border-b border-foreground/10 py-6 transition-colors hover:bg-foreground/[0.02] md:flex-row md:items-center md:py-8"
+              className="group flex flex-col justify-between border-b border-fg-primary/10 py-6 transition-colors hover:bg-fg-primary/[0.02] md:flex-row md:items-center md:py-8"
             >
               <div className="flex flex-col gap-2">
-                <h2 className="font-display text-xl md:text-2xl font-medium transition-colors group-hover:text-foreground/80">
+                <h2 className="font-display text-heading-sm md:text-heading-md font-medium transition-colors group-hover:text-fg-primary/80">
                   {post.meta.title}
                 </h2>
-                <p className="text-sm text-foreground/60 md:max-w-xl">
+                <p className="font-mono text-body-sm text-fg-muted md:max-w-xl">
                   {post.meta.excerpt}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {post.meta.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-foreground/5 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-foreground/60"
+                      className="rounded-full bg-fg-primary/5 px-2 py-0.5 font-mono text-meta-sm uppercase tracking-wider text-fg-muted"
                     >
                       {tag}
                     </span>
@@ -75,7 +75,7 @@ export default function BlogList({ posts }: { posts: Post[] }) {
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-foreground/40 md:mt-0 md:flex-col md:items-end md:gap-1">
+              <div className="mt-4 flex items-center justify-between font-mono text-meta text-fg-muted md:mt-0 md:flex-col md:items-end md:gap-1">
                 <span>{post.meta.date}</span>
                 <span>{post.meta.readingTime}</span>
               </div>

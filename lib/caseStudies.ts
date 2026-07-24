@@ -5,6 +5,8 @@ export type CaseStudyImages = {
   hero: string;
   /** Side-by-side / stacked gallery screenshots. */
   screenshots?: string[];
+  /** Video loops for the gallery. */
+  videos?: string[];
 };
 
 export type CaseStudyData = {

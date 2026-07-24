@@ -132,13 +132,13 @@ export default function JourneyTimeline() {
   return (
     <section
       ref={rootRef}
-      className="border-t border-foreground/10 py-20 md:py-28"
+      className="divider-top py-32 md:py-48"
     >
       {/* Section label */}
       <div className="mb-12 overflow-hidden md:mb-16">
         <span
           data-journey-heading
-          className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
+          className="inline-block font-mono text-meta uppercase tracking-[0.15em] text-fg-muted"
         >
           Journey
         </span>
@@ -157,7 +157,7 @@ export default function JourneyTimeline() {
                   <div
                     ref={(el) => { linesRef.current[i] = el; }}
                     aria-hidden
-                    className="absolute top-3 left-1/2 w-px -translate-x-1/2 bg-foreground/20"
+                    className="absolute top-3 left-1/2 w-px -translate-x-1/2 bg-fg-primary/20"
                     style={{ height: "calc(100% + 2rem)", top: "0.75rem" }}
                   />
                 )}
@@ -168,7 +168,7 @@ export default function JourneyTimeline() {
                   className={`relative z-10 mt-1 h-2.5 w-2.5 rounded-full border ${
                     'current' in node && node.current
                       ? "border-emerald-400 bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.4)]"
-                      : "border-foreground/30 bg-foreground/10"
+                      : "border-fg-primary/30 bg-fg-primary/10"
                   }`}
                 >
                   {'current' in node && node.current && (
@@ -182,13 +182,13 @@ export default function JourneyTimeline() {
                 ref={(el) => { contentsRef.current[i] = el; }}
                 className="pb-12 last:pb-0"
               >
-                <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/40">
+                <span className="font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
                   {node.year}
                 </span>
-                <h3 className="mt-1 font-display text-2xl tracking-tight text-foreground md:text-3xl">
+                <h3 className="mt-1 font-display text-heading-sm tracking-tight text-fg-primary md:text-heading-md">
                   {node.title}
                 </h3>
-                <p className="mt-3 max-w-lg font-mono text-sm leading-relaxed text-foreground/55">
+                <p className="mt-3 max-w-lg font-mono text-body-sm leading-relaxed text-fg-muted">
                   {node.body}
                 </p>
               </div>

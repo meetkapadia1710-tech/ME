@@ -5,9 +5,6 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { createRevealContext } from "@/lib/reveal";
-import dynamic from "next/dynamic";
-
-const CTAWebGL = dynamic(() => import("@/components/CTAWebGL"), { ssr: false });
 import {
   EASE_ENTRANCE,
   EASE_STANDARD,
@@ -23,18 +20,11 @@ import {
  */
 export default function ApproachCTA() {
   const rootRef = useRef<HTMLElement>(null);
-  const scrollProgress = useRef(0);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // Wire scroll progress for the CTAWebGL mesh
-    const st = ScrollTrigger.create({
-      trigger: rootRef.current,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: (self) => { scrollProgress.current = self.progress; },
-    });
+
 
     const cleanup = createRevealContext(rootRef, () => {
       // Word-level reveal on the headline
@@ -76,7 +66,6 @@ export default function ApproachCTA() {
     });
 
     return () => {
-      st.kill();
       cleanup?.();
     };
   }, []);
@@ -86,10 +75,9 @@ export default function ApproachCTA() {
   return (
     <section
       ref={rootRef}
-      className="relative min-h-[65vh] overflow-hidden border-t border-foreground/10 flex items-center py-24 md:py-32"
+      className="relative min-h-[65vh] overflow-hidden divider-top bg-background flex items-center py-32 md:py-48"
     >
-      {/* WebGL distortion mesh — behind all content */}
-      <CTAWebGL scrollProgress={scrollProgress} />
+
 
       {/* Copy */}
       <div className="relative z-10 grid w-full gap-10 md:grid-cols-12">
@@ -97,7 +85,7 @@ export default function ApproachCTA() {
           <div className="overflow-hidden">
             <span
               data-cta-reveal
-              className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
+              className="inline-block font-mono text-meta text-fg-muted"
             >
               Next step
             </span>
@@ -106,7 +94,7 @@ export default function ApproachCTA() {
 
         <div className="md:col-span-9">
           {/* Headline — word-by-word reveal */}
-          <h2 className="max-w-2xl font-display text-3xl leading-[1.15] tracking-tight text-foreground md:text-5xl">
+          <h2 className="max-w-2xl font-display text-heading-md leading-[1.15] tracking-tight text-fg-primary md:text-heading-lg">
             {HEADLINE.split(" ").map((word, i) => (
               <span
                 key={i}
@@ -126,7 +114,7 @@ export default function ApproachCTA() {
           <div className="mt-8 max-w-xl overflow-hidden">
             <p
               data-cta-reveal
-              className="font-mono text-sm leading-relaxed text-foreground/60"
+              className="font-mono text-body-sm leading-relaxed text-fg-muted"
             >
               I&apos;m open to SDE / full-stack internship roles where I can own
               a meaningful slice of the product — from schema to interface.
@@ -137,7 +125,7 @@ export default function ApproachCTA() {
           <div className="mt-6 overflow-hidden">
             <span
               data-cta-reveal
-              className="inline-flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.15em] text-foreground/70"
+              className="inline-flex items-center gap-2.5 font-mono text-meta text-fg-primary/70"
             >
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
@@ -152,7 +140,7 @@ export default function ApproachCTA() {
             <Link
               data-cta-reveal
               href="/#reach-out"
-              className="group inline-flex items-center gap-3 font-mono text-sm uppercase tracking-[0.15em] text-foreground/60 transition-colors hover:text-foreground"
+              className="group inline-flex items-center gap-3 font-mono text-body-sm uppercase tracking-[0.15em] text-fg-muted transition-colors hover:text-fg-primary"
             >
               Reach out
               <span

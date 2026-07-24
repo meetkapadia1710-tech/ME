@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
-import { createRevealContext } from "@/lib/reveal";
+import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
 import { EASE_ENTRANCE, DUR_STANDARD, REVEAL_Y } from "@/lib/motion";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -23,10 +23,10 @@ function Section({
   return (
     <section
       data-reveal
-      className="grid gap-6 border-t border-foreground/10 py-14 md:grid-cols-12 md:gap-10 md:py-20"
+      className="grid gap-6 divider-top bg-background py-24 md:grid-cols-12 md:gap-10 md:py-32"
     >
       <div className="md:col-span-3">
-        <span className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/50">
+        <span className="font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
           {label}
         </span>
       </div>
@@ -38,10 +38,10 @@ function Section({
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/40">
+      <span className="font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
         {label}
       </span>
-      <span className="font-mono text-sm text-foreground/80">{value}</span>
+      <span className="font-mono text-body-sm text-fg-primary">{value}</span>
     </div>
   );
 }
@@ -71,20 +71,28 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
         });
       });
 
-      // Gallery screenshots: fade + subtle scale-up on scroll.
+      // Gallery screenshots: clip-path reveal + scrub.
       const galleryImgs = gsap.utils.toArray<HTMLElement>("[data-gallery-img]");
       galleryImgs.forEach((el) => {
-        gsap.from(el, {
-          opacity: 0,
-          scale: 0.97,
-          duration: DUR_STANDARD,
-          ease: EASE_ENTRANCE,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 85%",
-            once: true,
-          },
-        });
+        if (prefersReducedMotion()) {
+           gsap.set(el, { opacity: 1 });
+           return;
+        }
+        gsap.fromTo(el, 
+          { clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)", scale: 1.05 },
+          {
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+            scale: 1,
+            duration: DUR_STANDARD,
+            ease: "none",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 90%",
+              end: "top 40%",
+              scrub: 1,
+            },
+          }
+        );
       });
     });
   }, [data.slug]);
@@ -99,7 +107,7 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
         <div data-reveal>
           <Link
             href={backLink}
-            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/60 transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 font-mono text-meta text-fg-muted transition-colors hover:text-fg-primary"
           >
             <span aria-hidden>←</span> {type === "work" ? "Index" : "Archive"}
           </Link>
@@ -108,12 +116,12 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
         {/* Hero */}
         <header
           data-reveal
-          className="mt-12 border-b border-foreground/10 pb-12 md:mt-16 md:pb-16"
+          className="mt-12 border-b border-fg-primary/10 pb-12 md:mt-16 md:pb-16"
         >
-          <h1 className="font-display text-5xl leading-[0.95] tracking-tight text-foreground md:text-8xl">
+          <h1 className="font-display text-display text-fg-primary">
             {data.name}
           </h1>
-          <p className="mt-6 max-w-2xl font-display text-xl leading-snug text-foreground/70 md:text-2xl">
+          <p className="mt-6 max-w-2xl font-display text-heading-sm leading-snug text-fg-muted md:text-heading-md">
             {data.tagline}
           </p>
         </header>
@@ -121,19 +129,19 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
         {/* Meta row */}
         <div
           data-reveal
-          className="grid grid-cols-2 gap-8 border-b border-foreground/10 py-8 md:grid-cols-4"
+          className="grid grid-cols-2 gap-8 border-b border-fg-primary/10 py-8 md:grid-cols-4"
         >
           <Meta label="Role" value={data.role} />
           <Meta label="Year" value={data.year} />
           <div className="col-span-2 flex flex-col gap-1.5">
-            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/40">
+            <span className="font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
               Stack
             </span>
-            <div className="flex flex-wrap gap-x-2 gap-y-1 font-mono text-sm text-foreground/80">
+            <div className="flex flex-wrap gap-x-2 gap-y-1 font-mono text-body-sm text-fg-primary">
               {data.stack.map((s, i) => (
                 <span key={s} className="flex items-center gap-2">
                   {i > 0 && (
-                    <span aria-hidden className="text-foreground/25">
+                    <span aria-hidden className="opacity-50">
                       ·
                     </span>
                   )}
@@ -151,6 +159,7 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
             className="relative mt-10 w-full overflow-hidden rounded-sm md:mt-14"
             style={{ aspectRatio: "16 / 5" }}
           >
+            <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-background via-background/20 to-transparent opacity-80" />
             <Image
               src={data.images.hero}
               alt={`${data.name} — hero`}
@@ -164,7 +173,7 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
 
         {/* Overview */}
         <Section label="Overview">
-          <p className="max-w-2xl font-display text-xl leading-relaxed text-foreground/90 md:text-2xl">
+          <p className="max-w-2xl font-display text-heading-sm leading-relaxed text-fg-primary md:text-heading-md">
             {data.overview}
           </p>
         </Section>
@@ -172,7 +181,7 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
         {/* Approach */}
         {data.approach && (
           <Section label="Approach">
-            <p className="max-w-2xl font-display text-xl leading-relaxed text-foreground/90 md:text-2xl">
+            <p className="max-w-2xl font-display text-heading-sm leading-relaxed text-fg-primary md:text-heading-md">
               {data.approach}
             </p>
           </Section>
@@ -186,13 +195,13 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
                 <li
                   key={t.name}
                   className={`grid grid-cols-1 gap-2 py-5 md:grid-cols-12 md:gap-6 ${
-                    i > 0 ? "border-t border-foreground/10" : "pt-0"
+                    i > 0 ? "border-t border-fg-primary/10" : "pt-0"
                   }`}
                 >
-                  <h3 className="font-display text-lg tracking-tight text-foreground md:col-span-4 md:text-xl">
+                  <h3 className="font-display text-heading-sm tracking-tight text-fg-primary md:col-span-4 md:text-heading-md">
                     {t.name}
                   </h3>
-                  <p className="font-mono text-sm leading-relaxed text-foreground/55 md:col-span-8">
+                  <p className="font-mono text-body-sm leading-relaxed text-fg-muted md:col-span-8">
                     {t.why}
                   </p>
                 </li>
@@ -209,9 +218,9 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
                 <li key={f} className="flex gap-4">
                   <span
                     aria-hidden
-                    className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40"
+                    className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-fg-muted"
                   />
-                  <span className="max-w-2xl font-display text-lg leading-snug text-foreground/85 md:text-xl">
+                  <span className="max-w-2xl font-display text-heading-sm leading-snug text-fg-primary/85 md:text-heading-md">
                     {f}
                   </span>
                 </li>
@@ -220,25 +229,46 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
           </Section>
         )}
 
-        {/* Gallery — only when screenshots are provided */}
-        {data.images && data.images.screenshots && data.images.screenshots.length > 0 && (
+        {/* Gallery — supports both screenshots and videos */}
+        {data.images && ((data.images.screenshots && data.images.screenshots.length > 0) || (data.images.videos && data.images.videos.length > 0)) && (
           <Section label="Gallery">
-            <div className={`grid gap-4 md:gap-6 ${data.images.screenshots.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"}`}>
-              {data.images.screenshots.map((src, i) => (
+            <div className={`grid gap-6 md:gap-8 ${((data.images.screenshots?.length || 0) + (data.images.videos?.length || 0)) > 1 ? "md:grid-cols-2" : "md:grid-cols-1"}`}>
+              {/* Videos first */}
+              {data.images.videos?.map((src) => (
                 <div
                   key={src}
                   data-gallery-img
-                  className="relative w-full overflow-hidden rounded-sm"
+                  className="relative w-full overflow-hidden rounded-xl border border-fg-primary/15 bg-background shadow-2xl p-1"
                   style={{ aspectRatio: "16 / 10" }}
                 >
-                  <Image
+                  <video
                     src={src}
-                    alt={`${data.name} — screenshot ${i + 1}`}
-                    fill
-                    sizes="(min-width: 768px) 50vw, 100vw"
-                    className="object-cover"
-                    loading="lazy"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="h-full w-full rounded-lg object-cover"
                   />
+                </div>
+              ))}
+              {/* Then screenshots */}
+              {data.images.screenshots?.map((src, i) => (
+                <div
+                  key={src}
+                  data-gallery-img
+                  className="relative w-full overflow-hidden rounded-xl border border-fg-primary/15 bg-background shadow-2xl p-1"
+                  style={{ aspectRatio: "16 / 10" }}
+                >
+                  <div className="relative h-full w-full overflow-hidden rounded-lg">
+                    <Image
+                      src={src}
+                      alt={`${data.name} — screenshot ${i + 1}`}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover"
+                      loading="lazy"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -259,32 +289,32 @@ export default function CaseStudy({ data, type = "work" }: { data: CaseStudyData
       </main>
 
       {/* Prev / Next */}
-      <nav className="grid grid-cols-2 border-t border-foreground/10">
+      <nav className="grid grid-cols-2 border-t border-fg-primary/10">
         <Link
           href={type === "work" ? `/work/${prev.slug}` : `/archive/${prev.slug}`}
-          className="group flex flex-col gap-2 border-r border-foreground/10 px-6 py-10 transition-colors hover:bg-foreground/[0.03] md:px-10 md:py-14"
+          className="group flex flex-col gap-2 border-r border-fg-primary/10 px-6 py-10 transition-colors hover:bg-fg-primary/[0.03] md:px-10 md:py-14"
         >
-          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/40">
+          <span className="font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
             <span aria-hidden className="mr-2 inline-block transition-transform group-hover:-translate-x-1">
               ←
             </span>
             Previous
           </span>
-          <span className="font-display text-2xl tracking-tight text-foreground md:text-4xl">
+          <span className="font-display text-heading-md tracking-tight text-fg-primary md:text-heading-lg">
             {prev.name}
           </span>
         </Link>
         <Link
           href={type === "work" ? `/work/${next.slug}` : `/archive/${next.slug}`}
-          className="group flex flex-col items-end gap-2 px-6 py-10 text-right transition-colors hover:bg-foreground/[0.03] md:px-10 md:py-14"
+          className="group flex flex-col items-end gap-2 px-6 py-10 text-right transition-colors hover:bg-fg-primary/[0.03] md:px-10 md:py-14"
         >
-          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/40">
+          <span className="font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
             Next
             <span aria-hidden className="ml-2 inline-block transition-transform group-hover:translate-x-1">
               →
             </span>
           </span>
-          <span className="font-display text-2xl tracking-tight text-foreground md:text-4xl">
+          <span className="font-display text-heading-md tracking-tight text-fg-primary md:text-heading-lg">
             {next.name}
           </span>
         </Link>

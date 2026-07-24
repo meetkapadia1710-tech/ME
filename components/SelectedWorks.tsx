@@ -9,9 +9,9 @@ import { useRowTilt } from "@/hooks/useRowTilt";
 import {
   EASE_ENTRANCE,
   DUR_STANDARD,
-  STAGGER_LOOSE,
   REVEAL_Y, REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
 } from "@/lib/motion";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 type Work = {
   num: string;
@@ -83,36 +83,44 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
 
     return createRevealContext(rootRef, () => {
 
-      // Scroll-in reveal — same timing as Intro / Core Tools.
-      const heading = gsap.utils.toArray<HTMLElement>("[data-reveal-heading]");
-      const rows = gsap.utils.toArray<HTMLElement>("[data-reveal-row]");
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: rootRef.current,
-          start: "top 70%",
-          once: true,
-        },
-      });
-      tl.from(heading, {
-        yPercent: REVEAL_Y_PCT,
-        opacity: 0,
-        rotateX: REVEAL_ROTATE_X,
-        transformPerspective: REVEAL_PERSPECTIVE,
-        duration: DUR_STANDARD + 0.25,
-        ease: EASE_ENTRANCE,
-      }).from(
-        rows,
-        {
-          y: REVEAL_Y,
+      // Scroll-in reveal — scoped to this section only.
+      const heading = rootRef.current?.querySelectorAll<HTMLElement>("[data-reveal-heading]");
+      const rows = rootRef.current?.querySelectorAll<HTMLElement>("[data-reveal-row]");
+
+      if (heading && heading.length > 0) {
+        gsap.from(Array.from(heading), {
+          yPercent: REVEAL_Y_PCT,
           opacity: 0,
-          rotateX: -15,
+          rotateX: REVEAL_ROTATE_X,
+          transformPerspective: REVEAL_PERSPECTIVE,
+          duration: DUR_STANDARD + 0.25,
+          ease: EASE_ENTRANCE,
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top 75%",
+            once: true,
+          },
+        });
+      }
+
+      if (rows && rows.length > 0) {
+        // Only animate y/rotateX — no opacity, so items are always visible.
+        // This prevents any CSS transition conflict from making items invisible.
+        gsap.from(Array.from(rows), {
+          y: REVEAL_Y,
+          rotateX: -10,
           transformPerspective: REVEAL_PERSPECTIVE,
           duration: DUR_STANDARD,
           ease: EASE_ENTRANCE,
-          stagger: STAGGER_LOOSE,
-        },
-        "-=0.5",
-      );
+          stagger: 0.08,
+          clearProps: "transform",
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top 75%",
+            once: true,
+          },
+        });
+      }
 
     });
   }, [ready, rootRef]);
@@ -133,50 +141,41 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       id="work"
       ref={rootRef}
       onMouseMove={handleMove}
-      className="relative scroll-mt-24 border-t border-foreground/10 px-6 py-24 md:px-10 md:py-32"
+      className="relative scroll-mt-24 divider-top bg-background px-6 py-32 md:px-10 md:py-48"
     >
-      {/* Section heading */}
-      <div className="mb-12 overflow-hidden md:mb-16">
-        <span
-          data-reveal-heading
-          className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
-        >
-          Selected Works
-        </span>
-      </div>
+      <SectionHeading label="Selected Works" />
 
       {/* Numbered list */}
-      <ul className="group/list">
+      <ul className="group/list [perspective:1000px]">
         {WORKS.map((work, i) => (
-          <li key={work.slug} data-reveal-row>
+          <li key={work.slug} data-reveal-row className="group-has-[a:hover]/list:[&:not(:hover)]:opacity-40 group-has-[a:hover]/list:[&:not(:hover)]:scale-[0.97] transition-[opacity,transform] duration-500 ease-out">
             <Link
               ref={(el) => { rowEls.current[i] = el; }}
               href={`/work/${work.slug}`}
               onClick={(e) => handleRowTap(e, i)}
               onMouseEnter={() => showPreview(i)}
               onMouseLeave={() => hidePreview(i)}
-              onFocus={() => showPreview(i)}
               onBlur={() => hidePreview(i)}
-              className="group flex flex-col gap-3 py-6 opacity-100 transition-opacity duration-300 hover:!opacity-100 group-hover/list:opacity-40 focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-center md:justify-between md:gap-8 md:py-8"
+              className="group flex flex-col gap-3 rounded-2xl p-6 transition-all duration-500 ease-out hover:!scale-[1.02] hover:!opacity-100 hover:!blur-none hover:bg-fg-primary/[0.02] hover:shadow-2xl focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-center md:justify-between md:gap-8 md:p-8"
             >
               {/* Top line: number + name + CTA */}
               <div className="flex items-start justify-between gap-6">
                 <div className="flex items-baseline gap-4 md:gap-6">
-                  <span className="font-mono text-xs tabular-nums text-foreground/40">
+                  <span className="font-mono text-meta tabular-nums text-fg-muted">
                     {work.num} / 03
                   </span>
-                  <h3 className="font-display text-4xl leading-none tracking-tight text-foreground transition-transform duration-300 group-hover:translate-x-2 md:text-7xl">
+                  <h3 className="font-display text-heading-md leading-none tracking-tight text-fg-primary transition-transform duration-300 group-hover:translate-x-2 md:text-heading-lg">
                     {work.name}
                   </h3>
                 </div>
-                <span className="mt-1 hidden shrink-0 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/60 transition-colors group-hover:text-foreground md:inline-flex">
+                <span className="mt-1 hidden shrink-0 items-center gap-2 font-mono text-meta uppercase tracking-[0.15em] text-fg-muted transition-colors group-hover:text-fg-primary md:inline-flex">
                   View Case Study
                   <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
                     →
                   </span>
                 </span>
                 {work.playgroundType && work.playgroundType !== "none" && (
-                  <span className="hidden shrink-0 items-center gap-1 rounded-full border border-foreground/20 bg-foreground/5 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-foreground/70 transition-colors group-hover:border-foreground/40 group-hover:bg-foreground/10 group-hover:text-foreground md:inline-flex mt-1">
+                  <span className="hidden shrink-0 items-center gap-1 rounded-full border border-fg-primary/20 bg-surface px-2 py-0.5 font-mono text-meta-sm uppercase tracking-widest text-fg-primary transition-colors group-hover:border-fg-primary/40 group-hover:bg-fg-primary/10 md:inline-flex mt-1">
                     Try It
                   </span>
                 )}
@@ -198,20 +197,20 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
 
               {/* Bottom line: brief + meta */}
               <div className="mt-4 flex flex-col gap-3 md:mt-5 md:flex-row md:items-end md:justify-between md:gap-8">
-                <p className="max-w-xl font-mono text-sm leading-relaxed text-foreground/55">
+                <p className="max-w-xl font-mono text-body-sm leading-relaxed text-fg-muted">
                   {work.brief}
                 </p>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">
-                  <span className="tabular-nums text-foreground/60">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-meta uppercase tracking-[0.15em] text-fg-muted">
+                  <span className="tabular-nums">
                     {work.year}
                   </span>
-                  <span aria-hidden className="text-foreground/25">
+                  <span aria-hidden className="opacity-50">
                     /
                   </span>
                   {work.tags.map((tag, t) => (
                     <span key={tag} className="flex items-center gap-3">
                       {t > 0 && (
-                        <span aria-hidden className="text-foreground/25">
+                        <span aria-hidden className="opacity-50">
                           ·
                         </span>
                       )}
@@ -222,7 +221,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
               </div>
 
               {/* Mobile CTA */}
-              <span className="mt-4 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/60 md:hidden">
+              <span className="mt-4 inline-flex items-center gap-2 font-mono text-meta uppercase tracking-[0.15em] text-fg-muted md:hidden">
                 {expandedIndex === i ? (
                   <>View Case Study <span aria-hidden>→</span></>
                 ) : (
@@ -238,7 +237,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       <div data-reveal-row className="mt-12 flex justify-start md:mt-16">
         <Link
           href="/archive"
-          className="group inline-flex items-center gap-3 font-mono text-sm uppercase tracking-[0.15em] text-foreground/60 transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-3 font-mono text-body-sm uppercase tracking-[0.15em] text-fg-muted transition-colors hover:text-fg-primary"
         >
           View all projects
           <span
@@ -270,7 +269,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
               alt=""
               fill
               sizes="260px"
-              className="object-cover"
+              className="object-cover grayscale-[50%] hover:grayscale-0 transition-all duration-700"
               loading="lazy"
             />
           </div>

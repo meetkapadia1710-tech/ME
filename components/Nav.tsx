@@ -99,7 +99,7 @@ export default function Nav() {
           <NavLink href="/">Meet Kapadia</NavLink>
         </Magnetic>
 
-        <div className="flex items-center gap-6 font-mono text-xs uppercase tracking-[0.15em] text-white md:gap-8">
+        <div className="flex items-center gap-6 font-mono text-meta uppercase tracking-[0.15em] text-white md:gap-8">
           <Magnetic>
             <NavLink href="/">Index</NavLink>
           </Magnetic>

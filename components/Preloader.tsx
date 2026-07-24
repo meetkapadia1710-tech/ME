@@ -13,6 +13,8 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const numRef = useRef<HTMLSpanElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
   const [done, setDone] = useState(false);
 
   // Keep the latest callback without retriggering the effect.
@@ -41,10 +43,27 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         },
       });
 
+      if (pathRef.current) {
+        gsap.set(pathRef.current, { strokeDasharray: 150, strokeDashoffset: 150 });
+        tl.to(pathRef.current, {
+          strokeDashoffset: 0,
+          duration: 2.4,
+          ease: "power3.inOut",
+        }, 0);
+      }
+      
+      if (svgRef.current) {
+        tl.to(svgRef.current, {
+          rotate: 180,
+          duration: 2.4,
+          ease: "power3.inOut",
+        }, 0);
+      }
+
       tl.to(counter, {
         value: 100,
         duration: 2.4,
-        ease: "power2.inOut",
+        ease: "power3.inOut",
         onUpdate: () => {
           const v = Math.round(counter.value);
           if (numRef.current) numRef.current.textContent = String(v);
@@ -55,8 +74,8 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       // Hold a beat, then reveal the page by sliding the overlay up.
       tl.to(rootRef.current, {
         yPercent: -100,
-        duration: 0.9,
-        ease: "power4.inOut",
+        duration: 1.2,
+        ease: "expo.inOut",
       }, "+=0.25");
     }, rootRef);
 
@@ -75,20 +94,36 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       aria-hidden="true"
     >
       <div className="flex items-end justify-between">
-        <span className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/50">
-          Loading
-        </span>
-        <span className="flex items-baseline font-display text-[18vw] leading-none tracking-tighter text-foreground md:text-[12vw]">
+        <div className="flex items-center gap-4 mb-2 md:mb-4">
+          <svg
+            ref={svgRef}
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-accent-amber"
+          >
+            <path ref={pathRef} d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          <span className="font-mono text-meta uppercase tracking-[0.2em] text-fg-muted">
+            Loading
+          </span>
+        </div>
+        <span className="flex items-baseline font-display text-[18vw] leading-none tracking-tighter text-fg-primary md:text-[12vw]">
           <span ref={numRef}>0</span>
-          <span className="text-foreground/40">%</span>
+          <span className="text-fg-muted">%</span>
         </span>
       </div>
 
       {/* progress rule */}
-      <div className="mt-6 h-px w-full origin-left bg-foreground/15">
+      <div className="mt-6 h-px w-full origin-left bg-fg-primary/15">
         <span
           ref={barRef}
-          className="block h-px w-full origin-left scale-x-0 bg-foreground"
+          className="block h-px w-full origin-left scale-x-0 bg-fg-primary"
         />
       </div>
     </div>

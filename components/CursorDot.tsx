@@ -1,17 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
 import { prefersReducedMotion } from "@/lib/reveal";
 
 export default function CursorDot() {
+  const cursorRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const isReduced = prefersReducedMotion();
-
-  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
-  const cursorX = useSpring(-100, springConfig);
-  const cursorY = useSpring(-100, springConfig);
 
   useEffect(() => {
     if (isReduced) return;
@@ -19,11 +16,13 @@ export default function CursorDot() {
 
     document.documentElement.classList.add("hide-cursor");
 
+    const xTo = gsap.quickTo(cursorRef.current, "x", { duration: 0.15, ease: "power3" });
+    const yTo = gsap.quickTo(cursorRef.current, "y", { duration: 0.15, ease: "power3" });
+
     const onMove = (e: MouseEvent) => {
       if (!isVisible) setIsVisible(true);
-      // Offset by half of cursor size (7px) to center it
-      cursorX.set(e.clientX - 7);
-      cursorY.set(e.clientY - 7);
+      xTo(e.clientX - 7);
+      yTo(e.clientY - 7);
     };
 
     const onOver = (e: MouseEvent) => {
@@ -44,18 +43,18 @@ export default function CursorDot() {
       document.removeEventListener("mouseleave", onLeaveWindow);
       document.documentElement.classList.remove("hide-cursor");
     };
-  }, [isVisible, isReduced, cursorX, cursorY]);
+  }, [isVisible, isReduced]);
 
   if (isReduced) return null;
 
   return (
-    <motion.div
+    <div
+      ref={cursorRef}
       aria-hidden
       style={{
-        x: cursorX,
-        y: cursorY,
         opacity: isVisible ? 1 : 0,
-        scale: isHovering ? 3 : 1,
+        transform: `scale(${isHovering ? 3 : 1})`,
+        transition: "opacity 0.2s, transform 0.2s ease-out",
       }}
       className="pointer-events-none fixed left-0 top-0 z-[95] h-3.5 w-3.5 rounded-full bg-white mix-blend-difference"
     />

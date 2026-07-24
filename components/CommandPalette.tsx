@@ -167,22 +167,22 @@ export default function CommandPalette({
         role="dialog"
         aria-modal
         aria-label="Command palette"
-        className="fixed left-1/2 top-[20vh] z-[210] w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl border border-foreground/10 bg-[#0a0a0a] shadow-2xl"
+        className="fixed left-1/2 top-[20vh] z-[210] w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl border border-fg-primary/10 bg-surface shadow-2xl"
       >
         {/* Search input */}
-        <div className="flex items-center gap-3 border-b border-foreground/10 px-4 py-4">
-          <span className="font-mono text-xs text-foreground/40" aria-hidden>⌘</span>
+        <div className="flex items-center gap-3 border-b border-fg-primary/10 px-4 py-4">
+          <span className="font-mono text-xs text-fg-muted" aria-hidden>⌘</span>
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setCursor(0); }}
             placeholder="Jump to..."
-            className="flex-1 bg-transparent font-mono text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
+            className="flex-1 bg-transparent font-mono text-sm text-fg-primary placeholder:text-fg-muted/60 focus:outline-none"
           />
           <kbd
             onClick={close}
-            className="cursor-pointer rounded border border-foreground/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-foreground/40 hover:text-foreground/70 transition-colors"
+            className="cursor-pointer rounded border border-fg-primary/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-fg-muted hover:text-fg-primary/70 transition-colors"
           >
             Esc
           </kbd>
@@ -191,7 +191,7 @@ export default function CommandPalette({
         {/* Results */}
         <div className="max-h-[55vh] overflow-y-auto py-2">
           {filtered.length === 0 ? (
-            <p className="px-4 py-8 text-center font-mono text-xs text-foreground/30">
+            <p className="px-4 py-8 text-center font-mono text-xs text-fg-muted">
               No results for &ldquo;{query}&rdquo;
             </p>
           ) : (
@@ -199,7 +199,7 @@ export default function CommandPalette({
               const globalIdx = (item: Item) => filtered.indexOf(item);
               return (
                 <div key={group}>
-                  <p className="px-4 pb-1 pt-3 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/30">
+                  <p className="px-4 pb-1 pt-3 font-mono text-[10px] uppercase tracking-[0.15em] text-fg-muted">
                     {group}
                   </p>
                   {items.map((item) => {
@@ -213,8 +213,8 @@ export default function CommandPalette({
                         onClick={() => execute(item)}
                         className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors duration-100 ${
                           isActive
-                            ? "bg-foreground/[0.06] text-foreground"
-                            : "text-foreground/60 hover:text-foreground"
+                            ? "bg-fg-primary/[0.06] text-fg-primary"
+                            : "text-fg-muted hover:text-fg-primary"
                         }`}
                       >
                         <span className="font-mono text-sm">{item.label}</span>
@@ -228,10 +228,10 @@ export default function CommandPalette({
         </div>
 
         {/* Footer hint */}
-        <div className="flex items-center gap-4 border-t border-foreground/10 px-4 py-2.5">
-          <span className="font-mono text-[10px] text-foreground/25">↑↓ navigate</span>
-          <span className="font-mono text-[10px] text-foreground/25">↵ select</span>
-          <span className="font-mono text-[10px] text-foreground/25">esc close</span>
+        <div className="flex items-center gap-4 border-t border-fg-primary/10 px-4 py-2.5">
+          <span className="font-mono text-[10px] text-fg-muted/60">↑↓ navigate</span>
+          <span className="font-mono text-[10px] text-fg-muted/60">↵ select</span>
+          <span className="font-mono text-[10px] text-fg-muted/60">esc close</span>
         </div>
       </div>
     </>

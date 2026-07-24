@@ -3,9 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --background: #000000;
+  --background: #050505;
   /* warm off-white foreground */
   --foreground: #ece9e1;
+  
+  /* Semantic Tokens */
+  --color-fg-primary: #ece9e1;
+  --color-fg-muted: rgba(236, 233, 225, 0.6);
+  --color-bg-surface: rgba(255, 255, 255, 0.05);
+  --color-accent: #10b981; /* emerald — matches 3D icosahedron */
 }
 
 html {
@@ -16,13 +22,54 @@ html {
 body {
   color: var(--foreground);
   background: var(--background);
+  background-image: radial-gradient(circle at 50% 0%, rgba(20, 20, 20, 1) 0%, rgba(5, 5, 5, 1) 70%);
+  background-attachment: fixed;
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   overflow-x: hidden;
 }
 
 ::selection {
-  background: var(--foreground);
-  color: var(--background);
+  background: rgba(16, 185, 129, 0.35);
+  color: var(--foreground);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Micro-interactions */
+.glow-hover {
+  transition: all 0.3s ease;
+}
+.glow-hover:hover {
+  box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.3);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+/* Gradient Section Dividers */
+.divider-top {
+  position: relative;
+  border-top: none !important;
+}
+.divider-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(236, 233, 225, 0.2) 50%, transparent 100%);
 }
 
 /* Custom cursor active: hide the native pointer everywhere (toggled by JS

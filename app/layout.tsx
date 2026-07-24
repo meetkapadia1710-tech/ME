@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Space_Mono } from "next/font/google";
+import { Space_Grotesk, Space_Mono, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import SmoothScroll from "@/components/SmoothScroll";
 import CursorDot from "@/components/CursorDot";
@@ -12,6 +12,13 @@ import "./globals.css";
 const display = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
+  display: "swap",
+});
+
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -66,8 +73,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${mono.variable}`}>
-      <body className="bg-black text-foreground antialiased">
+    <html lang="en" className={`${display.variable} ${mono.variable} ${serif.variable}`}>
+      <body className="bg-background text-fg-primary antialiased relative">
+        <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
+            <filter id="noiseFilter">
+              <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+          </svg>
+        </div>
         <CursorDot />
         <CommandPalette blogPosts={getAllPosts().map(p => ({ title: p.meta.title, slug: p.meta.slug }))} />
         <SmoothScroll>{children}</SmoothScroll>

@@ -17,11 +17,13 @@
     "@neondatabase/serverless": "^1.1.0",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
+    "@react-three/postprocessing": "^2.19.1",
     "@sentry/nextjs": "^10.67.0",
     "@tailwindcss/typography": "^0.5.20",
     "@types/three": "^0.185.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.6.1",
+    "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
     "framer-motion": "^12.42.2",
     "gray-matter": "^4.0.3",
@@ -35,7 +37,9 @@
     "react-dom": "^18",
     "rehype-pretty-code": "^0.14.4",
     "shiki": "^4.3.1",
-    "three": "^0.185.1"
+    "tailwind-merge": "^3.6.0",
+    "three": "^0.185.1",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

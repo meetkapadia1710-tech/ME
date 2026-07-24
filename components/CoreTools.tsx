@@ -9,6 +9,7 @@ import {
   STAGGER_LOOSE,
   REVEAL_Y, REVEAL_Y_PCT,
 } from "@/lib/motion";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const TOOLS = [
   {
@@ -77,36 +78,28 @@ export default function CoreTools({ ready }: { ready: boolean }) {
   return (
     <section
       ref={rootRef}
-      className="border-t border-foreground/10 px-6 py-24 md:px-10 md:py-32"
+      className="divider-top bg-background px-6 py-32 md:px-10 md:py-48"
     >
-      <div className="grid gap-10 md:grid-cols-12">
-        <div className="md:col-span-3">
-          <div className="overflow-hidden">
-            <span
-              data-reveal-heading
-              className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
-            >
-              Core Tools
-            </span>
-          </div>
-        </div>
-
+      <SectionHeading label="Core Tools" className="mb-0 md:mb-0" />
+      
+      <div className="grid gap-10 md:grid-cols-12 mt-10 md:mt-12">
+        <div className="md:col-span-3 hidden md:block"></div>
         <ul className="md:col-span-9">
           {TOOLS.map((tool, i) => (
             <li
               key={tool.name}
               data-reveal-row
-              className="grid grid-cols-1 gap-3 border-t border-foreground/10 py-8 first:border-t-0 first:pt-0 md:grid-cols-12 md:gap-6"
+              className="grid grid-cols-1 gap-3 border-t border-fg-primary/10 py-8 first:border-t-0 first:pt-0 md:grid-cols-12 md:gap-6"
             >
               <div className="flex items-baseline gap-4 md:col-span-6">
-                <span className="font-mono text-xs tabular-nums text-foreground/40">
+                <span className="font-mono text-meta tabular-nums text-fg-muted">
                   0{i + 1}
                 </span>
-                <h3 className="font-display text-2xl tracking-tight text-foreground md:text-3xl">
+                <h3 className="font-display text-heading-md tracking-tight text-fg-primary md:text-heading-lg">
                   {tool.name}
                 </h3>
               </div>
-              <p className="max-w-md font-mono text-sm leading-relaxed text-foreground/55 md:col-span-6">
+              <p className="max-w-md font-mono text-body-sm leading-relaxed text-fg-muted md:col-span-6">
                 {tool.description}
               </p>
             </li>

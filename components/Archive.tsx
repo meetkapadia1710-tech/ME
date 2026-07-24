@@ -78,22 +78,22 @@ export default function Archive() {
   }, []);
 
   return (
-    <div ref={rootRef} onMouseMove={handleMove} className="relative px-6 pt-28 pb-24 md:px-10 md:pt-32 md:pb-32">
+    <div ref={rootRef} onMouseMove={handleMove} className="relative bg-background px-6 pt-28 pb-24 md:px-10 md:pt-32 md:pb-32">
       {/* Header */}
       <div data-reveal-row>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/60 transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-2 font-mono text-meta text-fg-muted transition-colors hover:text-fg-primary"
         >
           <span aria-hidden>←</span> Index
         </Link>
       </div>
 
-      <header data-reveal-row className="mt-12 border-b border-foreground/10 pb-12 md:mt-16 md:pb-16">
-        <h1 className="font-display text-5xl leading-[0.95] tracking-tight text-foreground md:text-8xl">
+      <header data-reveal-row className="mt-12 border-b border-fg-primary/10 pb-12 md:mt-16 md:pb-16">
+        <h1 className="font-display text-display text-fg-primary">
           Archive.
         </h1>
-        <p className="mt-6 max-w-2xl font-display text-xl leading-snug text-foreground/70 md:text-2xl">
+        <p className="mt-6 max-w-2xl font-display text-heading-sm leading-snug text-fg-muted md:text-heading-md">
           Everything else I&apos;ve built.
         </p>
       </header>
@@ -105,10 +105,10 @@ export default function Archive() {
             key={tag}
             type="button"
             onClick={() => applyFilter(tag)}
-            className={`rounded-full border px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-all duration-200 ${
+            className={`rounded-full border px-4 py-1.5 font-mono text-meta transition-all duration-200 ${
               activeFilter === tag
-                ? "border-foreground/60 bg-foreground/10 text-foreground"
-                : "border-foreground/15 text-foreground/40 hover:border-foreground/30 hover:text-foreground/70"
+                ? "border-fg-primary/60 bg-fg-primary/10 text-fg-primary"
+                : "border-fg-primary/15 text-fg-muted hover:border-fg-primary/30 hover:text-fg-primary/70"
             }`}
           >
             {tag}
@@ -117,29 +117,28 @@ export default function Archive() {
       </div>
 
       {/* Flat List */}
-      <ul ref={listRef} className="group/list mt-6 md:mt-8">
+      <ul ref={listRef} className="group/list mt-6 md:mt-8 [perspective:1000px]">
         {ARCHIVE_STUDIES.map((p, i) => (
-          <li key={p.slug} data-reveal-row data-archive-row data-role={p.role}>
+          <li key={p.slug} data-reveal-row data-archive-row data-role={p.role} className="transition-all duration-500 ease-out group-has-[a:hover]/list:scale-[0.98] group-has-[a:hover]/list:opacity-40 group-has-[a:hover]/list:blur-[1px]">
             <Link
               ref={(el) => { rowEls.current[i] = el; }}
               href={`/archive/${p.slug}`}
               onMouseEnter={() => showPreview(i)}
               onMouseLeave={() => hidePreview(i)}
-              onFocus={() => showPreview(i)}
               onBlur={() => hidePreview(i)}
-              className="group flex flex-col gap-3 border-b border-foreground/10 py-6 opacity-100 transition-opacity duration-300 first:border-t hover:!opacity-100 group-hover/list:opacity-40 focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-start md:gap-8 md:py-8"
+              className="group flex flex-col gap-3 rounded-2xl p-4 transition-all duration-500 ease-out hover:!scale-[1.01] hover:!opacity-100 hover:!blur-none hover:bg-fg-primary/[0.02] hover:shadow-2xl focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-start md:gap-8 md:p-6"
             >
               <div className="md:w-1/4">
-                <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/50">
+                <span className="font-mono text-meta text-fg-muted">
                   {p.role}
                 </span>
-                <h3 className="mt-1 font-display text-2xl tracking-tight text-foreground transition-transform duration-300 group-hover:translate-x-2">
+                <h3 className="mt-1 font-display text-heading-md tracking-tight text-fg-primary transition-transform duration-300 group-hover:translate-x-2">
                   {p.name}
                 </h3>
               </div>
 
               <div className="flex flex-col items-start justify-between gap-4 md:w-3/4 md:flex-row md:items-center">
-                <p className="font-mono text-sm leading-relaxed text-foreground/60 transition-colors group-hover:text-foreground/80 md:max-w-xl">
+                <p className="font-mono text-body-sm leading-relaxed text-fg-muted transition-colors group-hover:text-fg-primary/80 md:max-w-xl">
                   {p.overview}
                 </p>
 
@@ -150,7 +149,7 @@ export default function Archive() {
                         href={p.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex shrink-0 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-blue-400 transition-colors hover:text-blue-300 relative z-10"
+                        className="inline-flex shrink-0 items-center gap-2 font-mono text-meta text-blue-400 transition-colors hover:text-blue-300 relative z-10"
                       >
                         Live Demo
                         <span aria-hidden className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
@@ -159,7 +158,7 @@ export default function Archive() {
                       </a>
                     </object>
                   )}
-                  <span className="inline-flex shrink-0 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-foreground/40 transition-colors group-hover:text-foreground">
+                  <span className="inline-flex shrink-0 items-center gap-2 font-mono text-meta text-fg-muted transition-colors group-hover:text-fg-primary">
                     View{" "}
                     <span
                       aria-hidden
@@ -179,7 +178,7 @@ export default function Archive() {
       <div
         ref={previewRef}
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-40 hidden h-[320px] w-[260px] overflow-hidden rounded-xl bg-[#0a0a0a] md:block border border-foreground/10"
+        className="pointer-events-none fixed left-0 top-0 z-40 hidden h-[320px] w-[260px] overflow-hidden rounded-xl bg-[#0a0a0a] md:block border border-fg-primary/10"
         style={{ willChange: "transform" }}
       >
         {/* CSS Grid Overlay */}
@@ -201,7 +200,7 @@ export default function Archive() {
             {p.images?.hero ? (
               <Image src={p.images.hero} alt={p.name} fill className="object-cover object-center bg-[#0a0a0a]" sizes="260px" />
             ) : (
-              <span className="px-6 text-center font-display text-2xl tracking-tight text-foreground/90">
+              <span className="px-6 text-center font-display text-heading-md tracking-tight text-fg-primary/90">
                 {p.name}
               </span>
             )}

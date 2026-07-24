@@ -73,12 +73,12 @@ export default function ProcessSteps() {
   }, []);
 
   return (
-    <section ref={rootRef} className="border-t border-foreground/10 py-20 md:py-28">
+    <section ref={rootRef} className="divider-top py-32 md:py-48">
       {/* Section label */}
       <div className="mb-12 overflow-hidden md:mb-16">
         <span
           data-steps-heading
-          className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-foreground/50"
+          className="inline-block font-mono text-meta text-fg-muted uppercase tracking-[0.15em]"
         >
           Process
         </span>
@@ -90,20 +90,20 @@ export default function ProcessSteps() {
           <li
             key={step.num}
             data-steps-row
-            className="grid border-t border-foreground/10 py-8 opacity-100 transition-opacity duration-300 last:border-b last:border-foreground/10 group-hover/list:opacity-40 hover:!opacity-100 md:grid-cols-12 md:py-10"
+            className="grid border-t border-fg-primary/10 py-8 opacity-100 transition-opacity duration-300 last:border-b last:border-fg-primary/10 group-hover/list:opacity-40 hover:!opacity-100 md:grid-cols-12 md:py-10"
           >
             {/* Number + title */}
             <div className="flex items-baseline gap-4 md:col-span-5 md:gap-6">
-              <span className="font-mono text-xs tabular-nums text-foreground/40">
+              <span className="font-mono text-meta tabular-nums text-fg-muted">
                 {step.num} / 04
               </span>
-              <h2 className="font-display text-3xl leading-none tracking-tight text-foreground md:text-5xl">
+              <h2 className="font-display text-heading-md tracking-tight text-fg-primary md:text-heading-lg">
                 {step.title}
               </h2>
             </div>
 
             {/* Body copy */}
-            <p className="mt-4 max-w-lg font-mono text-sm leading-relaxed text-foreground/55 md:col-span-7 md:mt-0 md:self-center">
+            <p className="mt-4 max-w-lg font-mono text-body-sm leading-relaxed text-fg-muted md:col-span-7 md:mt-0 md:self-center">
               {step.body}
             </p>
           </li>
