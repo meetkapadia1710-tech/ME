@@ -1,33 +1,50 @@
 "use server";
 
 import * as Sentry from "@sentry/nextjs";
+import { db } from "@/db";
+import { projects, posts } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
-/**
- * Example wrapper for admin actions to capture errors without exposing PII.
- * In a real application, you'll wrap your actual Drizzle operations here.
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function createProjectAction(_formData: FormData) {
+export async function createProjectAction(data: any) {
   try {
-    // 1. Validate auth & input
-    // 2. Insert into DB
-    // 3. Revalidate path
-    
-    // Simulate error for demonstration/setup verification
-    // throw new Error("Database insertion failed");
-
-    return { success: true };
+    const [result] = await db.insert(projects).values(data).returning();
+    return { success: true, project: result };
   } catch (error) {
-    console.error("Failed to create project:", error);
-    
-    // Capture to Sentry with context, avoiding sending the raw FormData (PII)
-    Sentry.captureException(error, {
-      tags: { 
-        context: "admin-panel",
-        action: "createProject" 
-      },
-    });
-
+    Sentry.captureException(error, { tags: { context: "admin-panel", action: "createProject" } });
     return { success: false, error: "Failed to create project" };
   }
 }
+
+export async function editProjectAction(id: number, data: any) {
+  try {
+    const [result] = await db.update(projects).set(data).where(eq(projects.id, id)).returning();
+    return { success: true, project: result };
+  } catch (error) {
+    Sentry.captureException(error, { tags: { context: "admin-panel", action: "editProject" } });
+    return { success: false, error: "Failed to edit project" };
+  }
+}
+
+export async function deleteProjectAction(id: number) {
+  try {
+    await db.delete(projects).where(eq(projects.id, id));
+    return { success: true };
+  } catch (error) {
+    Sentry.captureException(error, { tags: { context: "admin-panel", action: "deleteProject" } });
+    return { success: false, error: "Failed to delete project" };
+  }
+}
+
+export async function togglePostPublishAction(id: number, publish: boolean) {
+  try {
+    const [result] = await db.update(posts)
+      .set({ publishedAt: publish ? new Date() : null })
+      .where(eq(posts.id, id))
+      .returning();
+    return { success: true, post: result };
+  } catch (error) {
+    Sentry.captureException(error, { tags: { context: "admin-panel", action: "togglePublish" } });
+    return { success: false, error: "Failed to toggle publish status" };
+  }
+}
+

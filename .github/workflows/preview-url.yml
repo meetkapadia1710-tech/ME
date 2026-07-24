@@ -1,0 +1,19 @@
+name: Preview URL
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  preview-url:
+    runs-on: ubuntu-latest
+    steps:
+      # If Vercel is connected to GitHub, it automatically comments the preview URL.
+      # But to explicitly fetch and comment the deployment URL (or if using a custom workflow):
+      # We assume the Vercel GitHub App handles this, but here's a placeholder step
+      # that could use an action like 'amondnet/vercel-action' if deployed manually in CI.
+      
+      - name: Info
+        run: |
+          echo "Vercel GitHub Integration normally handles PR comments with Preview URLs."
+          echo "Ensure Vercel's GitHub app is installed for the repository."

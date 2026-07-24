@@ -31,7 +31,7 @@ const ITEMS: Item[] = [
   { label: "LeetCode ↗", group: "External", action: "external", href: "https://leetcode.com/Code-Hacker_17" },
 ];
 
-function fuzzy(query: string, str: string) {
+export function fuzzy(query: string, str: string) {
   const q = query.toLowerCase();
   const s = str.toLowerCase();
   if (!q) return true;

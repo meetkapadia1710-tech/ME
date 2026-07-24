@@ -1,0 +1,69 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    
+    # Example using a Postgres service for tests
+    # Alternatively, you can use Neon branching if configured
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: dummy
+          POSTGRES_PASSWORD: dummy
+          POSTGRES_DB: dummy
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_TEST_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      POSTGRES_URL: postgresql://dummy:dummy@localhost:5432/dummy
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Seed test database
+        run: npx tsx scripts/seed-test-db.ts
+
+      - name: Unit & Integration Tests (Vitest)
+        run: npm run test:coverage
+
+      - name: Build Next.js
+        run: npm run build
+        env:
+          # Next build might need dummy vars if it checks them
+          POSTGRES_URL: postgresql://dummy:dummy@localhost:5432/dummy
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: E2E Tests (Playwright)
+        run: npm run test:e2e
