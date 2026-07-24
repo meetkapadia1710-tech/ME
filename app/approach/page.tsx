@@ -6,7 +6,7 @@ import JourneyTimeline from "@/components/JourneyTimeline";
 import ProcessSteps from "@/components/ProcessSteps";
 import ApproachCTA from "@/components/ApproachCTA";
 import SkillsRadar from "@/components/SkillsRadar";
-import { WORKS } from "@/components/SelectedWorks";
+import { WORKS } from "@/lib/worksData";
 import { ARCHIVE_STUDIES } from "@/lib/archiveData";
 
 const PAGE_TITLE = "Approach — Meet Kapadia";

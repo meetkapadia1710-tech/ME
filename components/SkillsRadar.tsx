@@ -4,7 +4,7 @@ import { useRef, useState, useEffect, useMemo, KeyboardEvent } from "react";
 import { gsap } from "gsap";
 import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
 import { DUR_STANDARD, EASE_ENTRANCE, STAGGER_LOOSE } from "@/lib/motion";
-import { TOOLS } from "@/components/CoreTools";
+import { TOOLS } from "@/lib/coreToolsData";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 

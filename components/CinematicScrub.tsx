@@ -147,6 +147,11 @@ export default function CinematicScrub() {
         const dpr = window.devicePixelRatio || 1;
         canvasRef.current.width = window.innerWidth * dpr;
         canvasRef.current.height = window.innerHeight * dpr;
+        const ctx = canvasRef.current.getContext("2d");
+        if (ctx) {
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
+        }
         // Redraw current frame
         if (ScrollTrigger.getById("cinematic-st")) {
           const st = ScrollTrigger.getById("cinematic-st") as globalThis.ScrollTrigger;
@@ -228,13 +233,13 @@ export default function CinematicScrub() {
       >
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover brightness-[1.2] contrast-[1.1]"
           style={{ width: "100%", height: "100%" }}
         />
         
         {/* Overlay copy */}
         <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-           <h2 className="font-display text-heading-lg text-white opacity-0 md:text-display mix-blend-difference" id="cinematic-text">
+           <h2 className="font-display text-heading-lg text-white opacity-0 md:text-display drop-shadow-[0_0_20px_rgba(0,0,0,1)]" id="cinematic-text">
              Assembly.
            </h2>
         </div>

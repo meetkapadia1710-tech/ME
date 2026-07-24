@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { TOOLS } from "./CoreTools";
+import { TOOLS } from "@/lib/coreToolsData";
 import { WORKS } from "./SelectedWorks";
 import { prefersReducedMotion } from "@/lib/reveal";
 

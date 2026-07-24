@@ -24,7 +24,7 @@ async function renderFrames() {
   console.log('Starting Playwright...');
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 1920, height: 1080 },
     deviceScaleFactor: 1,
   });
   
@@ -45,7 +45,7 @@ async function renderFrames() {
     await canvas.screenshot({
       path: outputPath,
       type: 'jpeg',
-      quality: 70
+      quality: 95
     });
     
     const stat = fs.statSync(outputPath);
