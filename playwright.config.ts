@@ -32,9 +32,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && npm run start -- -p 3001',
+    command: 'npx tsx scripts/seed-test-db.ts && npm run build && npm run start -- -p 3001',
     url: 'http://localhost:3001',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 120 * 1000,
     env: {
       NEXT_PUBLIC_TEST_MODE: 'true',

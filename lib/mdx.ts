@@ -1,7 +1,9 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { cache } from "react";
+import { cache as reactCache } from "react";
+
+const cache = typeof reactCache === "function" ? reactCache : (<T>(fn: T): T => fn);
 
 const postsDirectory = path.resolve(process.cwd(), "content/posts");
 
