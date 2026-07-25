@@ -7,6 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
 export default defineConfig({
   testDir: './e2e',
+  globalTeardown: require.resolve('./e2e/global-teardown.ts'),
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -38,6 +39,7 @@ export default defineConfig({
     env: {
       NEXT_PUBLIC_TEST_MODE: 'true',
       AUTH_TRUST_HOST: 'true',
+      POSTGRES_URL: process.env.POSTGRES_TEST_URL || process.env.POSTGRES_URL || '',
     }
   },
 });

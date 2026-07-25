@@ -109,3 +109,16 @@ export async function togglePostPublishAction(id: number, publish: boolean) {
     return { success: false, error: "Failed to toggle publish status" };
   }
 }
+
+export async function deletePostAction(id: number) {
+  const session = await auth();
+  if (!session) return { success: false, error: "Unauthorized" };
+
+  try {
+    await db.delete(posts).where(eq(posts.id, id));
+    return { success: true };
+  } catch (error) {
+    Sentry.captureException(error, { tags: { context: "admin-panel", action: "deletePost" } });
+    return { success: false, error: "Failed to delete post" };
+  }
+}

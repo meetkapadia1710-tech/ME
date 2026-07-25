@@ -2,6 +2,7 @@ import Link from "next/link"
 import { db } from "@/db"
 import { projects, posts } from "@/db/schema"
 import { desc } from "drizzle-orm"
+import DeleteButton from "@/components/admin/DeleteButton"
 
 export default async function AdminDashboard() {
   const allProjects = await db.select().from(projects).orderBy(desc(projects.createdAt))
@@ -42,10 +43,11 @@ export default async function AdminDashboard() {
                       <span className="text-foreground/40">—</span>
                     )}
                   </td>
-                  <td className="p-4 text-right">
+                  <td className="p-4 text-right space-x-3">
                     <Link href={`/admin/projects/${p.id}`} className="text-blue-500 hover:underline">
                       Edit
                     </Link>
+                    <DeleteButton id={p.id} type="project" />
                   </td>
                 </tr>
               ))}
@@ -92,10 +94,11 @@ export default async function AdminDashboard() {
                       </span>
                     )}
                   </td>
-                  <td className="p-4 text-right">
+                  <td className="p-4 text-right space-x-3">
                     <Link href={`/admin/posts/${p.id}`} className="text-blue-500 hover:underline">
                       Edit
                     </Link>
+                    <DeleteButton id={p.id} type="post" />
                   </td>
                 </tr>
               ))}

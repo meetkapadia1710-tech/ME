@@ -26,10 +26,8 @@ export type CaseStudyData = {
   images?: CaseStudyImages;
   playgroundType?: "none" | "iframe" | "interactive" | "video";
   playgroundUrl?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  playgroundConfig?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  content?: any; // the loaded MDX content
+  playgroundConfig?: Record<string, unknown> | string;
+  content?: React.ReactNode;
   liveUrl?: string;
 };
 

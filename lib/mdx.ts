@@ -1,8 +1,9 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { cache } from "react";
 
-const postsDirectory = path.join(process.cwd(), "content/posts");
+const postsDirectory = path.resolve(process.cwd(), "content/posts");
 
 export interface PostMeta {
   title: string;
@@ -20,44 +21,64 @@ export interface Post {
 
 function calculateReadingTime(text: string): string {
   const wordsPerMinute = 200;
-  const noOfWords = text.split(/\s/g).length;
+  const words = text.trim().split(/\s+/g);
+  const noOfWords = words.filter(Boolean).length;
   const minutes = noOfWords / wordsPerMinute;
-  const readTime = Math.ceil(minutes);
+  const readTime = Math.ceil(minutes) || 1;
   return `${readTime} min read`;
 }
 
-export function getPostSlugs(): string[] {
+export const getPostSlugs = cache((): string[] => {
   if (!fs.existsSync(postsDirectory)) return [];
-  return fs.readdirSync(postsDirectory).filter((file) => file.endsWith(".mdx"));
-}
+  return fs
+    .readdirSync(postsDirectory)
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => file.replace(/\.mdx$/, ""));
+});
 
-export function getPostBySlug(slug: string): Post {
-  const realSlug = slug.replace(/\.mdx$/, "");
-  const fullPath = path.join(postsDirectory, `${realSlug}.mdx`);
-  const fileContents = fs.readFileSync(fullPath, "utf8");
+export const getPostBySlug = cache((slug: string): Post => {
+  const sanitizedSlug = path.basename(slug).replace(/\.mdx$/, "");
+  const fullPath = path.join(postsDirectory, `${sanitizedSlug}.mdx`);
 
-  const { data, content } = matter(fileContents);
+  if (!fs.existsSync(fullPath)) {
+    throw new Error(`MDX post not found: ${sanitizedSlug}`);
+  }
 
-  const readingTime = calculateReadingTime(content);
+  try {
+    const fileContents = fs.readFileSync(fullPath, "utf8");
+    const { data, content } = matter(fileContents);
+    const readingTime = calculateReadingTime(content);
 
-  return {
-    meta: {
-      title: data.title,
-      date: data.date,
-      excerpt: data.excerpt,
-      tags: data.tags || [],
-      slug: realSlug,
-      readingTime,
-    },
-    content,
-  };
-}
+    return {
+      meta: {
+        title: data.title || "Untitled",
+        date: data.date ? String(data.date) : new Date().toISOString(),
+        excerpt: data.excerpt || "",
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        slug: sanitizedSlug,
+        readingTime,
+      },
+      content,
+    };
+  } catch (error) {
+    console.error(`Failed to parse MDX post at ${fullPath}:`, error);
+    throw new Error(`Invalid MDX frontmatter or content in ${sanitizedSlug}`);
+  }
+});
 
-export function getAllPosts(): Post[] {
+export const getAllPosts = cache((): Post[] => {
   const slugs = getPostSlugs();
   const posts = slugs
-    .map((slug) => getPostBySlug(slug))
+    .map((slug) => {
+      try {
+        return getPostBySlug(slug);
+      } catch (err) {
+        console.error(`Error loading post ${slug}:`, err);
+        return null;
+      }
+    })
+    .filter((post): post is Post => post !== null)
     .sort((post1, post2) => (post1.meta.date > post2.meta.date ? -1 : 1));
-  
+
   return posts;
-}
+});

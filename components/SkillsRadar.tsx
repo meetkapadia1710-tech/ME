@@ -8,7 +8,7 @@ import { TOOLS } from "@/lib/coreToolsData";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NumberTicker } from "@/components/ui/number-ticker";
-import { PROOFS } from "@/lib/proofsData";
+import { PROOFS, ProofItem } from "@/lib/proofsData";
 
 // Define our standard categories
 const CATEGORIES = ["Frontend", "Backend", "Mobile", "Systems", "AI/Tooling"];
@@ -57,7 +57,7 @@ export default function SkillsRadar({ projects }: SkillsRadarProps) {
           score += 2; // Arbitrary weight to represent "core proficiency"
         }
       });
-      return { category: cat, score, projects: projectTally[cat], proofs: PROOFS.filter(p => p.categories.includes(cat)) };
+      return { category: cat, score, projects: projectTally[cat], proofs: PROOFS.filter((p: ProofItem) => p.categories.includes(cat)) };
     });
 
     // Normalize scores so the max is always touching the outer edge of the radar
@@ -273,7 +273,7 @@ export default function SkillsRadar({ projects }: SkillsRadarProps) {
                 <div>
                   <h4 className="font-mono text-meta text-fg-muted mb-3 uppercase tracking-wider">Certifications & Badges</h4>
                   <ul className="flex flex-col gap-2">
-                    {activeData.proofs.map(p => (
+                    {activeData.proofs.map((p: ProofItem) => (
                       <li key={p.id}>
                         <a 
                           href={p.url}

@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://meetkapadia.com"; // Placeholder, matching sitemap
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://meetkapadia.com";
 
   return {
     rules: {

@@ -3,12 +3,10 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createProjectAction } from "@/app/admin/actions";
 import { projects } from "@/db/schema";
 
 export default function NewProjectPage() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -23,8 +21,7 @@ export default function NewProjectPage() {
       slug: formData.get("slug") as string,
       tagline: formData.get("tagline") as string || "Default tagline",
       year: formData.get("year") as string || new Date().getFullYear().toString(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: (formData.get("type") as any) || "Personal",
+      type: (formData.get("type") as typeof projects.$inferInsert.type) || "Personal",
       tags: (formData.get("tags") as string)?.split(",").map(t => t.trim()).filter(Boolean) || [],
       overview: formData.get("overview") as string || "Default overview",
       liveUrl: formData.get("liveUrl") as string,

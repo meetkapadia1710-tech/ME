@@ -2,5 +2,14 @@ import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from './schema';
 
-const sql = neon(process.env.POSTGRES_URL || "postgres://dummy:dummy@localhost/dummy");
+const connectionString = process.env.POSTGRES_URL;
+
+if (!connectionString) {
+  throw new Error(
+    "FATAL DATABASE ERROR: POSTGRES_URL environment variable is missing. " +
+    "Provide a valid PostgreSQL connection URL in your environment settings."
+  );
+}
+
+const sql = neon(connectionString);
 export const db = drizzle(sql, { schema });

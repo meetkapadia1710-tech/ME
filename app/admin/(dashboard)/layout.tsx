@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
-  if (!session && process.env.NEXT_PUBLIC_TEST_MODE !== "true") {
+  if (!session) {
     redirect("/admin/login")
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, KeyboardEvent } from "react";
+import { useState, useEffect, useRef, useCallback, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { TOOLS } from "@/lib/coreToolsData";
 import { WORKS } from "@/lib/worksData";
@@ -25,7 +25,7 @@ const BOOT_SEQUENCE = [
 export default function RetroTerminal() {
   const { activeOverlay, setActiveOverlay } = useWebGLStore();
   const isOpen = activeOverlay === "terminal";
-  const setIsOpen = (open: boolean) => setActiveOverlay(open ? "terminal" : "none");
+  const setIsOpen = useCallback((open: boolean) => setActiveOverlay(open ? "terminal" : "none"), [setActiveOverlay]);
   const [booting, setBooting] = useState(false);
   const [bootLines, setBootLines] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);

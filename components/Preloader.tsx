@@ -22,21 +22,35 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    // Reduced motion or test mode: no counter, no scroll lock — reveal the page instantly.
-    if (prefersReducedMotion() || process.env.NEXT_PUBLIC_TEST_MODE === "true") {
+    // Reduced motion, test mode, or already seen in session: reveal page instantly.
+    const hasSeen = typeof window !== "undefined" && sessionStorage.getItem("portfolio_preloader_seen");
+
+    if (prefersReducedMotion() || process.env.NEXT_PUBLIC_TEST_MODE === "true" || hasSeen) {
       onCompleteRef.current();
       setDone(true);
       return;
     }
 
+    try {
+      sessionStorage.setItem("portfolio_preloader_seen", "true");
+    } catch {}
+
     // Lock scroll while the loader is on screen.
     document.body.style.overflow = "hidden";
+
+    // Safety fallback timeout to ensure preloader NEVER hangs indefinitely
+    const fallbackTimer = setTimeout(() => {
+      document.body.style.overflow = "";
+      onCompleteRef.current();
+      setDone(true);
+    }, 4000);
 
     const counter = { value: 0 };
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
+          clearTimeout(fallbackTimer);
           document.body.style.overflow = "";
           onCompleteRef.current();
           setDone(true);
@@ -47,7 +61,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         gsap.set(pathRef.current, { strokeDasharray: 150, strokeDashoffset: 150 });
         tl.to(pathRef.current, {
           strokeDashoffset: 0,
-          duration: 2.4,
+          duration: 1.6,
           ease: "power3.inOut",
         }, 0);
       }
@@ -55,31 +69,32 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       if (svgRef.current) {
         tl.to(svgRef.current, {
           rotate: 180,
-          duration: 2.4,
+          duration: 1.6,
           ease: "power3.inOut",
         }, 0);
       }
 
       tl.to(counter, {
         value: 100,
-        duration: 2.4,
+        duration: 1.6,
         ease: "power3.inOut",
         onUpdate: () => {
           const v = Math.round(counter.value);
           if (numRef.current) numRef.current.textContent = String(v);
           if (barRef.current) barRef.current.style.transform = `scaleX(${v / 100})`;
         },
-      });
+      }, 0);
 
       // Hold a beat, then reveal the page by sliding the overlay up.
       tl.to(rootRef.current, {
         yPercent: -100,
-        duration: 1.2,
+        duration: 0.8,
         ease: "expo.inOut",
-      }, "+=0.25");
+      }, "+=0.15");
     }, rootRef);
 
     return () => {
+      clearTimeout(fallbackTimer);
       ctx.revert();
       document.body.style.overflow = "";
     };

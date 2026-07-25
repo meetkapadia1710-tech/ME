@@ -4,7 +4,7 @@ import CaseStudy from "@/components/CaseStudy";
 import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
-import type { CaseStudyData, TechChoice } from "@/lib/caseStudies";
+import type { CaseStudyData } from "@/lib/caseStudies";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const [data] = await db.select().from(projects).where(and(eq(projects.slug, params.slug), eq(projects.featured, true)));
@@ -52,8 +52,7 @@ export default async function WorkCaseStudy({ params }: { params: { slug: string
     stack: dbData.tags,
     overview: dbData.overview,
     approach: dbData.approach || undefined,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    techStack: dbData.techStack as any as TechChoice[] | undefined,
+    techStack: dbData.techStack || undefined,
     features: dbData.keyFeatures || undefined,
     images: dbData.heroImageUrl ? {
       hero: dbData.heroImageUrl,
@@ -62,7 +61,7 @@ export default async function WorkCaseStudy({ params }: { params: { slug: string
     } : undefined,
     playgroundType: dbData.playgroundType as "none" | "iframe" | "interactive" | "video" | undefined,
     playgroundUrl: dbData.playgroundUrl || undefined,
-    playgroundConfig: dbData.playgroundConfig as string | undefined,
+    playgroundConfig: dbData.playgroundConfig || undefined,
   };
 
   return <CaseStudy data={mappedData} type="work" prevProject={prev} nextProject={next} />;

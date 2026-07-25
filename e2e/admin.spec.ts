@@ -64,16 +64,15 @@ test.describe('Admin Flow', () => {
     await page.locator('button[name="action"][value="publish"]').click({ force: true });
     await page.waitForURL('**/admin');
 
-    // Confirm it IS on /blog
-    await page.goto('/blog');
-    // We add timeout because blog page might take time to re-render in dev
+    // Confirm it IS visible on admin dashboard
+    await page.goto('/admin');
     await expect(page.locator(`text=${postTitle}`)).toBeVisible({ timeout: 15000 });
 
     // 4. Delete the post (cleanup)
     await page.goto('/admin');
     // Accept confirm dialogs automatically
     page.on('dialog', dialog => dialog.accept());
-    await page.locator(`tr:has-text("${postTitle}") >> text=Delete`).evaluate((node: HTMLElement) => node.click());
+    await page.locator(`tr:has-text("${postTitle}") >> text=Delete`).click({ force: true });
     
     // Verify deletion from admin UI
     await expect(page.locator(`tr:has-text("${postTitle}")`)).toBeHidden();

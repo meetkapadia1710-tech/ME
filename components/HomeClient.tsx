@@ -18,7 +18,7 @@ import { InferSelectModel } from "drizzle-orm";
 type Project = InferSelectModel<typeof projects>;
 
 export default function HomeClient({ latestPost, dbProjects = [] }: { latestPost: Post | null, dbProjects?: Project[] }) {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true);
 
   return (
     <>

@@ -32,6 +32,7 @@ export default function LoginPage() {
             <span className="text-sm font-medium text-foreground/80">Password</span>
             <input
               type="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-foreground focus:outline-none"

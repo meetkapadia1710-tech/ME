@@ -4,7 +4,7 @@ import CaseStudy from "@/components/CaseStudy";
 import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
-import type { CaseStudyData, TechChoice } from "@/lib/caseStudies";
+import type { CaseStudyData } from "@/lib/caseStudies";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const [data] = await db.select().from(projects).where(eq(projects.slug, params.slug));
@@ -36,8 +36,7 @@ export default async function ArchiveCaseStudy({ params }: { params: { slug: str
     stack: dbData.tags,
     overview: dbData.overview,
     approach: dbData.approach || undefined,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    techStack: dbData.techStack as any as TechChoice[] | undefined,
+    techStack: dbData.techStack || undefined,
     features: dbData.keyFeatures || undefined,
     images: dbData.heroImageUrl ? {
       hero: dbData.heroImageUrl,
@@ -46,7 +45,7 @@ export default async function ArchiveCaseStudy({ params }: { params: { slug: str
     } : undefined,
     playgroundType: dbData.playgroundType as "none" | "iframe" | "interactive" | "video" | undefined,
     playgroundUrl: dbData.playgroundUrl || undefined,
-    playgroundConfig: dbData.playgroundConfig as string | undefined,
+    playgroundConfig: dbData.playgroundConfig || undefined,
   };
 
   return <CaseStudy data={mappedData} type="archive" prevProject={prev} nextProject={next} />;

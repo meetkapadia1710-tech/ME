@@ -1,6 +1,7 @@
-import { pgTable, text, serial, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, boolean, jsonb, index } from "drizzle-orm/pg-core";
 
 export type TechChoice = { name: string; why: string };
+export type PlaygroundConfig = Record<string, unknown>;
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
@@ -21,10 +22,16 @@ export const projects = pgTable("projects", {
   keyFeatures: text("key_features").array(),
   playgroundType: text("playground_type", { enum: ["none", "iframe", "interactive", "video"] }).default("none").notNull(),
   playgroundUrl: text("playground_url"),
-  playgroundConfig: jsonb("playground_config"),
+  playgroundConfig: jsonb("playground_config").$type<PlaygroundConfig>(),
   liveUrl: text("live_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => {
+  return {
+    featuredIdx: index("projects_featured_idx").on(table.featured),
+    slugIdx: index("projects_slug_idx").on(table.slug),
+    createdAtIdx: index("projects_created_at_idx").on(table.createdAt),
+  };
 });
 
 export const posts = pgTable("posts", {
@@ -38,4 +45,10 @@ export const posts = pgTable("posts", {
   publishedAt: timestamp("published_at"), // null = draft
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => {
+  return {
+    publishedAtIdx: index("posts_published_at_idx").on(table.publishedAt),
+    slugIdx: index("posts_slug_idx").on(table.slug),
+    createdAtIdx: index("posts_created_at_idx").on(table.createdAt),
+  };
 });
