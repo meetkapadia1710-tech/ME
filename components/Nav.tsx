@@ -5,6 +5,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import Magnetic from "./Magnetic";
 import { DUR_FAST, EASE_ENTRANCE } from "@/lib/motion";
+import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 
 /** Shared underline-draw animation — enter draws left→right, leave retracts right→left */
 function useUnderline() {
@@ -97,7 +98,9 @@ function NavLink({
  */
 export default function Nav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 mix-blend-difference">
+    <>
+      <ProgressiveBlur />
+      <header className="fixed inset-x-0 top-0 z-50 mix-blend-difference">
       <nav className="flex items-center justify-between px-6 py-5 md:px-10 md:py-6">
         <Magnetic>
           <NavLink href="/">Meet Kapadia</NavLink>
@@ -121,5 +124,6 @@ export default function Nav() {
         </div>
       </nav>
     </header>
+    </>
   );
 }

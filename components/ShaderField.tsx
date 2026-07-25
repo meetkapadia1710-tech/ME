@@ -1,7 +1,9 @@
 "use client";
 
-import { useRef, useEffect, useMemo, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useEffect, useMemo } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import Tempus from "tempus";
+import { useWindowSize } from "hamo";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -208,14 +210,31 @@ function ShaderPlane() {
     []
   );
 
+  const { width, height } = useWindowSize();
+  const advance = useThree((s) => s.advance);
+
+  // Use Tempus as the shared RAF loop for this R3F scene.
+  // Instead of R3F driving itself (`frameloop="never"`), Tempus ticks `advance()`.
   useEffect(() => {
-    const handleResize = () => {
-      uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+    const unsubscribe = Tempus.add(
+      (state) => {
+        // state.time is in ms. R3F expects seconds? `advance` usually takes seconds since start.
+        // `performance.now()` is ms. Actually `advance` doesn't strictly need arguments if we just want it to render.
+        // According to Tempus/R3F integration, advance takes timestamp in ms.
+        advance(state.time);
+      },
+      { order: 1 } // Render after Lenis/GSAP (order 0)
+    );
+    return () => {
+      unsubscribe?.();
     };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [uniforms]);
+  }, [advance]);
+
+  useEffect(() => {
+    if (width && height) {
+      uniforms.uResolution.value.set(width, height);
+    }
+  }, [width, height, uniforms]);
 
   useEffect(() => {
     const st = ScrollTrigger.create({
@@ -282,15 +301,6 @@ function ShaderPlane() {
 }
 
 export default function ShaderField() {
-  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
-
-  useEffect(() => {
-    const handleVisibility = () => {
-      setFrameloop(document.hidden ? "never" : "always");
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, []);
 
   // Global interaction tracker
   useEffect(() => {
@@ -317,7 +327,8 @@ export default function ShaderField() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 h-screen w-screen" aria-hidden>
       <Canvas
-        frameloop={frameloop}
+        style={{ pointerEvents: 'none' }}
+        frameloop="never"
         camera={{ position: [0, 0, 1] }}
         gl={{ antialias: false, powerPreference: "high-performance" }}
         dpr={[1, 1.5]}

@@ -40,7 +40,8 @@ const NODES = [
 
 export default function JourneyTimeline() {
   const rootRef = useRef<HTMLElement>(null);
-  const linesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const beamRef = useRef<HTMLDivElement>(null);
   const dotsRef = useRef<(HTMLDivElement | null)[]>([]);
   const contentsRef = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -67,7 +68,6 @@ export default function JourneyTimeline() {
 
       // Animate each node sequentially as it enters view
       NODES.forEach((_, i) => {
-        const line = linesRef.current[i];
         const dot = dotsRef.current[i];
         const content = contentsRef.current[i];
 
@@ -79,21 +79,7 @@ export default function JourneyTimeline() {
           },
         });
 
-        // 1. Connector line draws downward via clipPath
-        if (line) {
-          gsap.set(line, { clipPath: "inset(0 0 100% 0)" });
-          tl.to(
-            line,
-            {
-              clipPath: "inset(0 0 0% 0)",
-              duration: DUR_STANDARD,
-              ease: EASE_ENTRANCE,
-            },
-            0,
-          );
-        }
-
-        // 2. Dot scales in
+        // 1. Dot scales in
         if (dot) {
           gsap.set(dot, { scale: 0, opacity: 0 });
           tl.to(
@@ -124,6 +110,24 @@ export default function JourneyTimeline() {
           );
         }
       });
+      // Tracing beam scrubs down the track
+      if (trackRef.current && beamRef.current) {
+        gsap.fromTo(
+          beamRef.current,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: trackRef.current,
+              start: "top 60%",
+              end: "bottom 60%",
+              scrub: 1,
+            }
+          }
+        );
+      }
+
     }, root);
 
     return () => ctx.revert();
@@ -146,21 +150,21 @@ export default function JourneyTimeline() {
 
       {/* Timeline */}
       <div className="relative ml-4 md:ml-24">
+        <div 
+          ref={trackRef}
+          className="absolute left-[4px] top-4 bottom-12 w-px bg-fg-primary/10 md:left-[4px]"
+        >
+          <div 
+            ref={beamRef}
+            className="w-full h-full origin-top"
+            style={{ background: "linear-gradient(to bottom, transparent, #10b981, #059669, transparent)" }}
+          />
+        </div>
         {NODES.map((node, i) => {
-          const isLast = i === NODES.length - 1;
           return (
             <div key={node.year} className="relative flex gap-8 md:gap-12">
               {/* Left column: connector line + dot */}
               <div className="relative flex flex-col items-center">
-                {/* Vertical connector (hidden for last node) */}
-                {!isLast && (
-                  <div
-                    ref={(el) => { linesRef.current[i] = el; }}
-                    aria-hidden
-                    className="absolute top-3 left-1/2 w-px -translate-x-1/2 bg-fg-primary/20"
-                    style={{ height: "calc(100% + 2rem)", top: "0.75rem" }}
-                  />
-                )}
 
                 {/* Dot */}
                 <div

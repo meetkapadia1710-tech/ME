@@ -8,6 +8,9 @@ import { getAllPosts } from "@/lib/mdx";
 import RetroTerminal from "@/components/RetroTerminal";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
+
+
 
 const ShaderField = dynamic(() => import("@/components/ShaderField"), {
   ssr: false,
@@ -79,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${mono.variable} ${serif.variable}`}>
+    <html lang="en" className={cn(display.variable, mono.variable, serif.variable, "font-sans")}>
       <body className="bg-background text-fg-primary antialiased relative">
         <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay">
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">

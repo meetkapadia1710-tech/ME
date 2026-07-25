@@ -7,6 +7,7 @@ import { DUR_STANDARD, EASE_ENTRANCE } from "@/lib/motion";
 import { TOOLS } from "@/lib/coreToolsData";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 // Define our standard categories
 const CATEGORIES = ["Frontend", "Backend", "Mobile", "Systems", "AI/Tooling"];
@@ -34,6 +35,8 @@ export type RadarProofData = {
   name: string;
   url: string;
   type: "certification" | "badge";
+  value?: number;
+  suffix?: string;
 };
 
 // Hardcode some proofs (since we're removing CodingProfiles & Certifications)
@@ -42,8 +45,8 @@ const PROOFS: Record<string, RadarProofData[]> = {
     { id: "fcc-rwd", name: "Responsive Web Design (FCC)", url: "https://www.freecodecamp.org/certification/meetkapadia/responsive-web-design", type: "certification" }
   ],
   "Systems": [
-    { id: "leetcode", name: "LeetCode (Top 5%)", url: "https://leetcode.com/u/meet_kapadia/", type: "badge" },
-    { id: "codechef", name: "CodeChef (4-Star)", url: "https://www.codechef.com/users/meetkapadia", type: "badge" }
+    { id: "leetcode", name: "LeetCode", url: "https://leetcode.com/u/meet_kapadia/", type: "badge", value: 500, suffix: "+" },
+    { id: "codechef", name: "CodeChef", url: "https://www.codechef.com/users/meetkapadia", type: "badge", value: 1462 }
   ],
   "Backend": [
     { id: "postman", name: "Postman API Fundamentals", url: "https://badgr.com/public/assertions/...", type: "certification" }
@@ -310,7 +313,7 @@ export default function SkillsRadar({ projects }: SkillsRadarProps) {
                           rel="noopener noreferrer"
                           className="group inline-flex items-center gap-2 font-mono text-sm text-fg-primary hover:text-emerald-400 transition-colors"
                         >
-                          {p.name}
+                          {p.name} {p.value ? <span>(<NumberTicker value={p.value} className="text-emerald-500" />{p.suffix})</span> : null}
                           <span className="opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
                             ↗
                           </span>

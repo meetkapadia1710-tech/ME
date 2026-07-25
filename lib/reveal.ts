@@ -2,12 +2,11 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { RefObject } from "react";
 
-/** True when the user has asked the OS to minimise non-essential motion. */
+/** True when the user has asked the OS to minimise non-essential motion or if in test mode. */
 export function prefersReducedMotion() {
-  return (
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  if (typeof window === "undefined") return false;
+  if (process.env.NEXT_PUBLIC_TEST_MODE === "true") return true;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /**

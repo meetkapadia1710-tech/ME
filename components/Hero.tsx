@@ -10,6 +10,7 @@ import {
   REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
 } from "@/lib/motion";
 import { useWebGLStore } from "@/lib/store";
+import { TextScrollReveal } from "@/components/ui/text-scroll-reveal";
 
 const MARQUEE_PHRASE = "Full-Stack Developer — SDE — ";
 
@@ -81,7 +82,7 @@ export default function Hero({ loaded }: { loaded: boolean }) {
   }, [loaded]);
 
   return (
-    <section className="relative flex min-h-svh flex-col justify-between overflow-hidden pt-28 md:pt-32">
+    <section id="hero" className="relative flex min-h-svh flex-col justify-between overflow-hidden pt-28 md:pt-32">
       {/* Marquee */}
       <div
         className="relative z-10 flex select-none py-10 cursor-default [perspective:1000px]"
@@ -118,13 +119,10 @@ export default function Hero({ loaded }: { loaded: boolean }) {
         className="relative z-10 flex flex-col gap-10 px-6 pb-12 md:flex-row md:items-end md:justify-between md:px-10 md:pb-14"
       >
         <div className="max-w-md overflow-hidden">
-          <p
-            data-reveal
+          <TextScrollReveal 
+            text="I design and ship full products end to end — from the data model to the last pixel of motion."
             className="font-display text-heading-sm leading-snug text-fg-primary md:text-heading-md"
-          >
-            I design and ship full products end to end — from the data model to
-            the last pixel of motion.
-          </p>
+          />
         </div>
 
         <div className="flex flex-col gap-5 md:items-end">

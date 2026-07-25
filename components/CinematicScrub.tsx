@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/reveal";
 import { cn } from "@/lib/utils";
+import { useIntersectionObserver } from "hamo";
 
 const TOTAL_FRAMES = 120;
 
@@ -32,11 +33,12 @@ export default function CinematicScrub() {
   }, []);
 
   // Frame loading logic
-  useEffect(() => {
-    if (isReduced) return;
+  // We only want to start loading when the user is somewhat close to the section.
+  const [setContainerRef, entry] = useIntersectionObserver({ rootMargin: "1000px 0px" });
+  const isIntersecting = entry?.isIntersecting ?? false;
+  const hasStartedLoading = useRef(false);
 
-    let hasStartedLoading = false;
-
+  const preloadFrames = useCallback(() => {
     // Load a single frame and return a promise
     const loadFrame = (index: number): Promise<void> => {
       return new Promise((resolve) => {
@@ -69,22 +71,7 @@ export default function CinematicScrub() {
       }
     };
 
-    // We only want to start loading when the user is somewhat close to the section.
-    // Using IntersectionObserver on the container with a rootMargin.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasStartedLoading) {
-          hasStartedLoading = true;
-          loadSequence();
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "1000px 0px" } // trigger when within ~1000px
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+    loadSequence();
 
     if (isReduced) {
       // If reduced motion is true, just load the final frame and draw it
@@ -96,9 +83,17 @@ export default function CinematicScrub() {
       };
     }
 
-    return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReduced]);
+
+  useEffect(() => {
+    if (isReduced) return;
+    if (hasStartedLoading.current) return;
+    if (!isIntersecting) return;
+
+    hasStartedLoading.current = true;
+    preloadFrames();
+  }, [isReduced, isIntersecting, preloadFrames]);
 
   // Canvas drawing logic
   const drawImageFit = (ctx: CanvasRenderingContext2D, img: HTMLImageElement, canvas: HTMLCanvasElement) => {
@@ -220,7 +215,11 @@ export default function CinematicScrub() {
 
   return (
     <section 
-      ref={containerRef} 
+      ref={(el) => {
+        // @ts-expect-error generic ref assignment
+        containerRef.current = el;
+        setContainerRef(el);
+      }}
       className={cn(
         "relative w-full bg-[#0a0a0a] cinematic-trigger-area",
         isReduced ? "h-screen" : "h-[400vh]" // Reduced motion = simple static block, normal = tall scrolling area

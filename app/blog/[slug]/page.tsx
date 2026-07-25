@@ -6,6 +6,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { getAllPosts, getPostBySlug } from "@/lib/mdx";
+import { CodeBlock } from "@/components/ui/code-block";
 
 interface Props {
   params: {
@@ -65,6 +66,9 @@ export default function BlogPostPage({ params }: Props) {
       ],
     },
   };
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mdxOptionsCast = mdxOptions as any;
 
   return (
     <>
@@ -93,8 +97,11 @@ export default function BlogPostPage({ params }: Props) {
             </header>
 
             <div className="prose prose-invert max-w-[65ch]">
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <MDXRemote source={post.content} options={mdxOptions as any} />
+              <MDXRemote 
+                source={post.content} 
+                options={mdxOptionsCast}
+                components={{ CodeBlock }} 
+              />
             </div>
             
             <div className="mt-24 md:mt-32 border-t border-fg-primary/10 pt-12">

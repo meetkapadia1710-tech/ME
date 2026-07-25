@@ -1,6 +1,7 @@
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Tempus from "tempus";
 
 // Module-level handle so route transitions can reset scroll on navigation.
 let lenisInstance: Lenis | null = null;
@@ -36,14 +37,21 @@ export function initSmoothScroll() {
   // Keep ScrollTrigger's cached positions in sync with Lenis.
   lenis.on("scroll", ScrollTrigger.update);
 
-  // GSAP ticker gives time in seconds; Lenis.raf expects milliseconds.
-  const raf = (time: number) => lenis.raf(time * 1000);
-  gsap.ticker.add(raf);
-  gsap.ticker.lagSmoothing(0);
+  // Turn off GSAP's internal ticker
+  gsap.ticker.remove(gsap.updateRoot);
+
+  // Subscribe Lenis to Tempus
+  // Tempus state contains `time` which is equivalent to `performance.now()`
+  const unsubscribeLenis = Tempus.add((state) => {
+    lenis.raf(state.time);
+    gsap.updateRoot(state.time / 1000);
+  }, { order: 0 }); // Order 0 ensures Lenis runs early
 
   return () => {
+    unsubscribeLenis?.();
     lenis.off("scroll", ScrollTrigger.update);
-    gsap.ticker.remove(raf);
+    // Restore GSAP's ticker just in case
+    gsap.ticker.add(gsap.updateRoot);
     lenis.destroy();
     if (lenisInstance === lenis) lenisInstance = null;
   };

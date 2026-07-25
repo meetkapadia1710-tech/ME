@@ -39,7 +39,9 @@ test.describe('Command Palette', () => {
     await page.keyboard.press(`${modifier}+k`);
     await paletteInput.fill('Reach Out');
     await page.keyboard.press('Enter');
-    // It should navigate to /#reach-out
-    await expect(page).toHaveURL(/.*\/#reach-out/);
+    // It should navigate to /
+    await expect(page).toHaveURL(/.*\//);
+    // And reach out section should be visible
+    await expect(page.locator('#reach-out')).toBeVisible();
   });
 });

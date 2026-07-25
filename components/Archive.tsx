@@ -8,10 +8,12 @@ import { createRevealContext, prefersReducedMotion } from "@/lib/reveal";
 import { useRowTilt } from "@/hooks/useRowTilt";
 import { projects } from "@/db/schema";
 import {
-  EASE_ENTRANCE, EASE_STANDARD,
   DUR_STANDARD,
+  EASE_ENTRANCE,
+  EASE_STANDARD,
   REVEAL_Y,
 } from "@/lib/motion";
+import { BorderBeam } from "@/components/ui/border-beam";
 
 type FilterTag = "All" | "Personal" | "Team" | "Client" | "Hackathon" | "Systems";
 const FILTERS: FilterTag[] = ["All", "Personal", "Team", "Client", "Hackathon", "Systems"];
@@ -127,7 +129,7 @@ export default function Archive({ projectsList }: { projectsList: typeof project
               onMouseEnter={() => showPreview(i)}
               onMouseLeave={() => hidePreview(i)}
               onBlur={() => hidePreview(i)}
-              className="group flex flex-col gap-3 rounded-2xl p-4 transition-all duration-500 ease-out hover:!scale-[1.01] hover:!opacity-100 hover:!blur-none hover:bg-fg-primary/[0.02] hover:shadow-2xl focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-start md:gap-8 md:p-6"
+              className="group relative flex flex-col gap-3 rounded-2xl p-4 transition-all duration-500 ease-out hover:!scale-[1.01] hover:!opacity-100 hover:!blur-none hover:bg-fg-primary/[0.02] hover:shadow-2xl focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-start md:gap-8 md:p-6"
             >
               <div className="md:w-1/4">
                 <span className="font-mono text-meta text-fg-muted">
@@ -170,6 +172,7 @@ export default function Archive({ projectsList }: { projectsList: typeof project
                   </span>
                 </div>
               </div>
+              <BorderBeam />
             </Link>
           </li>
         ))}

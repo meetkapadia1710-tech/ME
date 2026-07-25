@@ -12,6 +12,7 @@ import {
   REVEAL_Y, REVEAL_Y_PCT, REVEAL_ROTATE_X, REVEAL_PERSPECTIVE,
 } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { BorderBeam } from "@/components/ui/border-beam";
 
 import type { projects } from "@/db/schema";
 import { InferSelectModel } from "drizzle-orm";
@@ -113,7 +114,7 @@ export default function SelectedWorks({ ready, dbProjects = [] }: { ready: boole
               onMouseEnter={() => showPreview(i)}
               onMouseLeave={() => hidePreview(i)}
               onBlur={() => hidePreview(i)}
-              className="group flex flex-col gap-3 rounded-2xl p-6 transition-all duration-500 ease-out hover:!scale-[1.02] hover:!opacity-100 hover:!blur-none hover:bg-fg-primary/[0.02] hover:shadow-2xl focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-center md:justify-between md:gap-8 md:p-8"
+              className="group relative flex flex-col gap-3 rounded-2xl p-6 transition-all duration-500 ease-out hover:!scale-[1.02] hover:!opacity-100 hover:!blur-none hover:bg-fg-primary/[0.02] hover:shadow-2xl focus:!opacity-100 focus-visible:outline-none md:flex-row md:items-center md:justify-between md:gap-8 md:p-8"
             >
               {/* Top line: number + name + CTA */}
               <div className="flex items-start justify-between gap-6">
@@ -185,6 +186,7 @@ export default function SelectedWorks({ ready, dbProjects = [] }: { ready: boole
                   <>Preview <span aria-hidden>↓</span></>
                 )}
               </span>
+              <BorderBeam />
             </Link>
           </li>
         ))}

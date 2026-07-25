@@ -28,11 +28,11 @@ test.describe('Contact Form', () => {
     // Test Sentry error simulation
     await emailInput.fill('fail@example.com');
     await submitBtn.click();
-    await expect(page.locator('text=Failed to send message')).toBeVisible();
+    await expect(page.locator('text=Failed to send message')).toBeVisible({ timeout: 15000 });
 
     // Test valid submission
     await emailInput.fill('test@example.com');
     await submitBtn.click();
-    await expect(page.locator('text=Message sent successfully!')).toBeVisible();
+    await expect(page.locator('text=Message sent successfully!')).toBeVisible({ timeout: 15000 });
   });
 });

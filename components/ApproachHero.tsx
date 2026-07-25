@@ -5,6 +5,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { createRevealContext } from "@/lib/reveal";
 import { EASE_ENTRANCE } from "@/lib/motion";
+import { TextScrollReveal } from "@/components/ui/text-scroll-reveal";
 
 /**
  * Approach page hero — back-link (mirrors CaseStudy's /#work pattern),
@@ -56,11 +57,10 @@ export default function ApproachHero() {
         <h1 className="mt-4 font-display text-display text-fg-primary">
           How I work.
         </h1>
-        <p className="mt-8 max-w-2xl font-display text-heading-sm leading-snug text-fg-muted md:text-heading-md">
-          I build in phases, not all at once. Every project starts scoped tight,
-          ships something working early, then gets pushed further — same way
-          this site was built.
-        </p>
+        <TextScrollReveal 
+          text="I build in phases, not all at once. Every project starts scoped tight, ships something working early, then gets pushed further — same way this site was built."
+          className="mt-8 max-w-2xl font-display text-heading-sm leading-snug text-fg-muted md:text-heading-md"
+        />
       </header>
     </div>
   );
