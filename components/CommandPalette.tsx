@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getLenis } from "@/lib/lenis";
+import { useWebGLStore } from "@/lib/store";
 
 type Item = {
   label: string;
@@ -54,6 +55,7 @@ export default function CommandPalette({
   const prevFocusRef = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { activeOverlay, setActiveOverlay } = useWebGLStore();
 
   const allItems = useMemo(() => [
     ...ITEMS,
@@ -69,13 +71,14 @@ export default function CommandPalette({
 
   const close = useCallback(() => {
     setOpen(false);
+    setActiveOverlay("none");
     setQuery("");
     setCursor(0);
     if (prevFocusRef.current) {
       prevFocusRef.current.focus();
       prevFocusRef.current = null;
     }
-  }, []);
+  }, [setActiveOverlay]);
 
   const execute = useCallback(
     (item: Item) => {
@@ -123,9 +126,16 @@ export default function CommandPalette({
       // Open: Cmd+K or Ctrl+K
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
+        
+        // Prevent opening if terminal is active
+        if (activeOverlay === "terminal") return;
+        
         setOpen((v) => {
           if (!v) {
             prevFocusRef.current = document.activeElement as HTMLElement;
+            setActiveOverlay("palette");
+          } else {
+            setActiveOverlay("none");
           }
           return !v;
         });
@@ -168,7 +178,7 @@ export default function CommandPalette({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, close, cursor, filtered, execute]);
+  }, [open, close, cursor, filtered, execute, activeOverlay, setActiveOverlay]);
 
   // Focus input when opened
   useEffect(() => {

@@ -4,8 +4,14 @@ import * as Sentry from "@sentry/nextjs";
 import { db } from "@/db";
 import { projects, posts } from "@/db/schema";
 import { eq, count, and, ne } from "drizzle-orm";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export async function createProjectAction(data: typeof projects.$inferInsert) {
+  const session = await auth();
+  if (!session) return { success: false, error: "Unauthorized" };
+
+  let success = false;
   try {
     if (data.featured) {
       const [res] = await db.select({ value: count() }).from(projects).where(eq(projects.featured, true));
@@ -13,15 +19,21 @@ export async function createProjectAction(data: typeof projects.$inferInsert) {
         return { success: false, error: "Maximum of 4 featured projects allowed. Unfeature another project first." };
       }
     }
-    const [result] = await db.insert(projects).values(data).returning();
-    return { success: true, project: result };
+    await db.insert(projects).values(data);
+    success = true;
   } catch (error) {
     Sentry.captureException(error, { tags: { context: "admin-panel", action: "createProject" } });
     return { success: false, error: "Failed to create project" };
   }
+  if (success) {
+    redirect("/admin");
+  }
 }
 
 export async function editProjectAction(id: number, data: Partial<typeof projects.$inferInsert>) {
+  const session = await auth();
+  if (!session) return { success: false, error: "Unauthorized" };
+
   try {
     if (data.featured) {
       const [res] = await db.select({ value: count() }).from(projects).where(
@@ -40,6 +52,9 @@ export async function editProjectAction(id: number, data: Partial<typeof project
 }
 
 export async function deleteProjectAction(id: number) {
+  const session = await auth();
+  if (!session) return { success: false, error: "Unauthorized" };
+
   try {
     await db.delete(projects).where(eq(projects.id, id));
     return { success: true };
@@ -50,16 +65,26 @@ export async function deleteProjectAction(id: number) {
 }
 
 export async function createPostAction(data: typeof posts.$inferInsert) {
+  const session = await auth();
+  if (!session) return { success: false, error: "Unauthorized" };
+
+  let success = false;
   try {
-    const [result] = await db.insert(posts).values(data).returning();
-    return { success: true, post: result };
+    await db.insert(posts).values(data);
+    success = true;
   } catch (error) {
     Sentry.captureException(error, { tags: { context: "admin-panel", action: "createPost" } });
     return { success: false, error: "Failed to create post" };
   }
+  if (success) {
+    redirect("/admin");
+  }
 }
 
 export async function editPostAction(id: number, data: Partial<typeof posts.$inferInsert>) {
+  const session = await auth();
+  if (!session) return { success: false, error: "Unauthorized" };
+
   try {
     const [result] = await db.update(posts).set(data).where(eq(posts.id, id)).returning();
     return { success: true, post: result };
@@ -70,6 +95,9 @@ export async function editPostAction(id: number, data: Partial<typeof posts.$inf
 }
 
 export async function togglePostPublishAction(id: number, publish: boolean) {
+  const session = await auth();
+  if (!session) return { success: false, error: "Unauthorized" };
+
   try {
     const [result] = await db.update(posts)
       .set({ publishedAt: publish ? new Date() : null })

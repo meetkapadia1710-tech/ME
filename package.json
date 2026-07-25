@@ -19,8 +19,6 @@
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@sentry/nextjs": "^10.67.0",
-    "@studio-freight/hamo": "^0.6.33",
-    "@studio-freight/tempus": "^0.0.44",
     "@tailwindcss/typography": "^0.5.20",
     "@types/three": "^0.185.1",
     "@vercel/analytics": "^2.0.1",

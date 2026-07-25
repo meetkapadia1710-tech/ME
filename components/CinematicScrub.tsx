@@ -206,6 +206,7 @@ export default function CinematicScrub() {
     });
 
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("resize", handleResize);
       tl.kill();
       st.kill();

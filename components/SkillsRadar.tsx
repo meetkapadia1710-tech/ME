@@ -8,17 +8,10 @@ import { TOOLS } from "@/lib/coreToolsData";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NumberTicker } from "@/components/ui/number-ticker";
+import { PROOFS } from "@/lib/proofsData";
 
 // Define our standard categories
 const CATEGORIES = ["Frontend", "Backend", "Mobile", "Systems", "AI/Tooling"];
-
-// Define which categories each Core Tool contributes to
-const CORE_TOOLS_MAP: Record<string, string[]> = {
-  "TypeScript / Next.js": ["Frontend", "Backend"],
-  "Tailwind CSS": ["Frontend"],
-  "Firebase": ["Backend", "Mobile"],
-  "Python / Django": ["Backend", "Systems", "AI/Tooling"]
-};
 
 // Simulated fetch from DB for the client side.
 // In a real Server Component we'd pass these down as props, 
@@ -28,31 +21,6 @@ export type RadarProjectData = {
   name: string;
   isArchive: boolean;
   skillCategories: string[];
-};
-
-export type RadarProofData = {
-  id: string;
-  name: string;
-  url: string;
-  type: "certification" | "badge";
-  value?: number;
-  suffix?: string;
-};
-
-// Hardcode some proofs (since we're removing CodingProfiles & Certifications)
-const PROOFS: Record<string, RadarProofData[]> = {
-  "Frontend": [
-    { id: "fcc-rwd", name: "Responsive Web Design (FCC)", url: "https://www.freecodecamp.org/certification/meetkapadia/responsive-web-design", type: "certification" }
-  ],
-  "Systems": [
-    { id: "leetcode", name: "LeetCode", url: "https://leetcode.com/u/meet_kapadia/", type: "badge", value: 500, suffix: "+" },
-    { id: "codechef", name: "CodeChef", url: "https://www.codechef.com/users/meetkapadia", type: "badge", value: 1462 }
-  ],
-  "Backend": [
-    { id: "postman", name: "Postman API Fundamentals", url: "https://badgr.com/public/assertions/...", type: "certification" }
-  ],
-  "AI/Tooling": [],
-  "Mobile": []
 };
 
 type SkillsRadarProps = {
@@ -85,11 +53,11 @@ export default function SkillsRadar({ projects }: SkillsRadarProps) {
     const rawScores = CATEGORIES.map(cat => {
       let score = projectTally[cat].length;
       TOOLS.forEach(tool => {
-        if (CORE_TOOLS_MAP[tool.name]?.includes(cat)) {
+        if (tool.categories?.includes(cat)) {
           score += 2; // Arbitrary weight to represent "core proficiency"
         }
       });
-      return { category: cat, score, projects: projectTally[cat], proofs: PROOFS[cat] || [] };
+      return { category: cat, score, projects: projectTally[cat], proofs: PROOFS.filter(p => p.categories.includes(cat)) };
     });
 
     // Normalize scores so the max is always touching the outer edge of the radar

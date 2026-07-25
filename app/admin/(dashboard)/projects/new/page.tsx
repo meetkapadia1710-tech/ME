@@ -34,9 +34,7 @@ export default function NewProjectPage() {
     };
 
     const result = await createProjectAction(data);
-    if (result.success) {
-      router.push("/admin");
-    } else {
+    if (result && !result.success) {
       setError(result.error || "Something went wrong");
     }
     setLoading(false);

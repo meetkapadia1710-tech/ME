@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TOOLS } from "@/lib/coreToolsData";
 import { WORKS } from "@/lib/worksData";
 import { prefersReducedMotion } from "@/lib/reveal";
+import { useWebGLStore } from "@/lib/store";
 
 type OutputLine = {
   id: string;
@@ -22,7 +23,9 @@ const BOOT_SEQUENCE = [
 ];
 
 export default function RetroTerminal() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { activeOverlay, setActiveOverlay } = useWebGLStore();
+  const isOpen = activeOverlay === "terminal";
+  const setIsOpen = (open: boolean) => setActiveOverlay(open ? "terminal" : "none");
   const [booting, setBooting] = useState(false);
   const [bootLines, setBootLines] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);
@@ -40,8 +43,10 @@ export default function RetroTerminal() {
   // Listen for "sudo" sequence globally
   useEffect(() => {
     const handleGlobalKeyDown = (e: globalThis.KeyboardEvent) => {
-      // Don't intercept if an input is focused
-      if (document.activeElement) {
+      if (activeOverlay === "palette") return;
+      
+      // Don't intercept if an input is focused and we aren't in terminal
+      if (activeOverlay === "none" && document.activeElement) {
         const tag = document.activeElement.tagName.toLowerCase();
         if (tag === "input" || tag === "textarea" || (document.activeElement as HTMLElement).isContentEditable) {
           return;
@@ -74,7 +79,7 @@ export default function RetroTerminal() {
 
     window.addEventListener("keydown", handleGlobalKeyDown);
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
-  }, [isOpen]);
+  }, [isOpen, activeOverlay, setIsOpen]);
 
   // Trap focus when open
   useEffect(() => {

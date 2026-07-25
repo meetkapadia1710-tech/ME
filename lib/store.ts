@@ -5,6 +5,8 @@ interface WebGLState {
   setIntensity: (intensity: number) => void;
   hoverTarget: number;
   setHoverTarget: (hoverTarget: number) => void;
+  activeOverlay: "none" | "palette" | "terminal";
+  setActiveOverlay: (overlay: "none" | "palette" | "terminal") => void;
 }
 
 export const useWebGLStore = create<WebGLState>((set) => ({
@@ -12,4 +14,6 @@ export const useWebGLStore = create<WebGLState>((set) => ({
   setIntensity: (intensity) => set({ intensity }),
   hoverTarget: 0,
   setHoverTarget: (hoverTarget) => set({ hoverTarget }),
+  activeOverlay: "none",
+  setActiveOverlay: (activeOverlay) => set({ activeOverlay }),
 }));

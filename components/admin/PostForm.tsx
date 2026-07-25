@@ -39,9 +39,11 @@ export default function PostForm({ post }: { post?: typeof posts.$inferSelect })
         ? await editPostAction(post.id, data)
         : await createPostAction(data as typeof posts.$inferInsert);
         
-    if (result.success) {
-      router.push("/admin");
-    } else {
+    if (result && result.success) {
+      if (isEdit) {
+        router.push("/admin");
+      }
+    } else if (result && !result.success) {
       setError(result.error || "Something went wrong");
     }
     setLoading(false);

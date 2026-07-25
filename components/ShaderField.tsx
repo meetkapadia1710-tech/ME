@@ -218,10 +218,7 @@ function ShaderPlane() {
   useEffect(() => {
     const unsubscribe = Tempus.add(
       (state) => {
-        // state.time is in ms. R3F expects seconds? `advance` usually takes seconds since start.
-        // `performance.now()` is ms. Actually `advance` doesn't strictly need arguments if we just want it to render.
-        // According to Tempus/R3F integration, advance takes timestamp in ms.
-        advance(state.time);
+        advance(state.time / 1000);
       },
       { order: 1 } // Render after Lenis/GSAP (order 0)
     );
@@ -252,9 +249,9 @@ function ShaderPlane() {
     if (!materialRef.current) return;
 
     if (!isReduced) {
-      uniforms.uTime.value += delta * 0.5; // Overall time slowed down
+      uniforms.uTime.value += delta * 1.5; // Overall time slow drift
     }
-    
+
     // Smoothly transition base intensity
     materialRef.current.uniforms.uIntensity.value = THREE.MathUtils.lerp(
       materialRef.current.uniforms.uIntensity.value,
@@ -279,7 +276,7 @@ function ShaderPlane() {
       mouseVelocity.current.y = targetMouse.current.y - currentMouse.current.y;
       uniforms.uMouseVelocity.value.copy(mouseVelocity.current);
 
-      uniforms.uSparkleSeed.value += delta * 0.05; // Slower sparkles
+      uniforms.uSparkleSeed.value += delta * 0.5; // Smooth sparkle drift
     } else {
       uniforms.uMouseVelocity.value.set(0, 0);
     }
@@ -317,7 +314,7 @@ export default function ShaderField() {
 
     document.addEventListener("mouseover", handleMouseOver);
     document.addEventListener("mouseleave", handleMouseLeave);
-    
+
     return () => {
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseleave", handleMouseLeave);
