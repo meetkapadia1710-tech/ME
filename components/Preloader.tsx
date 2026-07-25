@@ -22,8 +22,8 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    // Reduced motion: no counter, no scroll lock — reveal the page instantly.
-    if (prefersReducedMotion()) {
+    // Reduced motion or test mode: no counter, no scroll lock — reveal the page instantly.
+    if (prefersReducedMotion() || process.env.NEXT_PUBLIC_TEST_MODE === "true") {
       onCompleteRef.current();
       setDone(true);
       return;

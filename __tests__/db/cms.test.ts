@@ -36,7 +36,7 @@ describe('CMS Data Layer Queries', () => {
   it('archive excludes featured projects', async () => {
     try {
       const archive = await db.select().from(projects).where(eq(projects.featured, false));
-      const hasFeatured = archive.some(p => p.featured === true);
+      const hasFeatured = archive.some((p: any) => p.featured === true);
       expect(hasFeatured).toBe(false);
     } catch(e) {}
   });
@@ -44,7 +44,7 @@ describe('CMS Data Layer Queries', () => {
   it('published posts exclude drafts', async () => {
     try {
       const published = await db.select().from(posts).where(isNotNull(posts.publishedAt));
-      const hasDraft = published.some(p => p.publishedAt === null);
+      const hasDraft = published.some((p: any) => p.publishedAt === null);
       expect(hasDraft).toBe(false);
     } catch(e) {}
   });
@@ -53,7 +53,7 @@ describe('CMS Data Layer Queries', () => {
     try {
       const type = 'Personal';
       const subset = await db.select().from(projects).where(eq(projects.type, type));
-      const allPersonal = subset.every(p => p.type === type);
+      const allPersonal = subset.every((p: any) => p.type === type);
       expect(allPersonal).toBe(true);
     } catch(e) {}
   });

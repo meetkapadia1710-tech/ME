@@ -34,7 +34,7 @@ test.describe('Admin Flow', () => {
     await page.check('input[name="featured"]');
     
     // Save
-    await page.click('button[type="submit"]', { hasText: 'Save' });
+    await page.getByRole('button', { name: 'Create' }).click();
     
     // Might get redirected back to /admin or show success toast
     // The codebase redirects to /admin on success

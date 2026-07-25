@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 const TOTAL_FRAMES = 120;
 
-export default function CinematicRenderPage() {
+function CinematicContent() {
   const searchParams = useSearchParams();
   const frameStr = searchParams.get("frame");
   const frame = frameStr ? parseInt(frameStr, 10) : 0;
@@ -31,5 +31,13 @@ export default function CinematicRenderPage() {
         </Suspense>
       </Canvas>
     </div>
+  );
+}
+
+export default function CinematicRenderPage() {
+  return (
+    <Suspense fallback={<div className="h-screen w-screen bg-[#0a0a0a]" />}>
+      <CinematicContent />
+    </Suspense>
   );
 }

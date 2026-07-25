@@ -2,7 +2,8 @@
 
 import * as Sentry from "@sentry/nextjs";
 
-export async function submitContactForm(formData: FormData) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function submitContactForm(prevState: any, formData: FormData) {
   const email = formData.get("email");
   const message = formData.get("message");
   const name = formData.get("name");

@@ -222,7 +222,7 @@ export default function CinematicScrub() {
     <section 
       ref={containerRef} 
       className={cn(
-        "relative w-full bg-[#0a0a0a]",
+        "relative w-full bg-[#0a0a0a] cinematic-trigger-area",
         isReduced ? "h-screen" : "h-[400vh]" // Reduced motion = simple static block, normal = tall scrolling area
       )}
     >

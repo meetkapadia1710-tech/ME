@@ -4,7 +4,7 @@ import CaseStudy from "@/components/CaseStudy";
 import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
-import type { CaseStudyData } from "@/lib/caseStudies";
+import type { CaseStudyData, TechChoice } from "@/lib/caseStudies";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const [data] = await db.select().from(projects).where(eq(projects.slug, params.slug));
@@ -36,7 +36,8 @@ export default async function ArchiveCaseStudy({ params }: { params: { slug: str
     stack: dbData.tags,
     overview: dbData.overview,
     approach: dbData.approach || undefined,
-    techStack: dbData.techStack as string[] | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    techStack: dbData.techStack as any as TechChoice[] | undefined,
     features: dbData.keyFeatures || undefined,
     images: dbData.heroImageUrl ? {
       hero: dbData.heroImageUrl,

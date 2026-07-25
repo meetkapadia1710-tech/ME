@@ -244,6 +244,8 @@ export default function CommandPalette({
                       <button
                         key={item.label}
                         type="button"
+                        role="option"
+                        aria-selected={isActive}
                         onMouseEnter={() => setCursor(idx)}
                         onClick={() => execute(item)}
                         className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors duration-100 ${

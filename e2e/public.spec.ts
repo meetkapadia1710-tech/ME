@@ -4,7 +4,7 @@ test.describe('Public Flow', () => {
   test('navigates through sections and case studies', async ({ page }) => {
     // Land on index
     await page.goto('/');
-    await expect(page).toHaveTitle(/Portfolio/); // Or whatever the actual title is
+    await expect(page).toHaveTitle(/Meet Kapadia/); // Expected title
 
     // Scroll through sections (triggering animations)
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 4));

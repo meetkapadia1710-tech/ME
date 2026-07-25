@@ -21,6 +21,7 @@ export type CaseStudyData = {
   approach?: string;
   techStack?: TechChoice[];
   features?: string[];
+  skillCategories?: string[];
   /** Visual assets — optional so existing pages compile without changes. */
   images?: CaseStudyImages;
   playgroundType?: "none" | "iframe" | "interactive" | "video";

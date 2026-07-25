@@ -50,6 +50,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Push schema to test database
+        run: npx drizzle-kit push --force
+
       - name: Seed test database
         run: npx tsx scripts/seed-test-db.ts
 

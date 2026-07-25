@@ -16,7 +16,7 @@ describe('Contact Form Handler', () => {
     formData.append('email', 'test@example.com');
     // Missing name and message
 
-    const result = await submitContactForm(formData);
+    const result = await submitContactForm(null, formData);
     expect(result).toEqual({ success: false, error: "Missing required fields" });
   });
 
@@ -26,7 +26,7 @@ describe('Contact Form Handler', () => {
     formData.append('name', 'John Doe');
     formData.append('message', 'Hello!');
 
-    const result = await submitContactForm(formData);
+    const result = await submitContactForm(null, formData);
     expect(result).toEqual({ success: false, error: "Invalid email address" });
   });
 
@@ -36,7 +36,7 @@ describe('Contact Form Handler', () => {
     formData.append('name', 'John Doe');
     formData.append('message', 'Hello!');
 
-    const result = await submitContactForm(formData);
+    const result = await submitContactForm(null, formData);
     expect(result).toEqual({ success: true });
     expect(Sentry.captureException).not.toHaveBeenCalled();
   });
@@ -47,7 +47,7 @@ describe('Contact Form Handler', () => {
     formData.append('name', 'John Doe');
     formData.append('message', 'Hello!');
 
-    const result = await submitContactForm(formData);
+    const result = await submitContactForm(null, formData);
     expect(result).toEqual({ success: false, error: "Failed to send message" });
     expect(Sentry.captureException).toHaveBeenCalled();
     expect(Sentry.captureException).toHaveBeenCalledWith(
