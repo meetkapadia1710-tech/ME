@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createProjectAction, editProjectAction, deleteProjectAction, togglePostPublishAction } from '@/app/admin/actions';
+import { createProjectAction, editProjectAction, deleteProjectAction } from '@/app/admin/actions';
+import { revalidatePath } from 'next/cache';
 
 vi.mock('@/db', () => ({
   db: {
@@ -24,10 +25,29 @@ vi.mock('next/navigation', () => ({
   redirect: vi.fn()
 }));
 
+// revalidatePath needs Next's static generation store, which doesn't exist
+// outside a request. Mock it so we can assert it was called.
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn()
+}));
+
+/** The public pages that must be flushed after any admin mutation. */
+const PUBLIC_PAGES = ['/', '/archive', '/archive/[slug]', '/work/[slug]'];
+
+function expectPublicPagesRevalidated() {
+  for (const page of PUBLIC_PAGES) {
+    expect(revalidatePath).toHaveBeenCalledWith(
+      page,
+      ...(page.includes('[slug]') ? ['page'] : [])
+    );
+  }
+}
+
 describe('Admin Panel CRUD Actions', () => {
   beforeEach(() => {
     mockAuth.mockReset();
     mockAuth.mockResolvedValue({ user: { email: 'test@example.com' } });
+    vi.mocked(revalidatePath).mockClear();
   });
 
   it('rejects action if no session is found', async () => {
@@ -40,6 +60,7 @@ describe('Admin Panel CRUD Actions', () => {
     };
     const result = await createProjectAction(projectData);
     expect(result).toEqual({ success: false, error: 'Unauthorized' });
+    expect(revalidatePath).not.toHaveBeenCalled();
   });
 
   it('creates a project', async () => {
@@ -53,23 +74,22 @@ describe('Admin Panel CRUD Actions', () => {
     // Wait, createProjectAction doesn't return anything on success, it calls redirect().
     // So `result` should be undefined.
     expect(result).toBeUndefined();
+    // Must fire BEFORE redirect() — redirect throws, so anything after is dead code.
+    expectPublicPagesRevalidated();
   });
 
   it('edits a project', async () => {
     const result = await editProjectAction(1, { name: 'Updated Project' });
     expect(result).toBeDefined();
     if (result) expect(result.success).toBe(true);
+    expectPublicPagesRevalidated();
   });
 
   it('deletes a project', async () => {
     const result = await deleteProjectAction(1);
     expect(result).toBeDefined();
     if (result) expect(result.success).toBe(true);
+    expectPublicPagesRevalidated();
   });
 
-  it('toggles post publish status', async () => {
-    const result = await togglePostPublishAction(1, true);
-    expect(result).toBeDefined();
-    if (result) expect(result.success).toBe(true);
-  });
 });

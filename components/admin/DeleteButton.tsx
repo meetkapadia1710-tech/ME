@@ -1,17 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { deletePostAction, deleteProjectAction } from "@/app/admin/actions";
+import { deleteProjectAction } from "@/app/admin/actions";
 import { useState } from "react";
 
-export default function DeleteButton({ id, type }: { id: number; type: "post" | "project" }) {
+export default function DeleteButton({ id, type }: { id: number; type: "project" }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleDelete() {
     if (!confirm(`Are you sure you want to delete this ${type}?`)) return;
     setLoading(true);
-    const res = type === "post" ? await deletePostAction(id) : await deleteProjectAction(id);
+    const res = await deleteProjectAction(id);
     if (res?.success) {
       router.refresh();
     }

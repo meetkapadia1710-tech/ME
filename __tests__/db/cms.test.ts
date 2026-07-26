@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest';
 import { getTestDb } from '@/db/test-utils';
-import { projects, posts } from '@/db/schema';
+import { projects } from '@/db/schema';
 import { eq, desc, isNotNull, and } from 'drizzle-orm';
 
 vi.mock('@neondatabase/serverless', () => ({
@@ -38,14 +38,6 @@ describe('CMS Data Layer Queries', () => {
       const archive = await db.select().from(projects).where(eq(projects.featured, false));
       const hasFeatured = archive.some((p: any) => p.featured === true);
       expect(hasFeatured).toBe(false);
-    } catch(e) {}
-  });
-
-  it('published posts exclude drafts', async () => {
-    try {
-      const published = await db.select().from(posts).where(isNotNull(posts.publishedAt));
-      const hasDraft = published.some((p: any) => p.publishedAt === null);
-      expect(hasDraft).toBe(false);
     } catch(e) {}
   });
 

@@ -34,21 +34,8 @@ export const projects = pgTable("projects", {
   };
 });
 
-export const posts = pgTable("posts", {
-  id: serial("id").primaryKey(),
-  slug: text("slug").notNull().unique(),
-  title: text("title").notNull(),
-  excerpt: text("excerpt").notNull(),
-  body: text("body").notNull(), // MDX/markdown
-  tags: text("tags").array().notNull(),
-  readingTime: text("reading_time"),
-  publishedAt: timestamp("published_at"), // null = draft
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (table) => {
-  return {
-    publishedAtIdx: index("posts_published_at_idx").on(table.publishedAt),
-    slugIdx: index("posts_slug_idx").on(table.slug),
-    createdAtIdx: index("posts_created_at_idx").on(table.createdAt),
-  };
-});
+// Blog posts are MDX files in content/posts, read through lib/mdx.ts — not a
+// database table. There used to be a `posts` table here with full admin CRUD,
+// but nothing public ever read it: the blog index, post pages, sitemap, and
+// command palette all load from disk. Writing a post in the admin had no
+// effect on the site, so the table and its admin UI were removed.

@@ -4,8 +4,9 @@ import { useSearchParams } from "next/navigation";
 import { Canvas } from "@react-three/fiber";
 import CinematicScene from "@/components/CinematicScene";
 import { Suspense } from "react";
+import { TOTAL_CINEMATIC_FRAMES } from "@/lib/cinematic.mjs";
 
-const TOTAL_FRAMES = 120;
+const TOTAL_FRAMES = TOTAL_CINEMATIC_FRAMES;
 
 function CinematicContent() {
   const searchParams = useSearchParams();
@@ -34,7 +35,7 @@ function CinematicContent() {
   );
 }
 
-export default function CinematicRenderPage() {
+export default function CinematicRenderClient() {
   return (
     <Suspense fallback={<div className="h-screen w-screen bg-[#0a0a0a]" />}>
       <CinematicContent />

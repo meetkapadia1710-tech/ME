@@ -6,14 +6,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/reveal";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "hamo";
+import { TOTAL_CINEMATIC_FRAMES, cinematicFrameUrl } from "@/lib/cinematic.mjs";
 
-const TOTAL_FRAMES = 120;
-
-// Format frame index as "frame-0000.jpeg"
-const getFrameUrl = (index: number) => {
-  const padded = index.toString().padStart(4, "0");
-  return `/cinematic/frame-${padded}.jpeg`;
-};
+const TOTAL_FRAMES = TOTAL_CINEMATIC_FRAMES;
+const getFrameUrl = cinematicFrameUrl;
 
 export default function CinematicScrub() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,6 +50,13 @@ export default function CinematicScrub() {
           resolve();
         };
         img.onerror = () => {
+          // Don't swallow this. A missing frame means the rendered sequence and
+          // TOTAL_CINEMATIC_FRAMES have drifted apart, which is invisible at
+          // runtime otherwise — the canvas just silently holds the last frame.
+          console.error(
+            `[CinematicScrub] Frame ${index} failed to load (${getFrameUrl(index)}). ` +
+              `Expected ${TOTAL_FRAMES} frames in public/cinematic — re-run scripts/render-cinematic-frames.mjs.`
+          );
           resolve(); // Resolve anyway to not break the chain
         };
       });

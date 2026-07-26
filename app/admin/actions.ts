@@ -2,10 +2,28 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { db } from "@/db";
-import { projects, posts } from "@/db/schema";
+import { projects } from "@/db/schema";
 import { eq, count, and, ne } from "drizzle-orm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
+/**
+ * Flush the cached public pages that render project data.
+ *
+ * `/archive` and `/work/[slug]` are prerendered at build time, so without this
+ * an admin edit never reaches the site until the next deploy. `/` has a 60s
+ * revalidate of its own but is included so edits show up immediately.
+ *
+ * Must be called BEFORE `redirect()` — redirect throws internally, so anything
+ * after it is unreachable.
+ */
+function revalidatePublicPages() {
+  revalidatePath("/");
+  revalidatePath("/archive");
+  revalidatePath("/archive/[slug]", "page");
+  revalidatePath("/work/[slug]", "page");
+}
 
 export async function createProjectAction(data: typeof projects.$inferInsert) {
   const session = await auth();
@@ -26,6 +44,7 @@ export async function createProjectAction(data: typeof projects.$inferInsert) {
     return { success: false, error: "Failed to create project" };
   }
   if (success) {
+    revalidatePublicPages();
     redirect("/admin");
   }
 }
@@ -44,6 +63,7 @@ export async function editProjectAction(id: number, data: Partial<typeof project
       }
     }
     const [result] = await db.update(projects).set(data).where(eq(projects.id, id)).returning();
+    revalidatePublicPages();
     return { success: true, project: result };
   } catch (error) {
     Sentry.captureException(error, { tags: { context: "admin-panel", action: "editProject" } });
@@ -57,6 +77,7 @@ export async function deleteProjectAction(id: number) {
 
   try {
     await db.delete(projects).where(eq(projects.id, id));
+    revalidatePublicPages();
     return { success: true };
   } catch (error) {
     Sentry.captureException(error, { tags: { context: "admin-panel", action: "deleteProject" } });
@@ -64,61 +85,5 @@ export async function deleteProjectAction(id: number) {
   }
 }
 
-export async function createPostAction(data: typeof posts.$inferInsert) {
-  const session = await auth();
-  if (!session) return { success: false, error: "Unauthorized" };
-
-  let success = false;
-  try {
-    await db.insert(posts).values(data);
-    success = true;
-  } catch (error) {
-    Sentry.captureException(error, { tags: { context: "admin-panel", action: "createPost" } });
-    return { success: false, error: "Failed to create post" };
-  }
-  if (success) {
-    redirect("/admin");
-  }
-}
-
-export async function editPostAction(id: number, data: Partial<typeof posts.$inferInsert>) {
-  const session = await auth();
-  if (!session) return { success: false, error: "Unauthorized" };
-
-  try {
-    const [result] = await db.update(posts).set(data).where(eq(posts.id, id)).returning();
-    return { success: true, post: result };
-  } catch (error) {
-    Sentry.captureException(error, { tags: { context: "admin-panel", action: "editPost" } });
-    return { success: false, error: "Failed to edit post" };
-  }
-}
-
-export async function togglePostPublishAction(id: number, publish: boolean) {
-  const session = await auth();
-  if (!session) return { success: false, error: "Unauthorized" };
-
-  try {
-    const [result] = await db.update(posts)
-      .set({ publishedAt: publish ? new Date() : null })
-      .where(eq(posts.id, id))
-      .returning();
-    return { success: true, post: result };
-  } catch (error) {
-    Sentry.captureException(error, { tags: { context: "admin-panel", action: "togglePublish" } });
-    return { success: false, error: "Failed to toggle publish status" };
-  }
-}
-
-export async function deletePostAction(id: number) {
-  const session = await auth();
-  if (!session) return { success: false, error: "Unauthorized" };
-
-  try {
-    await db.delete(posts).where(eq(posts.id, id));
-    return { success: true };
-  } catch (error) {
-    Sentry.captureException(error, { tags: { context: "admin-panel", action: "deletePost" } });
-    return { success: false, error: "Failed to delete post" };
-  }
-}
+// Post CRUD actions used to live here. Blog posts are MDX files in
+// content/posts — see db/schema.ts for why the table went away.

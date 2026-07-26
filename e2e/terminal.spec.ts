@@ -27,7 +27,9 @@ test.describe('Retro Terminal', () => {
     // Test command
     await terminalInput.fill('whoami');
     await page.keyboard.press('Enter');
-    await expect(page.locator('text=Meet Kapadia — Full-Stack Developer')).toBeVisible();
+    // Scoped to the terminal: the homepage also carries this name in its
+    // (visually hidden) <h1>, so an unscoped text locator matches two elements.
+    await expect(terminal.getByText('Meet Kapadia — Full-Stack Developer')).toBeVisible();
 
     // Close
     await page.keyboard.press('Escape');

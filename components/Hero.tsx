@@ -83,10 +83,18 @@ export default function Hero({ loaded }: { loaded: boolean }) {
 
   return (
     <section id="hero" className="relative flex min-h-svh flex-col justify-between overflow-hidden pt-28 md:pt-32">
+      {/*
+        The marquee is split into one <span> per character for the hover
+        animation, so it carries no heading semantics — the homepage had no
+        <h1> at all, which costs both search ranking and the a11y document
+        outline. This provides the real heading; the marquee is decorative.
+      */}
+      <h1 className="sr-only">Meet Kapadia — Full-Stack Developer and SDE</h1>
+
       {/* Marquee */}
       <div
         className="relative z-10 flex select-none py-10 cursor-default [perspective:1000px]"
-        aria-label="Full-Stack Developer, SDE"
+        aria-hidden
       >
         <div
           className="flex w-full [transform:rotateX(10deg)_rotateZ(-2deg)]"

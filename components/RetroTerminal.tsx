@@ -211,7 +211,7 @@ export default function RetroTerminal() {
         break;
       case "resume":
         addOutput("system", "Triggering resume download...");
-        window.open("/meet_kapadia_resume.pdf", "_blank");
+        window.open("/resume.pdf", "_blank");
         break;
       case "contact":
         addOutput("result", (

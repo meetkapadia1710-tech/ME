@@ -36,11 +36,21 @@ test.describe('Command Palette', () => {
 
     // Section-jump from non-home routes
     await page.goto('/approach');
+    // The palette's keydown listener is attached on hydration. Pressing the
+    // shortcut immediately after navigation races that, so wait for the page to
+    // settle first — otherwise the keypress lands on a page that isn't
+    // listening yet and the palette never opens.
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('h1').first()).toBeVisible();
+
     await page.keyboard.press(`${modifier}+k`);
+    await expect(paletteInput).toBeVisible();
     await paletteInput.fill('Reach Out');
     await page.keyboard.press('Enter');
-    // It should navigate to /
-    await expect(page).toHaveURL(/.*\//);
+
+    // Should land on the homepage, not merely "some URL" — the previous
+    // /.*\// pattern matched every path including /approach itself.
+    await expect(page).toHaveURL(/\/$/);
     // And reach out section should be visible
     await expect(page.locator('#reach-out')).toBeVisible();
   });

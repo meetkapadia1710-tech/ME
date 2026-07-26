@@ -1,9 +1,11 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from '../db/schema';
+import { requireTestDatabaseUrl } from '../e2e/require-test-db';
 
-// This script expects POSTGRES_TEST_URL to be set to a test database (e.g., Neon branch or local DB).
-const sql = neon(process.env.POSTGRES_TEST_URL || "postgres://dummy:dummy@localhost/dummy");
+// This script truncates `projects`, so it gets the same guard as the E2E
+// teardown: a dedicated POSTGRES_TEST_URL, never a fallback.
+const sql = neon(requireTestDatabaseUrl('seed-test-db'));
 const db = drizzle(sql, { schema });
 
 async function seed() {
@@ -11,7 +13,6 @@ async function seed() {
 
   // Clear existing data
   await db.delete(schema.projects);
-  await db.delete(schema.posts);
 
   // Seed Projects
   // We need exactly 4 featured projects to test the limit logic
@@ -74,30 +75,6 @@ async function seed() {
       tags: ["Python"],
       featured: false,
       overview: "Overview",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
-
-  // Seed Posts
-  await db.insert(schema.posts).values([
-    {
-      slug: "test-published-post",
-      title: "Published Post",
-      excerpt: "Excerpt",
-      body: "Body",
-      tags: ["Testing"],
-      publishedAt: new Date(), // Published
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      slug: "test-draft-post",
-      title: "Draft Post",
-      excerpt: "Excerpt",
-      body: "Body",
-      tags: ["Testing"],
-      publishedAt: null, // Draft
       createdAt: new Date(),
       updatedAt: new Date(),
     },

@@ -1,14 +1,13 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { projects, posts } from '../db/schema';
+import { projects } from '../db/schema';
 import { like, or } from 'drizzle-orm';
+import { requireTestDatabaseUrl } from './require-test-db';
 
 async function globalTeardown() {
-  const connectionString = process.env.POSTGRES_TEST_URL || process.env.POSTGRES_URL;
-  if (!connectionString) {
-    console.log('[globalTeardown] No connection string available, skipping database cleanup.');
-    return;
-  }
+  // Throws rather than falling back to POSTGRES_URL — this function issues
+  // DELETE statements and must never be aimed at production.
+  const connectionString = requireTestDatabaseUrl('globalTeardown');
 
   try {
     const sql = neon(connectionString);
@@ -23,14 +22,7 @@ async function globalTeardown() {
       )
     ).returning();
 
-    const deletedPosts = await db.delete(posts).where(
-      or(
-        like(posts.slug, 'e2e-%'),
-        like(posts.title, 'E2E %')
-      )
-    ).returning();
-
-    console.log(`[globalTeardown] Cleaned up ${deletedProjects.length} projects and ${deletedPosts.length} posts.`);
+    console.log(`[globalTeardown] Cleaned up ${deletedProjects.length} projects.`);
   } catch (error) {
     console.error('[globalTeardown] Error during teardown database cleanup:', error);
   }

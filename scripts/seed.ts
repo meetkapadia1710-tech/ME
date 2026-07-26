@@ -2,9 +2,8 @@ import * as dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
 import { db } from "../db";
-import { projects, posts } from "../db/schema";
+import { projects } from "../db/schema";
 import { ARCHIVE_STUDIES } from "../lib/archiveData";
-import { getAllPosts } from "../lib/mdx";
 
 const FEATURED_PROJECTS = [
   {
@@ -160,20 +159,8 @@ async function main() {
     console.log(`Seeded Archive Project: ${a.name}`);
   }
 
-  // Seed Posts
-  const allPosts = getAllPosts();
-  for (const p of allPosts) {
-    await db.insert(posts).values({
-      slug: p.meta.slug,
-      title: p.meta.title,
-      excerpt: p.meta.excerpt,
-      body: p.content,
-      tags: p.meta.tags,
-      readingTime: p.meta.readingTime,
-      publishedAt: new Date(p.meta.date), // mark all as published with original date
-    }).onConflictDoNothing();
-    console.log(`Seeded Post: ${p.meta.title}`);
-  }
+  // Posts are not seeded: they live as MDX in content/posts and are read from
+  // disk by lib/mdx.ts. See db/schema.ts.
 
   console.log("Done seeding!");
   process.exit(0);

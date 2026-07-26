@@ -1,0 +1,23 @@
+-- Drop the unused `posts` table.
+--
+-- Nothing public ever read it. The blog index, post pages, sitemap, and command
+-- palette all load MDX from content/posts via lib/mdx.ts, so the admin CRUD that
+-- wrote to this table had no effect on the site. The table and its admin UI were
+-- removed in the same change that added this file.
+--
+-- NOT APPLIED AUTOMATICALLY. Run this by hand, and only AFTER any Neon
+-- point-in-time restore — a restore rewinds schema as well as data, which would
+-- bring the table back and put the database out of sync with db/schema.ts again.
+--
+--   psql "$POSTGRES_URL" -f db/migrations/0000_drop_posts_table.sql
+--
+-- Alternatively `npx drizzle-kit push` will now detect the drift and offer the
+-- same drop interactively. Either way, confirm the table holds nothing you want
+-- first:
+--
+--   SELECT id, slug, title, published_at FROM posts;
+--
+-- As of writing it held only two seed fixtures: test-published-post and
+-- test-draft-post.
+
+DROP TABLE IF EXISTS "posts";

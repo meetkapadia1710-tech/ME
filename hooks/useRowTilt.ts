@@ -12,8 +12,22 @@ export function useRowTilt<T extends HTMLElement = HTMLElement>({
   const previewRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   
+  /**
+   * Pointer capability only — does this device hover at all?
+   *
+   * SelectedWorks uses this to decide click semantics: on touch devices the
+   * first tap expands an inline thumbnail and the second navigates. This
+   * deliberately does NOT consider prefers-reduced-motion. It used to, which
+   * meant any desktop user with reduced motion enabled got the two-tap touch
+   * behaviour — their first click on a case study was preventDefault()-ed and
+   * appeared to do nothing.
+   */
   const canHover = useRef(false);
-  
+
+  /** Whether the tilt/preview animations should run. Motion preference lives here. */
+  const animate = useRef(false);
+
+
   const xTo = useRef<((v: number) => void) | null>(null);
   const yTo = useRef<((v: number) => void) | null>(null);
   const rotXTo = useRef<((v: number) => void) | null>(null);
@@ -26,11 +40,10 @@ export function useRowTilt<T extends HTMLElement = HTMLElement>({
   useEffect(() => {
     if (!ready) return;
 
-    canHover.current =
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-      !prefersReducedMotion();
+    canHover.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    animate.current = canHover.current && !prefersReducedMotion();
 
-    if (!canHover.current) return;
+    if (!animate.current) return;
 
     if (previewRef.current) {
       gsap.set(previewRef.current, {
@@ -57,7 +70,7 @@ export function useRowTilt<T extends HTMLElement = HTMLElement>({
   }, [ready]);
 
   const handleMove = (e: React.MouseEvent) => {
-    if (!canHover.current) return;
+    if (!animate.current) return;
     xTo.current?.(e.clientX);
     yTo.current?.(e.clientY);
 
@@ -71,7 +84,7 @@ export function useRowTilt<T extends HTMLElement = HTMLElement>({
   };
 
   const showPreview = (i: number) => {
-    if (!canHover.current || !previewRef.current) return;
+    if (!animate.current || !previewRef.current) return;
     gsap.to(previewRef.current, { autoAlpha: 1, scale: 1, duration: DUR_FAST * 0.8, ease: EASE_ENTRANCE });
     cardsRef.current.forEach((card, idx) => {
       if (card) gsap.to(card, { opacity: idx === i ? 1 : 0, duration: DUR_FAST * 0.5, ease: EASE_STANDARD });
@@ -81,7 +94,7 @@ export function useRowTilt<T extends HTMLElement = HTMLElement>({
   };
 
   const hidePreview = (i?: number) => {
-    if (!previewRef.current) return;
+    if (!animate.current || !previewRef.current) return;
     gsap.to(previewRef.current, { autoAlpha: 0, scale: 0.85, duration: DUR_FAST * 0.6, ease: EASE_ENTRANCE });
     if (i !== undefined) {
       rowRotYTo.current[i]?.(0);

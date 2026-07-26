@@ -40,6 +40,7 @@
     "react": "^18",
     "react-dom": "^18",
     "rehype-pretty-code": "^0.14.4",
+    "resend": "^6.18.0",
     "shiki": "^4.3.1",
     "tailwind-merge": "^3.6.0",
     "tailwindcss-animate": "^1.0.7",

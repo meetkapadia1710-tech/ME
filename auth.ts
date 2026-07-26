@@ -1,9 +1,13 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
+import { authConfig } from "./auth.config"
 
+// Full config: auth.config.ts plus the Credentials provider. This module pulls
+// in bcryptjs, so it must never be imported from middleware.ts — see the note
+// in auth.config.ts.
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.AUTH_SECRET,
+  ...authConfig,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -31,20 +35,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     })
   ],
-  pages: {
-    signIn: "/admin/login",
-  },
-  callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnAdmin = nextUrl.pathname.startsWith('/admin');
-      if (isOnAdmin && nextUrl.pathname !== '/admin/login') {
-        if (isLoggedIn) return true;
-        return false;
-      } else if (isLoggedIn && nextUrl.pathname === '/admin/login') {
-        return Response.redirect(new URL('/admin', nextUrl));
-      }
-      return true;
-    },
-  },
 })

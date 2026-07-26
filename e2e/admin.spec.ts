@@ -5,7 +5,7 @@ test.describe('Admin Flow', () => {
   // Use a sequential execution for this suite since it modifies global state (DB)
   test.describe.configure({ mode: 'serial' });
 
-  test('logs in, manages projects, enforces featured limit, manages posts', async ({ page }) => {
+  test('logs in, enforces the featured limit, and manages projects', async ({ page }) => {
     // 1. Login
     await page.goto('/admin');
     if (page.url().includes('/login')) {
@@ -15,12 +15,11 @@ test.describe('Admin Flow', () => {
       await page.waitForURL('**/admin');
     }
 
-    // 2. Projects CRUD & Featured Limit
     const uniqueId = randomBytes(4).toString('hex');
     const projectTitle = `E2E Project ${uniqueId}`;
 
     await page.goto('/admin/projects/new');
-    
+
     await page.fill('input[name="name"]', projectTitle);
     await page.fill('input[name="slug"]', `e2e-proj-${uniqueId}`);
     await page.fill('input[name="tagline"]', 'Test tagline');
@@ -28,53 +27,31 @@ test.describe('Admin Flow', () => {
     await page.selectOption('select[name="type"]', 'Personal');
     await page.fill('input[name="tags"]', 'React, Test');
     await page.fill('textarea[name="overview"]', 'Test overview');
-    
-    // Check featured
-    await page.locator('input[name="featured"]').click({ force: true });
-    
-    // Save
+
+    // 2. Featured limit. The test database is seeded with exactly 4 featured
+    // projects, so asking for a 5th must be refused rather than saved.
+    await page.locator('input[name="featured"]').check({ force: true });
     await page.getByRole('button', { name: 'Save Project' }).click({ force: true });
-    
-    // Might get redirected back to /admin or show success toast
-    // The codebase redirects to /admin on success
-    await page.waitForURL('**/admin');
-    
-    // 3. Posts CRUD lifecycle
-    const postTitle = `E2E Post ${uniqueId}`;
-    await page.goto('/admin/posts/new');
 
-    await page.fill('input[name="title"]', postTitle);
-    await page.fill('input[name="slug"]', `e2e-post-${uniqueId}`);
-    await page.fill('textarea[name="excerpt"]', 'E2E excerpt');
-    await page.fill('textarea[name="body"]', 'Hello world this is E2E.');
-    await page.fill('input[name="tags"]', 'test, playwright');
-    
-    // Save Draft
-    await page.locator('button[name="action"][value="draft"]').click({ force: true });
+    await expect(page.getByText(/Maximum of 4 featured projects allowed/i)).toBeVisible({
+      timeout: 15000,
+    });
+    // Still on the form — nothing was written.
+    await expect(page).toHaveURL(/\/admin\/projects\/new/);
+
+    // 3. Unfeatured saves fine, and redirects to the dashboard.
+    await page.locator('input[name="featured"]').uncheck({ force: true });
+    await page.getByRole('button', { name: 'Save Project' }).click({ force: true });
     await page.waitForURL('**/admin');
 
-    // Confirm it's not on /blog
-    await page.goto('/blog');
-    await expect(page.locator(`text=${postTitle}`)).toBeHidden();
+    // 4. It shows up on the dashboard.
+    await expect(page.locator(`tr:has-text("${projectTitle}")`)).toBeVisible({ timeout: 15000 });
 
-    // Go back and publish
-    await page.goto('/admin');
-    await page.locator(`tr:has-text("${postTitle}") >> text=Edit`).click({ force: true });
-    await page.waitForURL('**/admin/posts/*');
-    await page.locator('button[name="action"][value="publish"]').click({ force: true });
-    await page.waitForURL('**/admin');
-
-    // Confirm it IS visible on admin dashboard
-    await page.goto('/admin');
-    await expect(page.locator(`text=${postTitle}`)).toBeVisible({ timeout: 15000 });
-
-    // 4. Delete the post (cleanup)
-    await page.goto('/admin');
+    // 5. Delete it again (cleanup).
     // Accept confirm dialogs automatically
-    page.on('dialog', dialog => dialog.accept());
-    await page.locator(`tr:has-text("${postTitle}") >> text=Delete`).click({ force: true });
-    
-    // Verify deletion from admin UI
-    await expect(page.locator(`tr:has-text("${postTitle}")`)).toBeHidden();
+    page.on('dialog', (dialog) => dialog.accept());
+    await page.locator(`tr:has-text("${projectTitle}") >> text=Delete`).click({ force: true });
+
+    await expect(page.locator(`tr:has-text("${projectTitle}")`)).toBeHidden();
   });
 });

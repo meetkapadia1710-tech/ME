@@ -10,24 +10,26 @@ test.describe('Public Flow', () => {
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 4));
     await page.waitForTimeout(500); // Wait for scroll/reveal
     
-    // Click into a case study - assuming a link exists in Selected Works
-    // In actual E2E we'd look for a specific locator, e.g. first case study link
+    // Click into a case study. Unconditionally — this used to be wrapped in
+    // `if (count > 0)`, so it passed silently whenever the links were missing.
     const caseStudyLink = page.locator('a[href^="/work/"]').first();
-    const count = await page.locator('a[href^="/work/"]').count();
-    
-    if (count > 0) {
-      await expect(caseStudyLink).toBeVisible();
-      await caseStudyLink.click();
+    await expect(caseStudyLink).toBeVisible();
 
-      // Verify case study loaded
-      await expect(page.locator('h1').first()).toBeVisible();
+    const href = await caseStudyLink.getAttribute('href');
+    expect(href).toBeTruthy();
+    await caseStudyLink.click();
 
-      // Prev/next nav works (assuming links exist)
-      const nextLink = page.locator('a', { hasText: /Next|Previous/i }).first();
-      if (await nextLink.isVisible()) {
-        await nextLink.click();
-        await page.waitForLoadState('networkidle');
-      }
+    // Assert we actually navigated. Checking only for an <h1> was not enough:
+    // the click was being preventDefault()-ed and the test still found the
+    // homepage's own heading.
+    await page.waitForURL(`**${href}`);
+    await expect(page.locator('h1').first()).toBeVisible();
+
+    // Prev/next nav works (assuming links exist)
+    const nextLink = page.locator('a', { hasText: /Next|Previous/i }).first();
+    if (await nextLink.isVisible()) {
+      await nextLink.click();
+      await page.waitForLoadState('networkidle');
     }
 
     // Back to index
